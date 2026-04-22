@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Suggestions — VCE Planner</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>(function(){var t=localStorage.getItem('vce-theme');if(t)document.documentElement.setAttribute('data-theme',t)})()</script>
+<style>
+:root{--bg:#f5f2ee;--surface:#fff;--border:#e0d9d0;--text:#1a1714;--muted:#7a7068;--accent:#c84b2f;--hbg:#1a1714;--htxt:#fff}
+[data-theme=dark]{--bg:#111010;--surface:#1e1c1a;--border:#2e2b28;--text:#f0ede8;--muted:#8a8078;--accent:#e8693a;--hbg:#0e0d0c;--htxt:#f0ede8}
+[data-theme=pastel]{--bg:#fef6ff;--surface:#fff;--border:#e8daf0;--text:#2d1a3a;--muted:#9878b0;--accent:#c054a8;--hbg:#2d1a3a;--htxt:#fff}
+[data-theme=ocean]{--bg:#e8f4f8;--surface:#fff;--border:#c0dce8;--text:#0a2030;--muted:#507090;--accent:#0878b8;--hbg:#0a2030;--htxt:#e8f4f8}
+[data-theme=midnight]{--bg:#0d0d14;--surface:#16161f;--border:#2a2a3a;--text:#e8e0f8;--muted:#7868a8;--accent:#a060f0;--hbg:#08080f;--htxt:#e8e0f8}
+[data-theme=sunshine]{--bg:#fffbea;--surface:#ffffff;--border:#f0e080;--text:#2a2000;--muted:#8a7020;--accent:#d4a000;--hbg:#c88000;--htxt:#fff8d0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;transition:background .3s,color .3s}
+header{background:var(--hbg);padding:0 1.25rem;display:flex;align-items:center;position:sticky;top:0;z-index:200;height:54px;gap:.75rem}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;color:var(--htxt);display:flex;align-items:center;gap:7px;white-space:nowrap;flex-shrink:0}
+.logo span{color:#e8a87c}
+.back-btn{margin-left:auto;padding:5px 14px;border-radius:8px;border:1px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.7);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;transition:all .15s;text-decoration:none;display:flex;align-items:center}
+.back-btn:hover{background:rgba(255,255,255,.1);color:#fff}
+.container{max-width:680px;margin:0 auto;padding:2.5rem 1.5rem}
+.page-title{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;margin-bottom:.4rem}
+.page-sub{font-size:14px;color:var(--muted);margin-bottom:2rem;line-height:1.5}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:1.5rem}
+.sh{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.9rem}
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:1rem}
+.fg label{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+.type-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1rem}
+.type-card{border:2px solid var(--border);border-radius:12px;padding:.85rem;text-align:center;cursor:pointer;transition:all .15s}
+.type-card:hover{border-color:var(--accent);transform:translateY(-1px)}
+.type-card.selected{border-color:var(--accent);background:rgba(200,75,47,.07)}
+.type-icon{font-size:1.6rem;margin-bottom:.3rem}
+.type-label{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--text)}
+.type-desc{font-size:11px;color:var(--muted);margin-top:.2rem}
+textarea{width:100%;padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);outline:none;resize:vertical;min-height:140px;line-height:1.6;transition:border-color .15s}
+textarea:focus{border-color:var(--accent)}
+.abtn{height:44px;padding:0 24px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s}
+.abtn:hover{filter:brightness(1.1)}.abtn:disabled{opacity:.5;cursor:default}
+.ok-card{background:rgba(45,107,58,.1);border:1px solid rgba(45,107,58,.4);border-radius:14px;padding:1.5rem;text-align:center;display:none}
+.ok-card.show{display:block}
+.ok-icon{font-size:2.5rem;margin-bottom:.5rem}
+.ok-title{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:var(--text);margin-bottom:.25rem}
+.ok-sub{font-size:13px;color:var(--muted)}
+.err-msg{background:rgba(200,75,47,.1);border:1px solid rgba(200,75,47,.3);border-radius:9px;padding:.6rem .9rem;font-size:13px;color:var(--accent);margin-bottom:1rem;display:none}
+.err-msg.show{display:block}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">
+    <svg width="26" height="26" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="#2a2520"/><rect x="7" y="8" width="15" height="20" rx="2" fill="none" stroke="#e8a87c" stroke-width="1.5"/><line x1="11" y1="14" x2="19" y2="14" stroke="#e8a87c" stroke-width="1.2" stroke-linecap="round"/><line x1="11" y1="18" x2="19" y2="18" stroke="#e8a87c" stroke-width="1.2" stroke-linecap="round"/><line x1="11" y1="22" x2="15" y2="22" stroke="#e8a87c" stroke-width="1.2" stroke-linecap="round"/><circle cx="26" cy="25" r="8" fill="#c84b2f"/><line x1="26" y1="21" x2="26" y2="25" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="26" y1="25" x2="28.5" y2="27.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+    VCE <span>Planner</span>
+  </div>
+  <a class="back-btn" href="planner.html">← Back to Planner</a>
+</header>
+
+<div class="container">
+  <div class="page-title">Suggestions</div>
+  <div class="page-sub">Have a feature idea, found a bug, or just want to share some feedback? I'd love to hear it — this planner is built for students like you.</div>
+
+  <div id="err-msg" class="err-msg"></div>
+
+  <div class="card" id="form-card">
+    <div class="sh">What type of feedback is this?</div>
+    <div class="type-grid">
+      <div class="type-card selected" data-type="feedback" onclick="selectType('feedback',this)">
+        <div class="type-icon">💬</div>
+        <div class="type-label">Feedback</div>
+        <div class="type-desc">General thoughts or comments</div>
+      </div>
+      <div class="type-card" data-type="bug" onclick="selectType('bug',this)">
+        <div class="type-icon">🐛</div>
+        <div class="type-label">Bug Report</div>
+        <div class="type-desc">Something isn't working right</div>
+      </div>
+      <div class="type-card" data-type="feature" onclick="selectType('feature',this)">
+        <div class="type-icon">✨</div>
+        <div class="type-label">Feature Request</div>
+        <div class="type-desc">An idea for something new</div>
+      </div>
+    </div>
+
+    <div class="fg">
+      <label id="textarea-label">Your feedback</label>
+      <textarea id="suggestion-text" placeholder="Share your thoughts…"></textarea>
+    </div>
+
+    <button class="abtn" id="submit-btn" onclick="submitSuggestion()">Submit</button>
+  </div>
+
+  <div class="ok-card" id="ok-card">
+    <div class="ok-icon">🙏</div>
+    <div class="ok-title">Thanks for your feedback!</div>
+    <div class="ok-sub">Your suggestion has been sent. It really helps make the planner better for everyone.</div>
+    <br>
+    <button class="abtn" onclick="window.location.href='planner.html'" style="margin-top:.5rem">Back to Planner</button>
+  </div>
+</div>
+
+<script>
+const SUPA_URL='https://pnjpalvpqpcgelwdpxzj.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBuanBhbHZwcXBjZ2Vsd2RweHpqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NDg0ODgsImV4cCI6MjA5MjQyNDQ4OH0.YWn1-LkKAEAkG9uIuR19n350JlGtDpC9YtO053pU0BA';
+const {createClient}=supabase;
+const sb=createClient(SUPA_URL,SUPA_KEY);
+
+let selectedType='feedback';
+
+const LABELS={feedback:'Your feedback',bug:'Describe the bug — what happened and how to reproduce it',feature:'Describe your feature idea'};
+const PLACEHOLDERS={feedback:'Share your thoughts about the planner…',bug:'e.g. When I click X, Y happens instead of Z…',feature:'e.g. It would be great if the planner could…'};
+
+function selectType(type,el){
+  selectedType=type;
+  document.querySelectorAll('.type-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('textarea-label').textContent=LABELS[type];
+  document.getElementById('suggestion-text').placeholder=PLACEHOLDERS[type];
+}
+
+async function submitSuggestion(){
+  const content=document.getElementById('suggestion-text').value.trim();
+  const errEl=document.getElementById('err-msg');
+  errEl.classList.remove('show');
+  if(!content){errEl.textContent='Please write something before submitting.';errEl.classList.add('show');return}
+  const btn=document.getElementById('submit-btn');
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span>Sending…';
+  const {data:{user}}=await sb.auth.getUser();
+  const {error}=await sb.from('suggestions').insert({user_id:user?.id||null,type:selectedType,content});
+  if(error){errEl.textContent='Something went wrong. Please try again.';errEl.classList.add('show');btn.disabled=false;btn.textContent='Submit';return}
+  document.getElementById('form-card').style.display='none';
+  document.getElementById('ok-card').classList.add('show');
+}
+
+async function checkAuth(){
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session)window.location.href='index.html';
+}
+checkAuth();
+</script>
+</body>
+</html>
