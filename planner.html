@@ -403,6 +403,42 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 .sc.s-mth{background:var(--mth-bg);border-color:var(--mth-br)}.sc.s-gmth{background:var(--gmth-bg);border-color:var(--gmth-br)}
 .sc.s-eng .sc-name{color:var(--eng)}.sc.s-rel .sc-name{color:var(--rel)}.sc.s-mth .sc-name{color:var(--mth)}.sc.s-gmth .sc-name{color:var(--gmth)}
 
+/* ── ACTIVITY HEATMAP ── */
+.act-hero{background:var(--hbg);border-radius:20px;padding:2rem 2.5rem;margin-bottom:1.25rem}
+.act-stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem}
+.act-big{text-align:center}
+.act-big-num{font-family:'Fraunces',serif;font-size:2.6rem;font-weight:700;color:var(--accent-light);line-height:1;margin-bottom:.25rem}
+.act-big-label{font-size:11px;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.07em}
+.act-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.act-legend{display:flex;align-items:center;gap:4px}
+.act-leg-label{font-size:11px;color:var(--muted)}
+.act-leg-cell{width:12px;height:12px;border-radius:3px;background:var(--accent);display:inline-block}
+.act-months{display:flex;gap:0;margin-bottom:4px;padding-left:24px}
+.act-month-label{font-size:10px;color:var(--muted);flex:1;min-width:0;text-align:left}
+.act-grid-wrap{display:flex;gap:4px}
+.act-dow-labels{display:flex;flex-direction:column;gap:2px;padding-top:1px}
+.act-dow-labels div{height:13px;font-size:9px;color:var(--muted);line-height:13px;width:16px;text-align:right}
+.act-grid{display:grid;grid-auto-flow:column;grid-template-rows:repeat(7,13px);gap:2px;flex:1}
+.act-cell{width:13px;height:13px;border-radius:3px;background:var(--border);cursor:default;transition:transform .1s;position:relative}
+.act-cell:hover{transform:scale(1.3);z-index:10}
+.act-cell.lv1{background:var(--accent);opacity:.25}
+.act-cell.lv2{background:var(--accent);opacity:.5}
+.act-cell.lv3{background:var(--accent);opacity:.75}
+.act-cell.lv4{background:var(--accent);opacity:1}
+.act-cell.today{outline:2px solid var(--accent);outline-offset:1px}
+.act-tooltip{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--hbg);color:#fff;font-size:11px;padding:4px 8px;border-radius:6px;white-space:nowrap;pointer-events:none;display:none;z-index:100}
+.act-cell:hover .act-tooltip{display:block}
+.act-hrs-row{display:flex;align-items:center;gap:10px;margin-bottom:7px}
+.act-hrs-label{font-size:12px;font-weight:500;min-width:110px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.act-hrs-track{flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden}
+.act-hrs-fill{height:100%;border-radius:4px;transition:width .5s}
+.act-hrs-val{font-size:11px;color:var(--muted);min-width:32px;text-align:right}
+.act-recent-item{display:flex;align-items:center;gap:10px;padding:.5rem 0;border-bottom:1px solid var(--border);font-size:13px}
+.act-recent-item:last-child{border-bottom:none}
+.act-recent-date{font-size:11px;color:var(--muted);min-width:60px}
+.act-recent-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0}
+@media(max-width:860px){.act-stat-row{grid-template-columns:repeat(2,1fr)}.act-big-num{font-size:2rem}}
+
 /* ── TASK SCHEDULER ── */
 .sched-task-item{background:var(--bg);border-radius:9px;padding:.5rem .75rem;font-size:12px;cursor:pointer;border:1px solid var(--border);transition:all .15s;display:flex;align-items:center;gap:8px}
 .sched-task-item:hover{border-color:var(--accent);background:var(--surface)}
@@ -430,7 +466,7 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
     <button class="nav-item" data-page="tasks" onclick="nav('tasks',this)"><i data-lucide="check-square-2"></i>Tasks</button>
     <div class="sidebar-sep"></div>
     <button class="nav-item" data-page="planner" onclick="nav('planner',this)"><i data-lucide="layout-list"></i>Day Planner</button>
-    <button class="nav-item" data-page="week" onclick="nav('week',this)"><i data-lucide="calendar-range"></i>This Week</button>
+    <button class="nav-item" data-page="week" onclick="nav('week',this)"><i data-lucide="activity"></i>Activity</button>
     <button class="nav-item" data-page="sacs" onclick="nav('sacs',this)"><i data-lucide="target"></i>SACs &amp; Exams</button>
     <button class="nav-item" data-page="calendar" onclick="nav('calendar',this)"><i data-lucide="calendar"></i>Calendar</button>
     <div class="sidebar-sep"></div>
@@ -564,10 +600,32 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
   </div>
 </div></div>
 
-<!-- THIS WEEK -->
+<!-- ACTIVITY -->
 <div class="page" id="page-week"><div class="container">
-  <div class="page-hdr"><div class="page-hdr-title">This Week</div><div class="page-hdr-sub">Everything due or happening in the next 7 days</div></div>
-  <div class="card"><div class="week-list" id="week-list"></div></div>
+  <div class="page-hdr"><div class="page-hdr-title">Activity</div><div class="page-hdr-sub">Your study streak and task completion history</div></div>
+  <div class="act-hero">
+    <div class="act-stat-row">
+      <div class="act-big"><div class="act-big-num" id="act-streak">0</div><div class="act-big-label">🔥 Current streak</div></div>
+      <div class="act-big"><div class="act-big-num" id="act-best">0</div><div class="act-big-label">⚡ Best streak</div></div>
+      <div class="act-big"><div class="act-big-num" id="act-total-days">0</div><div class="act-big-label">📅 Active days</div></div>
+      <div class="act-big"><div class="act-big-num" id="act-total-hrs">0h</div><div class="act-big-label">⏱ Total study hrs</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="act-hdr"><div class="sh" style="margin-bottom:0">Completion history — last 6 months</div><div class="act-legend"><span class="act-leg-label">Less</span><span class="act-leg-cell" style="opacity:.15"></span><span class="act-leg-cell" style="opacity:.4"></span><span class="act-leg-cell" style="opacity:.7"></span><span class="act-leg-cell" style="opacity:1"></span><span class="act-leg-label">More</span></div></div>
+    <div class="act-months" id="act-months"></div>
+    <div class="act-grid-wrap"><div class="act-dow-labels"><div>M</div><div></div><div>W</div><div></div><div>F</div><div></div><div>S</div></div><div class="act-grid" id="act-grid"></div></div>
+  </div>
+  <div class="home-grid" style="margin-bottom:0">
+    <div class="card" style="margin-bottom:0">
+      <div class="sh">Study hours by subject</div>
+      <div id="act-hrs-bars"></div>
+    </div>
+    <div class="card" style="margin-bottom:0">
+      <div class="sh">Recent activity</div>
+      <div id="act-recent"></div>
+    </div>
+  </div>
 </div></div>
 
 <!-- SACs & EXAMS -->
@@ -1081,7 +1139,7 @@ function nav(p,btn){
   if(p==='home')renderHome();
   if(p==='calendar')renderCal();
   if(p==='sacs'){renderEvents();updateEvLink()}
-  if(p==='week')renderWeek();
+  if(p==='week')renderActivity();
   if(p==='progress')renderProgress();
   if(p==='pomodoro')renderHoursBar();
   if(p==='planner'){renderPlanner();renderSchedPanel();}
@@ -1254,25 +1312,102 @@ function renderPlanner(){
   renderSchedPanel();
 }
 
-// ── THIS WEEK ──
-function renderWeek(){
-  const anchor=new Date('2025-04-14T00:00:00');
-  const diffDays=Math.floor((TODAY-anchor)/86400000);
-  const weekOffset=Math.floor(diffDays/7);
-  const weekStart=new Date(anchor);weekStart.setDate(anchor.getDate()+weekOffset*7);
-  const dayMap={};for(let i=0;i<7;i++){const d=new Date(weekStart);d.setDate(weekStart.getDate()+i);dayMap[localStr(d)]=[]}
-  const start=localStr(weekStart);const we=new Date(weekStart);we.setDate(we.getDate()+6);const end=localStr(we);
-  tasks.filter(t=>!t.done&&t.due&&t.due>=start&&t.due<=end).forEach(t=>{if(dayMap[t.due])dayMap[t.due].push({type:'task',obj:t})});
-  events.filter(e=>e.date>=start&&e.date<=end).forEach(e=>{if(dayMap[e.date])dayMap[e.date].push({type:e.type,obj:e})});
-  const DMON=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-  const el=document.getElementById('week-list');
-  el.innerHTML=Object.entries(dayMap).map(([ds,items],idx)=>{
-    const d=new Date(ds+'T00:00:00');const dow=DMON[idx];const isT=ds===todayStr();
-    const lStyle=isT?'color:var(--accent);font-weight:800':'';
-    if(!items.length)return`<div class="wd-row"><div class="wd-label" style="${lStyle}">${dow} ${d.getDate()}</div><div class="wd-items"><div style="font-size:12px;color:var(--muted);padding:.35rem 0">Nothing due</div></div></div>`;
-    const ih=items.map(it=>{if(it.type==='task'){const s=SUBJ[it.obj.subject];return`<div class="wd-item ${it.obj.urgent?'urgent':''}" style="background:${BG[it.obj.subject]};border-color:${BR[it.obj.subject]}"><span class="badge b-${s.cls}">${s.label}</span><span style="font-size:13px">${it.obj.title}</span>${it.obj.urgent?'<span class="badge b-urgent" style="margin-left:auto">🔥</span>':''}</div>`;}return`<div class="wd-item is-${it.type}"><span class="badge" style="background:${it.type==='sac'?'var(--sac-bg)':'var(--exam-bg)'};color:${it.type==='sac'?'var(--sac)':'var(--exam)'}">${it.type.toUpperCase()}</span><span style="font-size:13px;font-weight:500">${it.obj.name}</span><span style="font-size:12px;color:var(--muted);margin-left:auto">${SUBJ[it.obj.subject].label}</span></div>`}).join('');
-    return`<div class="wd-row"><div class="wd-label" style="${lStyle}">${dow} ${d.getDate()}</div><div class="wd-items">${ih}</div></div>`;
+// ── ACTIVITY ──
+function renderActivity(){
+  const cd=JSON.parse(localStorage.getItem(UID_PREFIX+'cd')||'[]');
+  const cdSet=new Set(cd);
+  const ts=todayStr();
+
+  // ── streaks ──
+  let streak=0;
+  for(let i=0;i<365;i++){const d=new Date(TODAY);d.setDate(d.getDate()-i);if(cdSet.has(localStr(d)))streak++;else break}
+  let best=0,run=0;
+  const allDates=[...cdSet].sort();
+  if(allDates.length){
+    run=1;best=1;
+    for(let i=1;i<allDates.length;i++){
+      const prev=new Date(allDates[i-1]+'T00:00:00');const cur=new Date(allDates[i]+'T00:00:00');
+      const diff=(cur-prev)/86400000;
+      if(diff===1){run++;if(run>best)best=run}else run=1;
+    }
+  }
+  const totalHrs=Math.round(studyLog.reduce((s,l)=>s+l.hours,0)*10)/10;
+  document.getElementById('act-streak').textContent=streak;
+  document.getElementById('act-best').textContent=best;
+  document.getElementById('act-total-days').textContent=cdSet.size;
+  document.getElementById('act-total-hrs').textContent=totalHrs+'h';
+
+  // ── heatmap: 26 weeks back from today, aligned to Monday ──
+  const WEEKS=26;
+  // find last Monday on or before today
+  const todayDow=TODAY.getDay();// 0=Sun
+  const daysToMon=todayDow===0?6:todayDow-1;
+  const gridEnd=new Date(TODAY);gridEnd.setDate(TODAY.getDate()+(6-daysToMon));// end of this week (Sunday)
+  const gridStart=new Date(gridEnd);gridStart.setDate(gridEnd.getDate()-WEEKS*7+1);
+
+  // month labels
+  const monthsEl=document.getElementById('act-months');
+  const months=[];let lastMonth=-1;
+  for(let w=0;w<WEEKS;w++){
+    const d=new Date(gridStart);d.setDate(gridStart.getDate()+w*7);
+    const m=d.getMonth();
+    if(m!==lastMonth){months.push({label:d.toLocaleDateString('en-AU',{month:'short'}),week:w});lastMonth=m}
+  }
+  // build month label row (one span per week column)
+  let mIdx=0;
+  monthsEl.innerHTML=Array.from({length:WEEKS},(_,w)=>{
+    if(mIdx<months.length&&months[mIdx].week===w){return`<div class="act-month-label">${months[mIdx++].label}</div>`}
+    return`<div class="act-month-label"></div>`;
   }).join('');
+
+  // grid cells
+  const grid=document.getElementById('act-grid');
+  let cells='';
+  for(let w=0;w<WEEKS;w++){
+    for(let dow=0;dow<7;dow++){// Mon=0..Sun=6
+      const d=new Date(gridStart);d.setDate(gridStart.getDate()+w*7+dow);
+      const ds=localStr(d);
+      const future=ds>ts;
+      // activity level: count studyLog hours for this day
+      const hrs=studyLog.filter(l=>l.date===ds).reduce((s,l)=>s+l.hours,0);
+      const active=cdSet.has(ds);
+      let lv=0;
+      if(active||hrs>0){
+        if(hrs===0)lv=1;
+        else if(hrs<1)lv=2;
+        else if(hrs<2)lv=3;
+        else lv=4;
+        if(active&&lv<2)lv=2;
+      }
+      const cls=future?'':lv>0?`lv${lv}`:'';
+      const isToday=ds===ts;
+      const label=d.toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short'});
+      const tip=future?'':`${label}: ${active?'tasks done':'no tasks'}${hrs>0?`, ${hrs}h study`:''}`;
+      cells+=`<div class="act-cell${cls?' '+cls:''}${isToday?' today':''}"${future?' style="opacity:.18"':''}><div class="act-tooltip">${tip}</div></div>`;
+    }
+  }
+  grid.innerHTML=cells;
+
+  // ── hours by subject ──
+  const hrsMap={};
+  userSubjects.forEach(s=>{hrsMap[s.id]=0});
+  studyLog.forEach(l=>{if(hrsMap[l.subject]!==undefined)hrsMap[l.subject]+=l.hours});
+  const maxH=Math.max(...Object.values(hrsMap),0.1);
+  document.getElementById('act-hrs-bars').innerHTML=userSubjects.map(s=>{
+    const h=Math.round(hrsMap[s.id]*10)/10;
+    const pct=Math.round(hrsMap[s.id]/maxH*100);
+    return`<div class="act-hrs-row"><div class="act-hrs-label" style="color:${NC[s.id]}">${s.label}</div><div class="act-hrs-track"><div class="act-hrs-fill" style="width:${pct}%;background:${NC[s.id]}"></div></div><div class="act-hrs-val">${h}h</div></div>`;
+  }).join('')||'<div style="font-size:13px;color:var(--muted)">No study sessions logged yet.</div>';
+
+  // ── recent activity ──
+  const recentDays=[...cdSet].sort().reverse().slice(0,8);
+  document.getElementById('act-recent').innerHTML=recentDays.length
+    ?recentDays.map(ds=>{
+      const d=new Date(ds+'T00:00:00');const lbl=d.toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short'});
+      const hrs=studyLog.filter(l=>l.date===ds).reduce((s,l)=>s+l.hours,0);
+      return`<div class="act-recent-item"><span class="act-recent-dot"></span><span style="flex:1">${lbl}</span><span class="act-recent-date">${hrs>0?hrs+'h studied':'Tasks done'}</span></div>`;
+    }).join('')
+    :'<div style="font-size:13px;color:var(--muted)">No activity yet — complete a task to start your streak!</div>';
 }
 
 // ── EVENTS (SACs/Exams) ──
