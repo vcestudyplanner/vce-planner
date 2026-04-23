@@ -394,6 +394,30 @@ select.subj-sel{font-weight:600;border-width:2px}
   .page#page-planner .container>div{grid-template-columns:1fr!important}
 }
 
+/* ── TOUR ── */
+#tour-welcome{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(5px);z-index:9980;display:flex;align-items:center;justify-content:center}
+.tour-wb{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:2.5rem 2.75rem;max-width:460px;width:90%;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.3)}
+.tour-wb-icon{font-size:3rem;margin-bottom:.9rem}
+.tour-wb-title{font-family:'Fraunces',serif;font-size:1.85rem;font-weight:700;color:var(--text);margin-bottom:.5rem}
+.tour-wb-sub{font-size:14px;color:var(--muted);line-height:1.65;margin-bottom:2rem}
+.tour-wb-btns{display:flex;gap:10px;justify-content:center}
+.tour-wb-skip{background:transparent;border:1px solid var(--border);color:var(--muted);height:38px;padding:0 18px;border-radius:9px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;cursor:pointer;transition:all .15s}
+.tour-wb-skip:hover{border-color:var(--accent);color:var(--text)}
+#tour-overlay{position:fixed;inset:0;z-index:9981;background:transparent;pointer-events:all;display:none}
+#tour-spotlight{position:fixed;border-radius:12px;box-shadow:0 0 0 9999px rgba(0,0,0,.65),0 0 0 2.5px var(--accent);z-index:9982;pointer-events:none;transition:left .35s cubic-bezier(.4,0,.2,1),top .35s cubic-bezier(.4,0,.2,1),width .35s cubic-bezier(.4,0,.2,1),height .35s cubic-bezier(.4,0,.2,1);display:none}
+#tour-box{position:fixed;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.4rem 1.5rem;width:300px;z-index:9983;box-shadow:0 20px 50px rgba(0,0,0,.25);pointer-events:all;display:none}
+.tour-step-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:.45rem}
+.tour-box-title{font-family:'Fraunces',serif;font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:.35rem}
+.tour-box-body{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:1.1rem}
+.tour-footer{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.tour-dots{display:flex;gap:5px;flex-shrink:0}
+.tour-dot{width:7px;height:7px;border-radius:50%;background:var(--border);transition:background .2s,transform .2s}
+.tour-dot.active{background:var(--accent);transform:scale(1.2)}
+.tour-btns{display:flex;gap:7px;flex-shrink:0}
+.tour-skip-sm{background:transparent;border:1px solid var(--border);color:var(--muted);height:30px;padding:0 11px;border-radius:7px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;cursor:pointer;transition:all .15s}
+.tour-skip-sm:hover{border-color:var(--muted);color:var(--text)}
+.tour-replay-btn{display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:8px;font-size:12px;font-weight:500;color:rgba(255,255,255,.35);background:transparent;border:none;cursor:pointer;transition:all .15s;width:100%;text-align:left}
+.tour-replay-btn:hover{color:rgba(255,255,255,.75);background:rgba(255,255,255,.07)}
 /* ── SUBJECT COLOURS ── */
 select.subj-sel.c-eng{background:var(--eng-bg);border-color:var(--eng-br);color:var(--eng)}
 select.subj-sel.c-rel{background:var(--rel-bg);border-color:var(--rel-br);color:var(--rel)}
@@ -474,6 +498,7 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
   </nav>
   <div class="sidebar-bottom">
     <a class="sidebar-link" href="suggestions.html"><i data-lucide="message-circle"></i>Suggestions</a>
+    <button class="tour-replay-btn" onclick="replayTour()"><i data-lucide="play-circle"></i>Replay tour</button>
     <button class="sidebar-link" onclick="logout()"><i data-lucide="log-out"></i>Sign out</button>
     <div class="sidebar-theme">
       <label class="cpick" title="Choose colour">
@@ -1611,7 +1636,93 @@ function renderHome(){
   }
 }
 
-init().then(()=>{ if(typeof lucide!=='undefined') lucide.createIcons(); });
+// ── TOUR ──
+const TOUR_STEPS=[
+  {title:'Your navigation sidebar',body:'Everything in the planner is one click away. 7 sections covering tasks, calendar, study timer, stats, and more.',target:'.sidebar-nav',pos:'right'},
+  {title:'Tasks',body:'Add assignments, essays, or anything with a due date. Set a subject, urgency flag, and optional notes. Tick off tasks to earn XP.',target:'[data-page="tasks"]',pos:'right'},
+  {title:'SACs & Exams',body:'Log upcoming SACs and exams. Each one gets a live countdown timer and a revision checklist to prepare topic by topic.',target:'[data-page="sacs"]',pos:'right'},
+  {title:'Day Planner',body:'Schedule your day hour by hour. Add study blocks or drag tasks from your list into time slots to build a realistic daily plan.',target:'[data-page="planner"]',pos:'right'},
+  {title:'Calendar',body:'See everything in a monthly calendar view — tasks, SACs, exams, and custom events all colour-coded by subject.',target:'[data-page="calendar"]',pos:'right'},
+  {title:'Pomodoro timer',body:'Built-in 25-minute focus timer. Every completed session earns +15 XP and automatically logs study hours under your subject.',target:'[data-page="pomodoro"]',pos:'right'},
+  {title:'Stats',body:'Your study heatmap, streaks, subject breakdown, weekly goal, and XP level — all in one scrollable page.',target:'[data-page="stats"]',pos:'right'},
+  {title:'Colour & dark mode',body:'Pick any accent colour to instantly retheme the whole app. Toggle dark mode with the moon button next to it.',target:'.sidebar-theme',pos:'right'},
+  {title:"You're all set! 🎉",body:'Start by adding your first task, or set your VCE exam date on the Home page for a live countdown. Good luck!',target:null,pos:'center'},
+];
+let _tourIdx=0;
+function checkShowTour(){if(!localStorage.getItem('vce-tour-done'))setTimeout(()=>{document.getElementById('tour-welcome').style.display='flex'},900)}
+function skipTour(){localStorage.setItem('vce-tour-done','1');document.getElementById('tour-welcome').style.display='none'}
+function replayTour(){document.getElementById('tour-welcome').style.display='flex';localStorage.removeItem('vce-tour-done')}
+function startTour(){document.getElementById('tour-welcome').style.display='none';_tourIdx=0;_showTourStep(0)}
+function _showTourStep(idx){
+  const step=TOUR_STEPS[idx];
+  const box=document.getElementById('tour-box');
+  const spotlight=document.getElementById('tour-spotlight');
+  const overlay=document.getElementById('tour-overlay');
+  document.getElementById('tour-step-lbl').textContent=`Step ${idx+1} of ${TOUR_STEPS.length}`;
+  document.getElementById('tour-title').textContent=step.title;
+  document.getElementById('tour-body').textContent=step.body;
+  document.getElementById('tour-next-btn').textContent=idx===TOUR_STEPS.length-1?'Finish ✓':'Next →';
+  document.getElementById('tour-dots').innerHTML=TOUR_STEPS.map((_,i)=>`<div class="tour-dot${i===idx?' active':''}"></div>`).join('');
+  overlay.style.display='block';
+  box.style.cssText='display:block;width:300px;position:fixed;z-index:9983;';
+  const mobile=window.innerWidth<860;
+  if(step.target&&!mobile){
+    const el=document.querySelector(step.target);
+    if(el){
+      const r=el.getBoundingClientRect(),pad=8;
+      spotlight.style.cssText=`display:block;left:${r.left-pad}px;top:${r.top-pad}px;width:${r.width+pad*2}px;height:${r.height+pad*2}px;border-radius:12px;box-shadow:0 0 0 9999px rgba(0,0,0,.65),0 0 0 2.5px var(--accent);z-index:9982;pointer-events:none;position:fixed;transition:all .35s cubic-bezier(.4,0,.2,1)`;
+      let bx=r.right+20,by=Math.max(16,r.top+(r.height/2)-100);
+      if(bx+300>window.innerWidth-12){bx=r.left-320}
+      if(by+220>window.innerHeight-16){by=window.innerHeight-236}
+      box.style.left=bx+'px';box.style.top=by+'px';
+    }
+  }else{
+    spotlight.style.display='none';
+    box.style.left='50%';box.style.top='50%';box.style.transform='translate(-50%,-50%)';
+  }
+}
+function tourNext(){
+  if(_tourIdx>=TOUR_STEPS.length-1){endTour();return}
+  _tourIdx++;
+  document.getElementById('tour-box').style.transform='';
+  _showTourStep(_tourIdx);
+}
+function endTour(){
+  localStorage.setItem('vce-tour-done','1');
+  document.getElementById('tour-box').style.display='none';
+  document.getElementById('tour-spotlight').style.display='none';
+  document.getElementById('tour-overlay').style.display='none';
+}
+
+init().then(()=>{ if(typeof lucide!=='undefined') lucide.createIcons(); checkShowTour(); });
 </script>
+<!-- TOUR WELCOME -->
+<div id="tour-welcome" style="display:none">
+  <div class="tour-wb">
+    <div class="tour-wb-icon">🎓</div>
+    <div class="tour-wb-title">Welcome to VCE Planner!</div>
+    <div class="tour-wb-sub">Want a 2-minute tour? I'll walk you through every feature so you can hit the ground running.</div>
+    <div class="tour-wb-btns">
+      <button class="abtn" onclick="startTour()">Show me around →</button>
+      <button class="tour-wb-skip" onclick="skipTour()">Skip for now</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOUR ELEMENTS -->
+<div id="tour-overlay" onclick="tourNext()"></div>
+<div id="tour-spotlight"></div>
+<div id="tour-box">
+  <div class="tour-step-lbl" id="tour-step-lbl">Step 1 of 9</div>
+  <div class="tour-box-title" id="tour-title"></div>
+  <div class="tour-box-body" id="tour-body"></div>
+  <div class="tour-footer">
+    <div class="tour-dots" id="tour-dots"></div>
+    <div class="tour-btns">
+      <button class="tour-skip-sm" onclick="endTour()">Skip tour</button>
+      <button class="abtn sm" id="tour-next-btn" onclick="tourNext()">Next →</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
