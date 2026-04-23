@@ -4,16 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Suede's VCE Study Planner</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script>
 (function(){var t=localStorage.getItem('vce-theme');if(t)document.documentElement.setAttribute('data-theme',t)})();
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%231a1714'/><rect x='12' y='10' width='26' height='34' rx='3' fill='none' stroke='%23e8a87c' stroke-width='2.5'/><line x1='19' y1='20' x2='31' y2='20' stroke='%23e8a87c' stroke-width='2' stroke-linecap='round'/><line x1='19' y1='27' x2='31' y2='27' stroke='%23e8a87c' stroke-width='2' stroke-linecap='round'/><line x1='19' y1='34' x2='25' y2='34' stroke='%23e8a87c' stroke-width='2' stroke-linecap='round'/><circle cx='46' cy='46' r='13' fill='%23c84b2f'/><line x1='46' y1='39' x2='46' y2='46' stroke='white' stroke-width='2.5' stroke-linecap='round'/><line x1='46' y1='46' x2='50' y2='50' stroke='white' stroke-width='2.5' stroke-linecap='round'/></svg>">
 <style>
 :root{
-  --bg:#f5f2ee;--surface:#fff;--border:#e0d9d0;
-  --text:#1a1714;--muted:#7a7068;--accent:#c84b2f;
+  --bg:#f8fafc;--surface:#fff;--border:#e2e8f0;
+  --text:#0f172a;--muted:#64748b;--accent:#4f46e5;
   --c5:#1a6a6a;--c5-bg:#e4f4f4;--c5-br:#a0d0d0;
   --c6:#8b1a3a;--c6-bg:#fce8ee;--c6-br:#e0a8b8;
   --c7:#c06010;--c7-bg:#fef0e0;--c7-br:#e8c890;
@@ -24,14 +25,14 @@
   --gmth:#7a4a1e;--gmth-bg:#f8f0e8;--gmth-br:#e0c8a8;
   --sac:#8b1a3a;--sac-bg:#fce8ee;
   --exam:#1a4a6e;--exam-bg:#deeaf8;
-  --high:#c84b2f;--high-bg:#fce8e4;
-  --green:#2d6b3a;--green-bg:#e5f4e8;
-  --amber:#b07820;--amber-bg:#fdf4e0;
-  --hbg:#1a1714;--htxt:#fff;
+  --high:#ef4444;--high-bg:#fee2e2;
+  --green:#16a34a;--green-bg:#dcfce7;
+  --amber:#d97706;--amber-bg:#fef3c7;
+  --hbg:#0f172a;--htxt:#fff;
 }
 [data-theme=dark]{
-  --bg:#111010;--surface:#1e1c1a;--border:#2e2b28;
-  --text:#f0ede8;--muted:#8a8078;--accent:#e8693a;
+  --bg:#0f172a;--surface:#1e293b;--border:#334155;
+  --text:#f1f5f9;--muted:#94a3b8;--accent:#818cf8;
   --c5:#40c8c8;--c5-bg:#0a2020;--c5-br:#1a4040;
   --c6:#e87090;--c6-bg:#2a0a18;--c6-br:#481828;
   --c7:#e89030;--c7-bg:#281408;--c7-br:#483010;
@@ -42,10 +43,10 @@
   --gmth:#d8903a;--gmth-bg:#2a1e10;--gmth-br:#483018;
   --sac:#e8507a;--sac-bg:#2a101a;
   --exam:#5890d8;--exam-bg:#101828;
-  --high:#e8693a;--high-bg:#2a1810;
-  --green:#4a9858;--green-bg:#142018;
-  --amber:#d8a040;--amber-bg:#281e08;
-  --hbg:#0e0d0c;--htxt:#f0ede8;
+  --high:#f87171;--high-bg:#450a0a;
+  --green:#4ade80;--green-bg:#052e16;
+  --amber:#fbbf24;--amber-bg:#451a03;
+  --hbg:#020617;--htxt:#f1f5f9;
 }
 [data-theme=pastel]{
   --bg:#fef6ff;--surface:#fff;--border:#e8daf0;
@@ -120,21 +121,23 @@
   --hbg:#c88000;--htxt:#fff8d0;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;transition:background .3s,color .3s}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;transition:background .3s,color .3s}
 
 /* HEADER */
 header{background:var(--hbg);padding:0 1.25rem;display:flex;align-items:center;position:sticky;top:0;z-index:200;height:54px;gap:.5rem}
 .logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;color:var(--htxt);display:flex;align-items:center;gap:7px;white-space:nowrap;flex-shrink:0}
-.logo span{color:#e8a87c}
+.logo span{color:#a5b4fc}
 .nav-tabs{display:flex;gap:2px;flex:1;overflow-x:auto;scrollbar-width:none;min-width:0}
 .nav-tabs::-webkit-scrollbar{display:none}
-.nav-tab{padding:5px 10px;border-radius:7px;border:none;background:transparent;color:rgba(255,255,255,.45);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap;flex-shrink:0}
+.nav-tab{padding:5px 10px;border-radius:7px;border:none;background:transparent;color:rgba(255,255,255,.45);font-family:'Inter',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap;flex-shrink:0;display:flex;align-items:center;gap:5px}
 .nav-tab:hover{color:var(--htxt);background:rgba(255,255,255,.1)}
 .nav-tab.active{background:rgba(255,255,255,.18);color:var(--htxt)}
+.nav-tab svg{width:13px;height:13px;flex-shrink:0}
 .theme-btns{display:flex;gap:3px;align-items:center;flex-shrink:0}
-.tbtn{width:28px;height:28px;border-radius:7px;border:1.5px solid transparent;background:rgba(255,255,255,.1);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .15s;padding:0;line-height:1}
+.tbtn{width:24px;height:24px;border-radius:6px;border:1.5px solid transparent;background:rgba(255,255,255,.1);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;padding:0}
 .tbtn:hover{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.3);transform:scale(1.1)}
 .tbtn.active{background:rgba(255,255,255,.25);border-color:rgba(255,255,255,.6);transform:scale(1.12)}
+.td{width:11px;height:11px;border-radius:50%;display:block}
 
 /* PAGES */
 .page{display:none}.page.active{display:block}
@@ -151,7 +154,7 @@ header{background:var(--hbg);padding:0 1.25rem;display:flex;align-items:center;p
 .sh{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.9rem}
 .fg{display:flex;flex-direction:column;gap:4px}
 .fg label{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
-input[type=text],input[type=date],input[type=number],input[type=time],select,textarea{width:100%;height:38px;padding:0 11px;background:var(--bg);border:1px solid var(--border);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);outline:none;transition:border-color .15s,background .15s;min-width:0}
+input[type=text],input[type=date],input[type=number],input[type=time],select,textarea{width:100%;height:38px;padding:0 11px;background:var(--bg);border:1px solid var(--border);border-radius:9px;font-family:'Inter',sans-serif;font-size:14px;color:var(--text);outline:none;transition:border-color .15s,background .15s;min-width:0}
 input:focus,select:focus,textarea:focus{border-color:var(--accent);background:var(--surface)}
 textarea{height:54px;padding:9px 11px;resize:none;line-height:1.5}
 .frow{display:grid;gap:10px;align-items:end}
@@ -187,7 +190,7 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 /* INSIGHTS */
 .ins-summary{background:var(--hbg);border-radius:16px;padding:1.25rem 1.75rem;margin-bottom:1.5rem;display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
 .ins-sum-item{text-align:center}
-.ins-sum-num{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:#e8a87c;line-height:1}
+.ins-sum-num{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:#a5b4fc;line-height:1}
 .ins-sum-label{font-size:11px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.07em;margin-top:.25rem}
 .ins-subj-card{border-radius:13px;padding:1rem;border:1px solid;transition:transform .15s}
 .ins-subj-card:hover{transform:translateY(-2px)}
@@ -227,9 +230,9 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 .b-c5{background:var(--c5-bg);color:var(--c5)}.b-c6{background:var(--c6-bg);color:var(--c6)}
 .b-c7{background:var(--c7-bg);color:var(--c7)}.b-c8{background:var(--c8-bg);color:var(--c8)}
 .b-urgent{background:var(--high-bg);color:var(--high)}.b-sac{background:var(--sac-bg);color:var(--sac)}
-.logout-btn{margin-left:8px;padding:5px 12px;border-radius:7px;border:1px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.6);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;transition:all .15s;text-decoration:none;white-space:nowrap;flex-shrink:0}
+.logout-btn{margin-left:8px;padding:5px 12px;border-radius:7px;border:1px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.6);font-family:'Inter',sans-serif;font-size:12px;cursor:pointer;transition:all .15s;text-decoration:none;white-space:nowrap;flex-shrink:0}
 .logout-btn:hover{background:rgba(255,255,255,.1);color:#fff}
-.suggestions-btn{padding:5px 12px;border-radius:7px;border:1px solid rgba(255,255,255,.15);background:transparent;color:rgba(255,255,255,.5);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;transition:all .15s;text-decoration:none;white-space:nowrap;flex-shrink:0}
+.suggestions-btn{padding:5px 12px;border-radius:7px;border:1px solid rgba(255,255,255,.15);background:transparent;color:rgba(255,255,255,.5);font-family:'Inter',sans-serif;font-size:12px;cursor:pointer;transition:all .15s;text-decoration:none;white-space:nowrap;flex-shrink:0}
 .suggestions-btn:hover{background:rgba(255,255,255,.08);color:rgba(255,255,255,.8)}
 .dinfo{text-align:right;font-size:11px;white-space:nowrap}
 .dn{color:var(--muted)}.ds{color:var(--amber);font-weight:500}.do{color:var(--high);font-weight:600}.dt{color:var(--accent);font-weight:600}
@@ -251,7 +254,7 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 .home-hero{background:var(--hbg);border-radius:18px;padding:1.75rem 2rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:1.5rem;overflow:hidden}
 .home-hero-text{flex:1;min-width:0}
 .home-greeting{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:#fff;line-height:1.2;margin-bottom:.35rem}
-.home-greeting span{color:#e8a87c}
+.home-greeting span{color:#a5b4fc}
 .home-sub{font-size:13px;color:rgba(255,255,255,.5)}
 .home-gif-wrap{width:160px;height:120px;border-radius:12px;overflow:hidden;flex-shrink:0;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center}
 .home-gif-wrap img{width:100%;height:100%;object-fit:cover}
@@ -282,9 +285,9 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 .h-qauthor{font-size:11px;color:var(--muted);margin-top:.3rem}
 
 /* VCE COUNTDOWN */
-.vce-cd{background:linear-gradient(135deg,#1a1714 60%,#3a2010);border-radius:16px;padding:1.25rem 1.75rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:1.5rem;overflow:hidden;position:relative}
-.vce-cd::after{content:'';position:absolute;right:-20px;top:-20px;width:120px;height:120px;background:radial-gradient(circle,rgba(232,168,124,.15),transparent 70%);pointer-events:none}
-.vce-cd-num{font-family:'Syne',sans-serif;font-size:3.5rem;font-weight:800;color:#e8a87c;line-height:1;flex-shrink:0}
+.vce-cd{background:linear-gradient(135deg,#0f172a 60%,#1e1b4b);border-radius:16px;padding:1.25rem 1.75rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:1.5rem;overflow:hidden;position:relative}
+.vce-cd::after{content:'';position:absolute;right:-20px;top:-20px;width:120px;height:120px;background:radial-gradient(circle,rgba(165,180,252,.15),transparent 70%);pointer-events:none}
+.vce-cd-num{font-family:'Syne',sans-serif;font-size:3.5rem;font-weight:800;color:#a5b4fc;line-height:1;flex-shrink:0}
 .vce-cd-label{font-family:'Syne',sans-serif;font-size:.85rem;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.2rem}
 .vce-cd-title{font-size:14px;color:rgba(255,255,255,.9);font-weight:500}
 .vce-cd-edit{background:rgba(255,255,255,.12);border:none;border-radius:7px;padding:4px 10px;color:rgba(255,255,255,.7);font-size:11px;cursor:pointer;margin-top:.5rem;transition:background .15s}
@@ -307,7 +310,7 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 .nub-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .nub-meta{font-size:12px;color:rgba(255,255,255,.5);margin-top:2px}
 .nub-r{text-align:right;flex-shrink:0}
-.nub-count{font-family:'Syne',sans-serif;font-size:2.4rem;font-weight:800;color:#e8a87c;line-height:1}
+.nub-count{font-family:'Syne',sans-serif;font-size:2.4rem;font-weight:800;color:#a5b4fc;line-height:1}
 .nub-clabel{font-size:10px;color:rgba(255,255,255,.35)}
 
 /* EVENTS */
@@ -443,30 +446,30 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 
 <header>
   <div class="logo">
-    <svg width="26" height="26" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="#2a2520"/><rect x="7" y="8" width="15" height="20" rx="2" fill="none" stroke="#e8a87c" stroke-width="1.5"/><line x1="11" y1="14" x2="19" y2="14" stroke="#e8a87c" stroke-width="1.2" stroke-linecap="round"/><line x1="11" y1="18" x2="19" y2="18" stroke="#e8a87c" stroke-width="1.2" stroke-linecap="round"/><line x1="11" y1="22" x2="15" y2="22" stroke="#e8a87c" stroke-width="1.2" stroke-linecap="round"/><circle cx="26" cy="25" r="8" fill="#c84b2f"/><line x1="26" y1="21" x2="26" y2="25" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="26" y1="25" x2="28.5" y2="27.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+    <svg width="26" height="26" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="#1e1b4b"/><rect x="7" y="8" width="15" height="20" rx="2" fill="none" stroke="#a5b4fc" stroke-width="1.5"/><line x1="11" y1="14" x2="19" y2="14" stroke="#a5b4fc" stroke-width="1.2" stroke-linecap="round"/><line x1="11" y1="18" x2="19" y2="18" stroke="#a5b4fc" stroke-width="1.2" stroke-linecap="round"/><line x1="11" y1="22" x2="15" y2="22" stroke="#a5b4fc" stroke-width="1.2" stroke-linecap="round"/><circle cx="26" cy="25" r="8" fill="#4f46e5"/><line x1="26" y1="21" x2="26" y2="25" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="26" y1="25" x2="28.5" y2="27.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
     <span id="page-logo-name">VCE</span> <span>Planner</span>
   </div>
   <div class="nav-tabs">
-    <button class="nav-tab active" onclick="nav('home',this)">🏠 Home</button>
-    <button class="nav-tab" onclick="nav('tasks',this)">✅ Tasks</button>
-    <button class="nav-tab" onclick="nav('planner',this)">📅 Day Planner</button>
-    <button class="nav-tab" onclick="nav('week',this)">🗓 This Week</button>
-    <button class="nav-tab" onclick="nav('sacs',this)">🎯 SACs &amp; Exams</button>
-    <button class="nav-tab" onclick="nav('calendar',this)">📆 Calendar</button>
-    <button class="nav-tab" onclick="nav('pomodoro',this)">⏱ Pomodoro</button>
-    <button class="nav-tab" onclick="nav('progress',this)">📊 Progress</button>
-    <button class="nav-tab" onclick="nav('insights',this)">🔍 Insights</button>
+    <button class="nav-tab active" onclick="nav('home',this)"><i data-lucide="home"></i>Home</button>
+    <button class="nav-tab" onclick="nav('tasks',this)"><i data-lucide="check-square-2"></i>Tasks</button>
+    <button class="nav-tab" onclick="nav('planner',this)"><i data-lucide="layout-list"></i>Day Planner</button>
+    <button class="nav-tab" onclick="nav('week',this)"><i data-lucide="calendar-range"></i>This Week</button>
+    <button class="nav-tab" onclick="nav('sacs',this)"><i data-lucide="target"></i>SACs &amp; Exams</button>
+    <button class="nav-tab" onclick="nav('calendar',this)"><i data-lucide="calendar"></i>Calendar</button>
+    <button class="nav-tab" onclick="nav('pomodoro',this)"><i data-lucide="timer"></i>Pomodoro</button>
+    <button class="nav-tab" onclick="nav('progress',this)"><i data-lucide="bar-chart-2"></i>Progress</button>
+    <button class="nav-tab" onclick="nav('insights',this)"><i data-lucide="lightbulb"></i>Insights</button>
   </div>
   <div class="theme-btns" id="theme-btns">
-    <button class="tbtn active" data-t="" onclick="setTheme('',this)" title="Classic">🎨</button>
-    <button class="tbtn" data-t="dark" onclick="setTheme('dark',this)" title="Dark">🌑</button>
-    <button class="tbtn" data-t="pastel" onclick="setTheme('pastel',this)" title="Pastel">🌸</button>
-    <button class="tbtn" data-t="ocean" onclick="setTheme('ocean',this)" title="Ocean">🌊</button>
-    <button class="tbtn" data-t="midnight" onclick="setTheme('midnight',this)" title="Midnight">🔮</button>
-    <button class="tbtn" data-t="sunshine" onclick="setTheme('sunshine',this)" title="Sunshine">☀️</button>
+    <button class="tbtn active" data-t="" onclick="setTheme('',this)" title="Default"><span class="td" style="background:#4f46e5"></span></button>
+    <button class="tbtn" data-t="dark" onclick="setTheme('dark',this)" title="Dark"><span class="td" style="background:#818cf8"></span></button>
+    <button class="tbtn" data-t="pastel" onclick="setTheme('pastel',this)" title="Pastel"><span class="td" style="background:#c054a8"></span></button>
+    <button class="tbtn" data-t="ocean" onclick="setTheme('ocean',this)" title="Ocean"><span class="td" style="background:#0878b8"></span></button>
+    <button class="tbtn" data-t="midnight" onclick="setTheme('midnight',this)" title="Midnight"><span class="td" style="background:#a060f0"></span></button>
+    <button class="tbtn" data-t="sunshine" onclick="setTheme('sunshine',this)" title="Sunshine"><span class="td" style="background:#d4a000"></span></button>
   </div>
-  <a class="suggestions-btn" href="suggestions.html">💬 Suggest</a>
-  <button class="logout-btn" onclick="logout()">Sign Out</button>
+  <a class="suggestions-btn" href="suggestions.html"><i data-lucide="message-circle" style="width:13px;height:13px;vertical-align:middle;margin-right:4px"></i>Suggest</a>
+  <button class="logout-btn" onclick="logout()"><i data-lucide="log-out" style="width:13px;height:13px;vertical-align:middle;margin-right:4px"></i>Sign Out</button>
 </header>
 
 <!-- HOME -->
@@ -499,10 +502,10 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 <div class="page" id="page-tasks"><div class="container">
   <div id="xp-tasks"></div>
   <div class="stats-grid">
-    <div class="stat-card" style="--ac:#c84b2f"><div class="stat-label">Remaining</div><div class="stat-num" id="s-total">0</div></div>
-    <div class="stat-card" style="--ac:#b07820"><div class="stat-label">Due this week</div><div class="stat-num" id="s-week">0</div></div>
-    <div class="stat-card" style="--ac:#c84b2f"><div class="stat-label">Overdue</div><div class="stat-num" id="s-overdue" style="color:var(--high)">0</div></div>
-    <div class="stat-card" style="--ac:#2d6b3a"><div class="stat-label">Completed</div><div class="stat-num" id="s-done">0</div></div>
+    <div class="stat-card" style="--ac:#4f46e5"><div class="stat-label">Remaining</div><div class="stat-num" id="s-total">0</div></div>
+    <div class="stat-card" style="--ac:#d97706"><div class="stat-label">Due this week</div><div class="stat-num" id="s-week">0</div></div>
+    <div class="stat-card" style="--ac:#ef4444"><div class="stat-label">Overdue</div><div class="stat-num" id="s-overdue" style="color:var(--high)">0</div></div>
+    <div class="stat-card" style="--ac:#16a34a"><div class="stat-label">Completed</div><div class="stat-num" id="s-done">0</div></div>
   </div>
   <div id="subj-ov-wrap"></div>
   <div class="card">
@@ -538,9 +541,9 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
           <div class="fg"><label>Activity</label><input type="text" id="plan-title" placeholder="e.g. Math revision, Gym, Study break…"/></div>
           <div class="fg"><label>Type</label>
             <select id="plan-type">
-              <option value="study">📚 Study</option><option value="gym">💪 Gym</option>
-              <option value="sport">🏃 Sport</option><option value="social">👥 Social</option>
-              <option value="break">☕ Break</option><option value="other">⭐ Other</option>
+              <option value="study">Study</option><option value="gym">Gym</option>
+              <option value="sport">Sport</option><option value="social">Social</option>
+              <option value="break">Break</option><option value="other">Other</option>
             </select>
           </div>
           <div class="fg"><label>Subject (opt.)</label><select id="plan-subj" class="subj-sel" onchange="colourSel(this)"><option value="">None</option></select></div>
@@ -560,7 +563,7 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
         <label>Time</label>
         <input type="time" id="sched-time"/>
       </div>
-      <button class="abtn" style="width:100%" onclick="scheduleTask()">📅 Add to day</button>
+      <button class="abtn" style="width:100%" onclick="scheduleTask()">Add to day</button>
       <div style="margin-top:1rem">
         <div class="sh" style="margin-bottom:.5rem">Unscheduled tasks</div>
         <div id="sched-task-list" style="display:flex;flex-direction:column;gap:5px;max-height:300px;overflow-y:auto"></div>
@@ -881,7 +884,14 @@ function logout(){sb.auth.signOut().then(()=>{window.location.href='index.html'}
 let SUBJ_KEYS_FOR_FILTER=()=>userSubjects.map(s=>s.id);
 const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
 const DOWS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-const PLAN_ICONS={study:'📚',gym:'💪',sport:'🏃',social:'👥',break:'☕',other:'⭐'};
+const PLAN_ICONS={
+  study:`<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>`,
+  gym:`<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6.5 6.5 11 11"/><path d="m21 21-1-1"/><path d="m3 3 1 1"/><path d="m18 22 4-4"/><path d="m2 6 4-4"/><path d="m3 10 7-7"/><path d="m14 21 7-7"/></svg>`,
+  sport:`<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>`,
+  social:`<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+  break:`<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><line x1="6" x2="6" y1="2" y2="4"/><line x1="10" x2="10" y1="2" y2="4"/><line x1="14" x2="14" y1="2" y2="4"/></svg>`,
+  other:`<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+};
 const CE_COLS={blue:{dot:'calevent',bg:'#e8f0ff',tx:'#3060c0',br:'#a8c0f0'},purple:{dot:'rel',bg:'var(--rel-bg)',tx:'var(--rel)',br:'var(--rel-br)'},green:{dot:'eng',bg:'var(--eng-bg)',tx:'var(--eng)',br:'var(--eng-br)'},orange:{dot:'custom',bg:'var(--amber-bg)',tx:'var(--amber)',br:'var(--gmth-br)'},red:{dot:'urgent',bg:'var(--high-bg)',tx:'var(--high)',br:'#e8b0b0'}};
 
 let tasks=[],events=[],studyLog=[],planData={},calEvents=[],weekGoal=5,pomSessions=0,vceExamDate='',xp=0;
@@ -924,7 +934,7 @@ function showToast(m){const t=document.getElementById('toast');t.textContent=m;t
 function launchConfetti(){
   const c=document.getElementById('confetti-canvas');c.style.display='block';
   const x=c.getContext('2d');c.width=window.innerWidth;c.height=window.innerHeight;
-  const p=Array.from({length:120},()=>({x:Math.random()*c.width,y:-10,r:Math.random()*6+3,d:Math.random()*120+60,color:['#c84b2f','#e8a87c','#2d5a3d','#5a2d7a','#1e3a6e','#f0e8f8','#fce8ee'][Math.floor(Math.random()*7)],tilt:Math.random()*10-10,ts:Math.random()*.1+.05,vx:(Math.random()-.5)*2}));
+  const p=Array.from({length:120},()=>({x:Math.random()*c.width,y:-10,r:Math.random()*6+3,d:Math.random()*120+60,color:['#c84b2f','#a5b4fc','#2d5a3d','#5a2d7a','#1e3a6e','#f0e8f8','#fce8ee'][Math.floor(Math.random()*7)],tilt:Math.random()*10-10,ts:Math.random()*.1+.05,vx:(Math.random()-.5)*2}));
   let fr=0;
   function draw(){x.clearRect(0,0,c.width,c.height);p.forEach(q=>{x.beginPath();x.lineWidth=q.r;x.strokeStyle=q.color;x.moveTo(q.x+q.tilt+q.r/3,q.y);x.lineTo(q.x+q.tilt,q.y+q.tilt+q.r/5);x.stroke();q.y+=Math.cos(q.d)+1+q.r/2;q.x+=q.vx;q.tilt=q.ts*Math.sin(fr*.1);if(q.y>c.height){q.y=-10;q.x=Math.random()*c.width}});fr++;if(fr<180)requestAnimationFrame(draw);else{x.clearRect(0,0,c.width,c.height);c.style.display='none'}}
   draw();
@@ -1138,7 +1148,7 @@ function renderTasks(){
   if(!vis.length){list.innerHTML=`<div class="empty"><div class="eb">${tfilter==='done'?'No completed tasks yet':tfilter==='urgent'?'No urgent tasks 🎉':'No tasks here'}</div><div class="es">${tfilter==='all'||tfilter==='todo'?'Add a task above.':'Switch filter.'}</div></div>`}
   else list.innerHTML=vis.map(t=>{
     const s=SUBJ[t.subject]||{label:t.subject,cls:'eng'};const ds=dueStatus(t.due);const ev=t.evLink?events.find(e=>e.id==t.evLink):null;
-    return`<div class="tc ${t.done?'done':''} ${t.urgent&&!t.done?'urgent':''}" style="background:${BG[t.subject]||''};border-color:${BR[t.subject]||''}"><div class="cw ${t.done?'ck':''}" onclick="toggleTask(${t.id})"></div><div class="tb"><div class="ttitle">${t.title}</div>${t.note?`<div class="tnote">${t.note}</div>`:''}<div class="ttags"><span class="badge" style="background:${BG[t.subject]};color:${NC[t.subject]}">${s.label}</span>${t.urgent&&!t.done?'<span class="badge b-urgent">🔥 Urgent</span>':''}${ev?`<span class="badge b-sac">${ev.type.toUpperCase()}: ${ev.name}</span>`:''}</div></div><div class="dinfo"><div class="${ds.cls}">${ds.label}</div></div><button class="urgbtn ${t.urgent?'on':''}" onclick="toggleUrgent(${t.id})">${t.urgent?'🔥':'! Urgent'}</button><button class="dbtn" onclick="removeTask(${t.id})">×</button></div>`;
+    return`<div class="tc ${t.done?'done':''} ${t.urgent&&!t.done?'urgent':''}" style="background:${BG[t.subject]||''};border-color:${BR[t.subject]||''}"><div class="cw ${t.done?'ck':''}" onclick="toggleTask(${t.id})"></div><div class="tb"><div class="ttitle">${t.title}</div>${t.note?`<div class="tnote">${t.note}</div>`:''}<div class="ttags"><span class="badge" style="background:${BG[t.subject]};color:${NC[t.subject]}">${s.label}</span>${t.urgent&&!t.done?'<span class="badge b-urgent">! Urgent</span>':''}${ev?`<span class="badge b-sac">${ev.type.toUpperCase()}: ${ev.name}</span>`:''}</div></div><div class="dinfo"><div class="${ds.cls}">${ds.label}</div></div><button class="urgbtn ${t.urgent?'on':''}" onclick="toggleUrgent(${t.id})">${t.urgent?'! Urgent':'! Urgent'}</button><button class="dbtn" onclick="removeTask(${t.id})">×</button></div>`;
   }).join('');
   const rem=tasks.filter(t=>!t.done);
   document.getElementById('s-total').textContent=rem.length;
@@ -1583,7 +1593,7 @@ function renderInsights(){
   } else nw.innerHTML='';
 }
 
-init();
+init().then(()=>{ if(typeof lucide!=='undefined') lucide.createIcons(); });
 </script>
 </body>
 </html>
