@@ -17,8 +17,8 @@
   if(mx===mn){h2=s2=0}else{var d=mx-mn;s2=l2>0.5?d/(2-mx-mn):d/(mx+mn);if(mx===r2)h2=((g2-b2)/d+(g2<b2?6:0))/6;else if(mx===g2)h2=((b2-r2)/d+2)/6;else h2=((r2-g2)/d+4)/6;}
   h2=Math.round(h2*360);s2=Math.round(s2*100);
   var ss=Math.min(s2,20),s=document.documentElement.style;
-  if(dark){s.setProperty('--accent','hsl('+h2+','+(Math.min(s2+15,90))+'%,65%)');s.setProperty('--bg','hsl('+h2+','+ss+'%,8%)');s.setProperty('--surface','hsl('+h2+','+(Math.min(s2,15))+'%,13%)');s.setProperty('--border','hsl('+h2+','+(Math.min(s2,18))+'%,22%)');s.setProperty('--muted','hsl('+h2+','+(Math.min(s2,12))+'%,55%)');s.setProperty('--hbg','hsl('+h2+','+(Math.min(s2,25))+'%,4%)');s.setProperty('--text','hsl('+h2+',20%,94%)');s.setProperty('--htxt','hsl('+h2+',15%,94%)');}
-  else{s.setProperty('--accent',hex);s.setProperty('--bg','hsl('+h2+','+ss+'%,97%)');s.setProperty('--surface','hsl('+h2+','+(Math.min(s2,8))+'%,100%)');s.setProperty('--border','hsl('+h2+','+ss+'%,87%)');s.setProperty('--muted','hsl('+h2+','+(Math.min(s2,15))+'%,46%)');s.setProperty('--hbg','hsl('+h2+','+(Math.min(s2+10,38))+'%,10%)');s.setProperty('--text','hsl('+h2+',25%,10%)');s.setProperty('--htxt','#fff');}
+  if(dark){var aS=Math.min(s2+15,90);s.setProperty('--accent','hsl('+h2+','+aS+'%,65%)');s.setProperty('--accent-light','hsl('+h2+','+aS+'%,78%)');s.setProperty('--bg','hsl('+h2+','+ss+'%,8%)');s.setProperty('--surface','hsl('+h2+','+(Math.min(s2,18))+'%,13%)');s.setProperty('--border','hsl('+h2+','+(Math.min(s2,20))+'%,22%)');s.setProperty('--muted','hsl('+h2+','+(Math.min(s2,15))+'%,55%)');s.setProperty('--hbg','hsl('+h2+','+(Math.min(s2,28))+'%,5%)');s.setProperty('--text','hsl('+h2+',20%,94%)');s.setProperty('--htxt','hsl('+h2+',15%,94%)');}
+  else{var aL=Math.min(l2*100+28,88);s.setProperty('--accent',hex);s.setProperty('--accent-light','hsl('+h2+','+(Math.min(s2,70))+'%,'+aL+'%)');s.setProperty('--bg','hsl('+h2+','+ss+'%,97%)');s.setProperty('--surface','hsl('+h2+','+(Math.min(s2,10))+'%,100%)');s.setProperty('--border','hsl('+h2+','+ss+'%,87%)');s.setProperty('--muted','hsl('+h2+','+(Math.min(s2,18))+'%,46%)');s.setProperty('--hbg','hsl('+h2+','+(Math.min(s2+12,42))+'%,10%)');s.setProperty('--text','hsl('+h2+',25%,10%)');s.setProperty('--htxt','#fff');}
 })();
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -42,6 +42,7 @@
   --green:#16a34a;--green-bg:#dcfce7;
   --amber:#d97706;--amber-bg:#fef3c7;
   --hbg:#0f172a;--htxt:#fff;
+  --accent-light:#818cf8;
 }
 [data-theme=dark]{
   --bg:#0f172a;--surface:#1e293b;--border:#334155;
@@ -60,6 +61,7 @@
   --green:#4ade80;--green-bg:#052e16;
   --amber:#fbbf24;--amber-bg:#451a03;
   --hbg:#020617;--htxt:#f1f5f9;
+  --accent-light:#a5b4fc;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;transition:background .3s,color .3s}
@@ -135,7 +137,7 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 /* INSIGHTS */
 .ins-summary{background:var(--hbg);border-radius:16px;padding:1.25rem 1.75rem;margin-bottom:1.5rem;display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
 .ins-sum-item{text-align:center}
-.ins-sum-num{font-family:'Fraunces',serif;font-size:1.8rem;font-weight:800;color:#a5b4fc;line-height:1}
+.ins-sum-num{font-family:'Fraunces',serif;font-size:1.8rem;font-weight:800;color:var(--accent-light);line-height:1}
 .ins-sum-label{font-size:11px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.07em;margin-top:.25rem}
 .ins-subj-card{border-radius:13px;padding:1rem;border:1px solid;transition:transform .15s}
 .ins-subj-card:hover{transform:translateY(-2px)}
@@ -199,7 +201,7 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 .home-hero{background:var(--hbg);border-radius:18px;padding:1.75rem 2rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:1.5rem;overflow:hidden}
 .home-hero-text{flex:1;min-width:0}
 .home-greeting{font-family:'Fraunces',serif;font-size:1.6rem;font-weight:800;color:#fff;line-height:1.2;margin-bottom:.35rem}
-.home-greeting span{color:#a5b4fc}
+.home-greeting span{color:var(--accent-light)}
 .home-sub{font-size:13px;color:rgba(255,255,255,.5)}
 .home-gif-wrap{width:160px;height:120px;border-radius:12px;overflow:hidden;flex-shrink:0;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center}
 .home-gif-wrap img{width:100%;height:100%;object-fit:cover}
@@ -230,9 +232,9 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 .h-qauthor{font-size:11px;color:var(--muted);margin-top:.3rem}
 
 /* VCE COUNTDOWN */
-.vce-cd{background:linear-gradient(135deg,#0f172a 60%,#1e1b4b);border-radius:16px;padding:1.25rem 1.75rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:1.5rem;overflow:hidden;position:relative}
+.vce-cd{background:var(--hbg);border-radius:16px;padding:1.25rem 1.75rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:1.5rem;overflow:hidden;position:relative}
 .vce-cd::after{content:'';position:absolute;right:-20px;top:-20px;width:120px;height:120px;background:radial-gradient(circle,rgba(165,180,252,.15),transparent 70%);pointer-events:none}
-.vce-cd-num{font-family:'Fraunces',serif;font-size:3.5rem;font-weight:800;color:#a5b4fc;line-height:1;flex-shrink:0}
+.vce-cd-num{font-family:'Fraunces',serif;font-size:3.5rem;font-weight:800;color:var(--accent-light);line-height:1;flex-shrink:0}
 .vce-cd-label{font-family:'Plus Jakarta Sans',sans-serif;font-size:.85rem;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.2rem}
 .vce-cd-title{font-size:14px;color:rgba(255,255,255,.9);font-weight:500}
 .vce-cd-edit{background:rgba(255,255,255,.12);border:none;border-radius:7px;padding:4px 10px;color:rgba(255,255,255,.7);font-size:11px;cursor:pointer;margin-top:.5rem;transition:background .15s}
@@ -255,7 +257,7 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 .nub-title{font-family:'Fraunces',serif;font-size:1rem;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .nub-meta{font-size:12px;color:rgba(255,255,255,.5);margin-top:2px}
 .nub-r{text-align:right;flex-shrink:0}
-.nub-count{font-family:'Fraunces',serif;font-size:2.4rem;font-weight:800;color:#a5b4fc;line-height:1}
+.nub-count{font-family:'Fraunces',serif;font-size:2.4rem;font-weight:800;color:var(--accent-light);line-height:1}
 .nub-clabel{font-size:10px;color:rgba(255,255,255,.35)}
 
 /* EVENTS */
@@ -300,8 +302,7 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 .cdot.rel{background:var(--rel-bg);color:var(--rel)}.cdot.mth{background:var(--mth-bg);color:var(--mth)}
 .cdot.gmth{background:var(--gmth-bg);color:var(--gmth)}.cdot.urgent{background:var(--high-bg);color:var(--high)}
 .cdot.custom{background:var(--amber-bg);color:var(--amber)}
-.cdot.calevent{background:#e8f0ff;color:#3060c0}
-[data-theme=dark] .cdot.calevent{background:#1a2040;color:#6090e0}
+.cdot.calevent{background:var(--border);color:var(--accent)}
 
 /* POMODORO */
 .pom-wrap{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start}
@@ -391,7 +392,7 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 
 <header>
   <div class="logo">
-    <svg width="26" height="26" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="#1e1b4b"/><rect x="7" y="8" width="15" height="20" rx="2" fill="none" stroke="#a5b4fc" stroke-width="1.5"/><line x1="11" y1="14" x2="19" y2="14" stroke="#a5b4fc" stroke-width="1.2" stroke-linecap="round"/><line x1="11" y1="18" x2="19" y2="18" stroke="#a5b4fc" stroke-width="1.2" stroke-linecap="round"/><line x1="11" y1="22" x2="15" y2="22" stroke="#a5b4fc" stroke-width="1.2" stroke-linecap="round"/><circle cx="26" cy="25" r="8" fill="#4f46e5"/><line x1="26" y1="21" x2="26" y2="25" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="26" y1="25" x2="28.5" y2="27.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+    <svg width="26" height="26" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="rgba(255,255,255,0.12)"/><rect x="7" y="8" width="15" height="20" rx="2" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.5"/><line x1="11" y1="14" x2="19" y2="14" stroke="rgba(255,255,255,0.85)" stroke-width="1.2" stroke-linecap="round"/><line x1="11" y1="18" x2="19" y2="18" stroke="rgba(255,255,255,0.85)" stroke-width="1.2" stroke-linecap="round"/><line x1="11" y1="22" x2="15" y2="22" stroke="rgba(255,255,255,0.85)" stroke-width="1.2" stroke-linecap="round"/><circle cx="26" cy="25" r="8" fill="rgba(255,255,255,0.2)"/><line x1="26" y1="21" x2="26" y2="25" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="26" y1="25" x2="28.5" y2="27.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
     <span id="page-logo-name">VCE</span> <span>Planner</span>
   </div>
   <div class="nav-tabs">
@@ -446,10 +447,10 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 <div class="page" id="page-tasks"><div class="container">
   <div id="xp-tasks"></div>
   <div class="stats-grid">
-    <div class="stat-card" style="--ac:#4f46e5"><div class="stat-label">Remaining</div><div class="stat-num" id="s-total">0</div></div>
-    <div class="stat-card" style="--ac:#d97706"><div class="stat-label">Due this week</div><div class="stat-num" id="s-week">0</div></div>
-    <div class="stat-card" style="--ac:#ef4444"><div class="stat-label">Overdue</div><div class="stat-num" id="s-overdue" style="color:var(--high)">0</div></div>
-    <div class="stat-card" style="--ac:#16a34a"><div class="stat-label">Completed</div><div class="stat-num" id="s-done">0</div></div>
+    <div class="stat-card"><div class="stat-label">Remaining</div><div class="stat-num" id="s-total">0</div></div>
+    <div class="stat-card"><div class="stat-label">Due this week</div><div class="stat-num" id="s-week">0</div></div>
+    <div class="stat-card"><div class="stat-label">Overdue</div><div class="stat-num" id="s-overdue" style="color:var(--high)">0</div></div>
+    <div class="stat-card"><div class="stat-label">Completed</div><div class="stat-num" id="s-done">0</div></div>
   </div>
   <div id="subj-ov-wrap"></div>
   <div class="card">
@@ -876,24 +877,28 @@ function hexToHsl(hex){
 }
 function applyPalette(color,dark){
   const[h,s]=hexToHsl(color);
-  const ss=Math.min(s,20),r=document.documentElement.style;
+  const ss=Math.min(s,22),r=document.documentElement.style;
   if(dark){
-    const aL=65,aS=Math.min(s+15,90);
-    r.setProperty('--accent',`hsl(${h},${aS}%,${aL}%)`);
+    const aS=Math.min(s+15,90);
+    r.setProperty('--accent',`hsl(${h},${aS}%,65%)`);
+    r.setProperty('--accent-light',`hsl(${h},${aS}%,78%)`);
     r.setProperty('--bg',`hsl(${h},${ss}%,8%)`);
-    r.setProperty('--surface',`hsl(${h},${Math.min(s,15)}%,13%)`);
-    r.setProperty('--border',`hsl(${h},${Math.min(s,18)}%,22%)`);
-    r.setProperty('--muted',`hsl(${h},${Math.min(s,12)}%,55%)`);
-    r.setProperty('--hbg',`hsl(${h},${Math.min(s,25)}%,4%)`);
+    r.setProperty('--surface',`hsl(${h},${Math.min(s,18)}%,13%)`);
+    r.setProperty('--border',`hsl(${h},${Math.min(s,20)}%,22%)`);
+    r.setProperty('--muted',`hsl(${h},${Math.min(s,15)}%,55%)`);
+    r.setProperty('--hbg',`hsl(${h},${Math.min(s,28)}%,5%)`);
     r.setProperty('--text',`hsl(${h},20%,94%)`);
     r.setProperty('--htxt',`hsl(${h},15%,94%)`);
   }else{
+    const[,, l]=hexToHsl(color);
+    const aL=Math.min(l+28,88);
     r.setProperty('--accent',color);
+    r.setProperty('--accent-light',`hsl(${h},${Math.min(s,70)}%,${aL}%)`);
     r.setProperty('--bg',`hsl(${h},${ss}%,97%)`);
-    r.setProperty('--surface',`hsl(${h},${Math.min(s,8)}%,100%)`);
+    r.setProperty('--surface',`hsl(${h},${Math.min(s,10)}%,100%)`);
     r.setProperty('--border',`hsl(${h},${ss}%,87%)`);
-    r.setProperty('--muted',`hsl(${h},${Math.min(s,15)}%,46%)`);
-    r.setProperty('--hbg',`hsl(${h},${Math.min(s+10,38)}%,10%)`);
+    r.setProperty('--muted',`hsl(${h},${Math.min(s,18)}%,46%)`);
+    r.setProperty('--hbg',`hsl(${h},${Math.min(s+12,42)}%,10%)`);
     r.setProperty('--text',`hsl(${h},25%,10%)`);
     r.setProperty('--htxt','#fff');
   }
@@ -927,7 +932,10 @@ function showToast(m){const t=document.getElementById('toast');t.textContent=m;t
 function launchConfetti(){
   const c=document.getElementById('confetti-canvas');c.style.display='block';
   const x=c.getContext('2d');c.width=window.innerWidth;c.height=window.innerHeight;
-  const p=Array.from({length:120},()=>({x:Math.random()*c.width,y:-10,r:Math.random()*6+3,d:Math.random()*120+60,color:['#c84b2f','#a5b4fc','#2d5a3d','#5a2d7a','#1e3a6e','#f0e8f8','#fce8ee'][Math.floor(Math.random()*7)],tilt:Math.random()*10-10,ts:Math.random()*.1+.05,vx:(Math.random()-.5)*2}));
+  const acc=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+  const accL=getComputedStyle(document.documentElement).getPropertyValue('--accent-light').trim();
+  const confColors=[acc,accL,'#fff','rgba(255,255,255,.6)',acc,accL,'rgba(255,255,255,.4)'];
+  const p=Array.from({length:120},()=>({x:Math.random()*c.width,y:-10,r:Math.random()*6+3,d:Math.random()*120+60,color:confColors[Math.floor(Math.random()*confColors.length)],tilt:Math.random()*10-10,ts:Math.random()*.1+.05,vx:(Math.random()-.5)*2}));
   let fr=0;
   function draw(){x.clearRect(0,0,c.width,c.height);p.forEach(q=>{x.beginPath();x.lineWidth=q.r;x.strokeStyle=q.color;x.moveTo(q.x+q.tilt+q.r/3,q.y);x.lineTo(q.x+q.tilt,q.y+q.tilt+q.r/5);x.stroke();q.y+=Math.cos(q.d)+1+q.r/2;q.x+=q.vx;q.tilt=q.ts*Math.sin(fr*.1);if(q.y>c.height){q.y=-10;q.x=Math.random()*c.width}});fr++;if(fr<180)requestAnimationFrame(draw);else{x.clearRect(0,0,c.width,c.height);c.style.display='none'}}
   draw();
