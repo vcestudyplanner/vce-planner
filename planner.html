@@ -541,7 +541,6 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
     <button class="nav-item" data-page="sacs" onclick="nav('sacs',this)"><i data-lucide="target"></i>SACs &amp; Exams</button>
     <button class="nav-item" data-page="calendar" onclick="nav('calendar',this)"><i data-lucide="calendar"></i>Calendar</button>
     <div class="sidebar-sep"></div>
-    <button class="nav-item" data-page="pomodoro" onclick="nav('pomodoro',this)"><i data-lucide="timer"></i>Pomodoro</button>
     <button class="nav-item" data-page="study" onclick="nav('study',this)"><i data-lucide="brain"></i>Study Methods</button>
     <button class="nav-item" data-page="stats" onclick="nav('stats',this)"><i data-lucide="bar-chart-2"></i>Stats</button>
   </nav>
@@ -828,59 +827,11 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
   </div>
 </div></div>
 
-<!-- POMODORO -->
-<div class="page" id="page-pomodoro"><div class="container">
-  <div class="page-hdr"><div class="page-hdr-title">Pomodoro</div><div class="page-hdr-sub">Focus sessions and study hour logging</div></div>
-  <div class="card">
-    <div class="pom-wrap">
-      <div class="pom-timer">
-        <div class="pom-mode work" id="pom-mode-label">FOCUS SESSION</div>
-        <div class="pom-ring-wrap">
-          <svg width="160" height="160" viewBox="0 0 160 160">
-            <circle class="pom-ring-bg" cx="80" cy="80" r="68"/>
-            <circle class="pom-ring-fg" id="pom-ring" cx="80" cy="80" r="68" stroke="#c84b2f" stroke-dasharray="427" stroke-dashoffset="0"/>
-          </svg>
-          <div class="pom-time" id="pom-time">25:00</div>
-        </div>
-        <div class="pom-sessions">Sessions today: <span id="pom-sessions">0</span></div>
-        <div style="display:flex;gap:8px;justify-content:center;margin-top:.75rem">
-          <button class="abtn" id="pom-start" onclick="pomToggle()">Start</button>
-          <button class="abtn" style="background:var(--border);color:var(--text)" onclick="pomReset()">Reset</button>
-        </div>
-        <div style="display:flex;gap:8px;justify-content:center;margin-top:.6rem;flex-wrap:wrap">
-          <button class="abtn sm" onclick="pomSetMode('work')">25 min Focus</button>
-          <button class="abtn sm green" onclick="pomSetMode('short')">5 min Break</button>
-          <button class="abtn sm blue" onclick="pomSetMode('long')">15 min Break</button>
-        </div>
-        <div style="margin-top:.75rem"><div class="fg" style="max-width:180px;margin:0 auto"><label>Studying</label><select id="pom-subj" class="subj-sel" onchange="colourSel(this)"></select></div></div>
-      </div>
-      <div>
-        <div class="sh">Study hours log</div>
-        <div id="hours-bar" style="margin-bottom:.75rem"></div>
-        <div class="frow" style="grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-          <div class="fg"><label>Subject</label><select id="log-subj" class="subj-sel" onchange="colourSel(this)"></select></div>
-          <div class="fg"><label>Date</label><input type="date" id="log-date"/></div>
-        </div>
-        <div class="frow" style="grid-template-columns:auto auto 1fr auto;gap:10px;margin-bottom:.75rem">
-          <div class="fg"><label>Hours</label><input type="number" id="log-hours" min="0" max="23" step="1" value="1" style="max-width:70px"/></div>
-          <div class="fg"><label>Minutes</label><input type="number" id="log-mins" min="0" max="59" step="5" value="0" style="max-width:70px"/></div>
-          <div></div>
-          <div class="fg"><label>&nbsp;</label><button class="abtn green" onclick="addLog()" style="min-width:90px;padding:0 18px">+ Log hours</button></div>
-        </div>
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem">
-          <div class="sh" style="margin-bottom:0">Recent sessions</div>
-          <button class="abtn sm" style="background:var(--border);color:var(--text);font-size:11px" onclick="toggleSessionLog()" id="session-log-btn">Show</button>
-        </div>
-        <div class="study-log" id="study-log" style="display:none"></div>
-      </div>
-    </div>
-  </div>
-</div></div>
 
 
 <!-- STUDY METHODS -->
 <div class="page" id="page-study"><div class="container">
-  <div class="page-hdr"><div class="page-hdr-title">Study Methods</div><div class="page-hdr-sub">Pick a proven technique, complete the session, earn 25 XP</div></div>
+  <div class="page-hdr"><div class="page-hdr-title">Study Methods</div><div class="page-hdr-sub">Pick a technique, run the session, earn XP — and log your study hours below</div></div>
 
   <!-- method picker (default view) -->
   <div id="sm-picker">
@@ -890,16 +841,36 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
   <!-- active session view (hidden until a method is started) -->
   <div id="sm-session" style="display:none">
     <div class="card" id="sm-session-card">
-      <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem">
+      <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem;flex-wrap:wrap">
         <button onclick="smExitSession()" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:5px 13px;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">← Back</button>
         <div>
           <div class="sh" style="margin-bottom:0" id="sm-sess-label"></div>
-          <div id="sm-sess-title" style="font-family:'Fraunces',serif;font-size:1.2rem;font-weight:700;color:var(--text)"></div>
         </div>
         <div id="sm-xp-badge" style="margin-left:auto;background:var(--accent);color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;white-space:nowrap">+25 XP on complete</div>
       </div>
       <div id="sm-session-body"></div>
     </div>
+  </div>
+
+  <!-- always-visible study log -->
+  <div class="card" id="sm-log-card" style="margin-top:1.5rem">
+    <div class="sh">Study hours log</div>
+    <div id="hours-bar" style="margin-bottom:.75rem"></div>
+    <div class="frow" style="grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+      <div class="fg"><label>Subject</label><select id="log-subj" class="subj-sel" onchange="colourSel(this)"></select></div>
+      <div class="fg"><label>Date</label><input type="date" id="log-date"/></div>
+    </div>
+    <div class="frow" style="grid-template-columns:auto auto 1fr auto;gap:10px;margin-bottom:.75rem">
+      <div class="fg"><label>Hours</label><input type="number" id="log-hours" min="0" max="23" step="1" value="1" style="max-width:70px"/></div>
+      <div class="fg"><label>Minutes</label><input type="number" id="log-mins" min="0" max="59" step="5" value="0" style="max-width:70px"/></div>
+      <div></div>
+      <div class="fg"><label>&nbsp;</label><button class="abtn green" onclick="addLog()" style="min-width:90px;padding:0 18px">+ Log hours</button></div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem">
+      <div class="sh" style="margin-bottom:0">Recent sessions</div>
+      <button class="abtn sm" style="background:var(--border);color:var(--text);font-size:11px" onclick="toggleSessionLog()" id="session-log-btn">Show</button>
+    </div>
+    <div class="study-log" id="study-log" style="display:none"></div>
   </div>
 </div></div>
 
@@ -968,12 +939,11 @@ function renderFilterBtns(){
 
 function populateSubjectDropdowns(){
   const opts=userSubjects.map(s=>`<option value="${s.id}">${s.label}</option>`).join('');
-  ['subj-input','ev-subj','pom-subj','log-subj'].forEach(id=>{
-    const el=document.getElementById(id);if(!el)return;
-    el.innerHTML=opts;if(el.options[0])colourSel(el);
+  document.querySelectorAll('select.subj-sel').forEach(el=>{
+    if(el.id==='plan-subj'){el.innerHTML='<option value="">None</option>'+opts;}
+    else{el.innerHTML=opts;}
+    if(el.options[0])colourSel(el);
   });
-  const planEl=document.getElementById('plan-subj');
-  if(planEl){planEl.innerHTML='<option value="">None</option>'+opts;colourSel(planEl)}
 }
 
 function logout(){sb.auth.signOut().then(()=>{window.location.href='index.html'})}
@@ -1180,7 +1150,6 @@ function nav(p,btn){
   if(p==='calendar')renderCal();
   if(p==='sacs'){renderEvents();updateEvLink()}
   if(p==='stats')renderStats();
-  if(p==='pomodoro')renderHoursBar();
   if(p==='planner'){renderPlanner();renderSchedPanel();}
   if(p==='study')renderStudy();
 }
@@ -1751,13 +1720,13 @@ const TOUR_STEPS=[
   {page:'calendar',title:'Monthly calendar',
    body:'Every task, SAC, exam, and planned block appears here as a colour-coded dot. Click any date to see everything scheduled for that day. Switch months with the arrows at the top.',
    target:'#page-calendar .card',pos:'right'},
-  // ── Pomodoro ───────────────────────────────────────────────────────
-  {page:'pomodoro',title:'Pomodoro focus timer',
-   body:'This is a 25-minute focus timer based on the Pomodoro technique. Pick a subject, hit Start, and stay focused until the bell. After 4 rounds the app suggests a longer break. Each completed session earns +15 XP.',
-   target:'.pom-ring-wrap',pos:'right'},
-  {page:null,     title:'Study log feeds your stats',
-   body:'Every session you complete is logged under that subject. That data powers your weekly hours bar, the heatmap on Stats, and the subject breakdown — so the more you use the timer, the richer your stats become.',
-   target:'.pom-wrap',pos:'right'},
+  // ── Study Methods ──────────────────────────────────────────────────
+  {page:'study',  title:'Study Methods',
+   body:'Pick from 7 research-backed techniques — Pomodoro, General Timer, Active Recall, Blurting, Feynman, Timed Exam Practice, and Mind Map. Each method is fully interactive and earns XP.',
+   target:'.sm-grid',pos:'right'},
+  {page:null,     title:'Study log',
+   body:'Every session you complete is logged here. You can also manually log hours. All study data feeds your heatmap, subject breakdown, and weekly goal on the Stats page.',
+   target:'#sm-log-card',pos:'right'},
   // ── Stats ──────────────────────────────────────────────────────────
   {page:'stats',  title:'Activity heatmap',
    body:'Each square is one day — darker means more hours studied. Hover (or tap) any square to see exactly how many hours you logged that day. The heatmap covers the last 26 weeks so you can spot habits over a whole semester.',
@@ -1832,21 +1801,26 @@ function endTour(){
 
 // ── STUDY METHODS ──────────────────────────────────────────────────────────
 const SM_METHODS=[
-  {id:'recall',   icon:'🃏', name:'Active Recall',      time:'10–20 min',
+  {id:'pomodoro', icon:'🍅', name:'Pomodoro Timer',      time:'25 min focus', xpLabel:'+15 XP / session',
+   desc:'25 minutes of focused work followed by a short break. After 4 rounds take a longer break. The most popular study technique for a reason.'},
+  {id:'general',  icon:'⏱️', name:'General Timer',       time:'Any duration',  xpLabel:'Logs to stats',
+   desc:'A simple stopwatch for open-ended study sessions. Pick your subject, start the clock, stop when you\'re done — the hours are automatically logged to your stats.'},
+  {id:'recall',   icon:'🃏', name:'Active Recall',       time:'10–20 min',     xpLabel:'+25 XP',
    desc:'Build a set of flashcard Q&A pairs from your notes, then test yourself. Seeing the question before the answer is far more effective than re-reading.'},
-  {id:'blurt',    icon:'✍️', name:'Blurting',           time:'5–15 min',
+  {id:'blurt',    icon:'✍️', name:'Blurting',            time:'5–15 min',      xpLabel:'+25 XP',
    desc:'Set a topic, start the timer, and write down everything you know without looking at your notes. Then check for gaps — those are your study targets.'},
-  {id:'feynman',  icon:'🧠', name:'Feynman Technique',  time:'15–25 min',
+  {id:'feynman',  icon:'🧠', name:'Feynman Technique',   time:'15–25 min',     xpLabel:'+25 XP',
    desc:'Explain a concept in the simplest possible language. If you can\'t explain it simply, you don\'t know it yet. Identify the gaps and go back to your notes.'},
-  {id:'timed',    icon:'⏱️', name:'Timed Exam Practice',time:'15–90 min',
+  {id:'timed',    icon:'📋', name:'Timed Exam Practice', time:'15–90 min',     xpLabel:'+25 XP',
    desc:'Simulate exam conditions. Set a timer, pick a subject, and work through past questions or practice problems without opening your notes.'},
-  {id:'mindmap',  icon:'🗺️', name:'Mind Map Builder',   time:'10–20 min',
+  {id:'mindmap',  icon:'🗺️', name:'Mind Map Builder',    time:'10–20 min',     xpLabel:'+25 XP',
    desc:'Start with a central concept and branch out to related ideas. Connecting ideas visually helps reveal relationships and gaps in your understanding.'},
 ];
 
 let _smActive=null,_smTimer=null,_smElapsed=0,_smRunning=false;
 let _fcCards=[],_fcIdx=0,_fcGot=0,_fcMiss=0,_fcFlipped=false;
 let _mmBranches=[];
+let _genInterval=null,_genSecs=0,_genRunning=false;
 
 function smStart(id){
   _smActive=SM_METHODS.find(m=>m.id===id);
@@ -1854,18 +1828,27 @@ function smStart(id){
   document.getElementById('sm-picker').style.display='none';
   document.getElementById('sm-session').style.display='block';
   document.getElementById('sm-sess-label').textContent=_smActive.icon+' '+_smActive.name;
-  document.getElementById('sm-sess-title').textContent='';
+  document.getElementById('sm-xp-badge').textContent=_smActive.xpLabel;
   const body=document.getElementById('sm-session-body');
+  if(id==='pomodoro')body.innerHTML=smBuildPomodoro();
+  if(id==='general') body.innerHTML=smBuildGeneral();
   if(id==='recall')  body.innerHTML=smBuildRecall();
   if(id==='blurt')   body.innerHTML=smBuildBlurt();
   if(id==='feynman') body.innerHTML=smBuildFeynman();
   if(id==='timed')   body.innerHTML=smBuildTimed();
   if(id==='mindmap') body.innerHTML=smBuildMindmap();
+  if(id==='pomodoro'){populateSubjectDropdowns();renderHoursBar();}
+  if(id==='timed'||id==='general'){populateSubjectDropdowns();}
   if(typeof lucide!=='undefined')lucide.createIcons();
 }
 
 function smExitSession(){
+  // stop any running timers
   if(_smTimer){clearInterval(_smTimer);_smTimer=null;}
+  if(_genInterval){clearInterval(_genInterval);_genInterval=null;}
+  _genRunning=false;_genSecs=0;
+  // stop Pomodoro if it's running
+  if(_smActive&&_smActive.id==='pomodoro'&&pomInterval){pomReset();}
   _smRunning=false;_smActive=null;
   document.getElementById('sm-picker').style.display='block';
   document.getElementById('sm-session').style.display='none';
@@ -1876,6 +1859,94 @@ function smAward(){
   showToast('🎓 Method complete! +25 XP');
   smExitSession();
 }
+
+// ── POMODORO (inline) ──
+function smBuildPomodoro(){
+  return `
+    <div class="pom-wrap">
+      <div class="pom-timer">
+        <div class="pom-mode work" id="pom-mode-label">FOCUS SESSION</div>
+        <div class="pom-ring-wrap">
+          <svg width="160" height="160" viewBox="0 0 160 160">
+            <circle class="pom-ring-bg" cx="80" cy="80" r="68"/>
+            <circle class="pom-ring-fg" id="pom-ring" cx="80" cy="80" r="68" stroke="var(--accent)" stroke-dasharray="427" stroke-dashoffset="0"/>
+          </svg>
+          <div class="pom-time" id="pom-time">25:00</div>
+        </div>
+        <div class="pom-sessions">Sessions today: <span id="pom-sessions">${pomSessions}</span></div>
+        <div style="display:flex;gap:8px;justify-content:center;margin-top:.75rem">
+          <button class="abtn" id="pom-start" onclick="pomToggle()">Start</button>
+          <button class="abtn" style="background:var(--border);color:var(--text)" onclick="pomReset()">Reset</button>
+        </div>
+        <div style="display:flex;gap:8px;justify-content:center;margin-top:.6rem;flex-wrap:wrap">
+          <button class="abtn sm" onclick="pomSetMode('work')">25 min Focus</button>
+          <button class="abtn sm green" onclick="pomSetMode('short')">5 min Break</button>
+          <button class="abtn sm blue" onclick="pomSetMode('long')">15 min Break</button>
+        </div>
+        <div style="margin-top:.75rem"><div class="fg" style="max-width:180px;margin:0 auto"><label>Studying</label><select id="pom-subj" class="subj-sel" onchange="colourSel(this)"></select></div></div>
+      </div>
+    </div>`;
+}
+
+// ── GENERAL TIMER ──
+function smBuildGeneral(){
+  _genSecs=0;_genRunning=false;
+  return `
+    <div class="sm-step" id="gen-setup">
+      <div class="sm-step-num">Setup</div>
+      <div class="sm-step-title">What are you studying?</div>
+      <div class="sm-step-hint">Pick a subject, then hit Start. Stop when you're done — the time is automatically logged to your stats.</div>
+      <div class="fg" style="margin-bottom:.75rem"><label>Subject</label><select id="gen-subj" class="subj-sel" onchange="colourSel(this)"></select></div>
+    </div>
+    <div style="text-align:center;margin:1rem 0">
+      <div class="sm-timer-display" id="gen-time">0:00:00</div>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:.5rem">
+        <button class="abtn" id="gen-start-btn" onclick="genToggle()">Start</button>
+        <button class="abtn" style="background:var(--border);color:var(--text)" onclick="genReset()">Reset</button>
+      </div>
+    </div>
+    <div id="gen-log-wrap" style="display:none">
+      <div class="sm-step" style="background:rgba(22,163,74,.07);border-color:rgba(22,163,74,.3)">
+        <div class="sm-step-title" id="gen-result"></div>
+        <div class="sm-step-hint">Logged to your study stats. Keep it up!</div>
+      </div>
+      <button class="sm-done-btn" onclick="smExitSession()">Done</button>
+    </div>`;
+}
+function genToggle(){
+  const btn=document.getElementById('gen-start-btn');
+  if(!_genRunning){
+    _genRunning=true;
+    btn.textContent='Stop';
+    btn.style.background='var(--high)';
+    _genInterval=setInterval(()=>{
+      _genSecs++;
+      const h=Math.floor(_genSecs/3600),m=Math.floor((_genSecs%3600)/60),s=_genSecs%60;
+      const d=document.getElementById('gen-time');
+      if(d)d.textContent=`${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    },1000);
+  } else {
+    clearInterval(_genInterval);_genInterval=null;_genRunning=false;
+    if(_genSecs<30){showToast('Keep going — minimum 30 seconds to log');btn.textContent='Start';btn.style.background='';return;}
+    const subj=document.getElementById('gen-subj')?.value||'';
+    const hrs=Math.round(_genSecs/36)/100;
+    studyLog.unshift({id:Date.now(),subject:subj,hours:hrs,date:todayStr(),note:`General timer (${fmtDuration(_genSecs)})`});
+    saveL();renderHoursBar();
+    const h=Math.floor(_genSecs/3600),m=Math.floor((_genSecs%3600)/60),sec=_genSecs%60;
+    document.getElementById('gen-result').textContent=`✅ Logged ${fmtDuration(_genSecs)} of study!`;
+    document.getElementById('gen-log-wrap').style.display='block';
+    document.getElementById('gen-start-btn').style.display='none';
+    document.querySelector('#gen-setup').style.display='none';
+  }
+}
+function genReset(){
+  clearInterval(_genInterval);_genInterval=null;_genRunning=false;_genSecs=0;
+  const d=document.getElementById('gen-time');if(d)d.textContent='0:00:00';
+  const btn=document.getElementById('gen-start-btn');if(btn){btn.textContent='Start';btn.style.background='';}
+  const lw=document.getElementById('gen-log-wrap');if(lw)lw.style.display='none';
+  const su=document.getElementById('gen-setup');if(su)su.style.display='block';
+}
+function fmtDuration(secs){const h=Math.floor(secs/3600),m=Math.floor((secs%3600)/60),s=secs%60;return h>0?`${h}h ${m}m`:`${m}m ${s}s`;}
 
 // ── ACTIVE RECALL ──
 function smBuildRecall(){
@@ -2149,6 +2220,9 @@ function mmCheck(){smAward();}
 function renderStudy(){
   const g=document.getElementById('sm-grid');
   if(!g)return;
+  // make sure session is hidden and picker is visible
+  document.getElementById('sm-picker').style.display='block';
+  document.getElementById('sm-session').style.display='none';
   g.innerHTML=SM_METHODS.map(m=>`
     <div class="sm-card" onclick="smStart('${m.id}')">
       <div class="sm-card-icon">${m.icon}</div>
@@ -2156,12 +2230,14 @@ function renderStudy(){
       <div class="sm-card-desc">${m.desc}</div>
       <div class="sm-card-meta">
         <span class="sm-badge">${m.time}</span>
-        <span class="sm-badge xp">+25 XP</span>
+        <span class="sm-badge xp">${m.xpLabel}</span>
         <button class="sm-start-btn" onclick="event.stopPropagation();smStart('${m.id}')">Start →</button>
       </div>
     </div>`).join('');
-  // populate timed-subj select when it exists (called again after session starts)
-  populateSubjSelects();
+  populateSubjectDropdowns();
+  renderHoursBar();
+  // pre-fill today's date in manual log
+  const ld=document.getElementById('log-date');if(ld&&!ld.value)ld.value=todayStr();
 }
 
 init().then(()=>{ if(typeof lucide!=='undefined') lucide.createIcons(); checkShowTour(); });
