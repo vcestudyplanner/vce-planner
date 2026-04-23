@@ -467,6 +467,54 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 .sched-task-item{background:var(--bg);border-radius:9px;padding:.5rem .75rem;font-size:12px;cursor:pointer;border:1px solid var(--border);transition:all .15s;display:flex;align-items:center;gap:8px}
 .sched-task-item:hover{border-color:var(--accent);background:var(--surface)}
 .sched-task-item.scheduled{opacity:.4;text-decoration:line-through;cursor:default}
+
+/* ── STUDY METHODS ── */
+.sm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;margin-bottom:1.5rem}
+.sm-card{background:var(--surface);border:1.5px solid var(--border);border-radius:16px;padding:1.4rem 1.5rem;cursor:pointer;transition:all .18s;position:relative;overflow:hidden}
+.sm-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.08)}
+.sm-card-icon{font-size:2rem;margin-bottom:.65rem}
+.sm-card-name{font-family:'Fraunces',serif;font-size:1.05rem;font-weight:700;color:var(--text);margin-bottom:.3rem}
+.sm-card-desc{font-size:12.5px;color:var(--muted);line-height:1.55;margin-bottom:.9rem}
+.sm-card-meta{display:flex;align-items:center;gap:.6rem}
+.sm-badge{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;background:var(--bg);border:1px solid var(--border);color:var(--muted)}
+.sm-badge.xp{background:rgba(79,70,229,.1);border-color:var(--accent);color:var(--accent)}
+.sm-start-btn{margin-left:auto;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:600;padding:5px 14px;border-radius:8px;background:var(--accent);color:#fff;border:none;cursor:pointer;transition:all .15s}
+.sm-start-btn:hover{filter:brightness(1.1)}
+/* session internals */
+.sm-step{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:1rem 1.2rem;margin-bottom:.75rem}
+.sm-step-num{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--accent);margin-bottom:.3rem}
+.sm-step-title{font-family:'Fraunces',serif;font-size:.95rem;font-weight:700;color:var(--text);margin-bottom:.4rem}
+.sm-step-hint{font-size:12.5px;color:var(--muted);margin-bottom:.65rem;line-height:1.55}
+.sm-step textarea,.sm-step input[type=text]{width:100%;padding:9px 12px;background:var(--surface);border:1px solid var(--border);border-radius:9px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13.5px;color:var(--text);outline:none;resize:vertical;line-height:1.55;transition:border-color .15s}
+.sm-step textarea:focus,.sm-step input[type=text]:focus{border-color:var(--accent)}
+.sm-timer-display{font-family:'Fraunces',serif;font-size:3.2rem;font-weight:700;color:var(--text);text-align:center;margin:.75rem 0;letter-spacing:-.02em}
+.sm-timer-display.urgent{color:var(--high)}
+.sm-done-btn{height:44px;padding:0 28px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .15s;display:block;margin-top:1.25rem}
+.sm-done-btn:disabled{opacity:.4;cursor:default}
+.sm-done-btn:not(:disabled):hover{filter:brightness(1.1)}
+/* flashcard */
+.fc-card{perspective:600px;width:100%;max-width:440px;height:180px;margin:.5rem auto 1rem;cursor:pointer}
+.fc-card-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .4s cubic-bezier(.4,0,.2,1)}
+.fc-card.flipped .fc-card-inner{transform:rotateY(180deg)}
+.fc-front,.fc-back{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;display:flex;align-items:center;justify-content:center;padding:1.25rem;text-align:center;font-size:15px;font-weight:500;color:var(--text);border:1.5px solid var(--border)}
+.fc-front{background:var(--surface)}
+.fc-back{background:var(--bg);transform:rotateY(180deg)}
+.fc-hint{font-size:12px;color:var(--muted);text-align:center;margin-bottom:.5rem}
+.fc-actions{display:flex;gap:10px;justify-content:center;margin-top:.5rem}
+.fc-btn{height:36px;padding:0 18px;border-radius:9px;border:none;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s}
+.fc-btn.got{background:#dcfce7;color:#16a34a}
+.fc-btn.got:hover{background:#bbf7d0}
+.fc-btn.miss{background:#fee2e2;color:#dc2626}
+.fc-btn.miss:hover{background:#fecaca}
+/* mindmap */
+.mm-root{background:var(--bg);border:2px solid var(--accent);border-radius:12px;padding:.5rem 1rem;display:inline-block;font-family:'Fraunces',serif;font-size:1rem;font-weight:700;color:var(--text);margin:0 auto .5rem;display:block;text-align:center;max-width:200px}
+.mm-branch-row{display:flex;align-items:flex-start;gap:.5rem;margin-bottom:.5rem}
+.mm-branch-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:.55rem}
+.mm-branch-wrap{flex:1}
+.mm-branch-label{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:.35rem .75rem;font-size:13.5px;color:var(--text);width:100%;margin-bottom:.3rem}
+.mm-sub-label{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.3rem .65rem;font-size:12.5px;color:var(--muted);width:100%;margin-bottom:.3rem}
+.mm-add-sub{background:transparent;border:none;color:var(--muted);font-size:12px;cursor:pointer;padding:.2rem 0;font-family:'Plus Jakarta Sans',sans-serif}
+.mm-add-sub:hover{color:var(--accent)}
 </style>
 </head>
 <body>
@@ -494,6 +542,7 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
     <button class="nav-item" data-page="calendar" onclick="nav('calendar',this)"><i data-lucide="calendar"></i>Calendar</button>
     <div class="sidebar-sep"></div>
     <button class="nav-item" data-page="pomodoro" onclick="nav('pomodoro',this)"><i data-lucide="timer"></i>Pomodoro</button>
+    <button class="nav-item" data-page="study" onclick="nav('study',this)"><i data-lucide="brain"></i>Study Methods</button>
     <button class="nav-item" data-page="stats" onclick="nav('stats',this)"><i data-lucide="bar-chart-2"></i>Stats</button>
   </nav>
   <div class="sidebar-bottom">
@@ -829,6 +878,31 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 </div></div>
 
 
+<!-- STUDY METHODS -->
+<div class="page" id="page-study"><div class="container">
+  <div class="page-hdr"><div class="page-hdr-title">Study Methods</div><div class="page-hdr-sub">Pick a proven technique, complete the session, earn 25 XP</div></div>
+
+  <!-- method picker (default view) -->
+  <div id="sm-picker">
+    <div class="sm-grid" id="sm-grid"></div>
+  </div>
+
+  <!-- active session view (hidden until a method is started) -->
+  <div id="sm-session" style="display:none">
+    <div class="card" id="sm-session-card">
+      <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem">
+        <button onclick="smExitSession()" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:5px 13px;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">← Back</button>
+        <div>
+          <div class="sh" style="margin-bottom:0" id="sm-sess-label"></div>
+          <div id="sm-sess-title" style="font-family:'Fraunces',serif;font-size:1.2rem;font-weight:700;color:var(--text)"></div>
+        </div>
+        <div id="sm-xp-badge" style="margin-left:auto;background:var(--accent);color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;white-space:nowrap">+25 XP on complete</div>
+      </div>
+      <div id="sm-session-body"></div>
+    </div>
+  </div>
+</div></div>
+
 </div><!-- end .main-wrap -->
 
 <script defer>
@@ -1108,6 +1182,7 @@ function nav(p,btn){
   if(p==='stats')renderStats();
   if(p==='pomodoro')renderHoursBar();
   if(p==='planner'){renderPlanner();renderSchedPanel();}
+  if(p==='study')renderStudy();
 }
 function navTo(p){
   const btn=document.querySelector(`.nav-item[data-page="${p}"]`);
@@ -1753,6 +1828,340 @@ function endTour(){
   document.getElementById('tour-spotlight').style.display='none';
   document.getElementById('tour-overlay').style.display='none';
   _tourBusy=false;
+}
+
+// ── STUDY METHODS ──────────────────────────────────────────────────────────
+const SM_METHODS=[
+  {id:'recall',   icon:'🃏', name:'Active Recall',      time:'10–20 min',
+   desc:'Build a set of flashcard Q&A pairs from your notes, then test yourself. Seeing the question before the answer is far more effective than re-reading.'},
+  {id:'blurt',    icon:'✍️', name:'Blurting',           time:'5–15 min',
+   desc:'Set a topic, start the timer, and write down everything you know without looking at your notes. Then check for gaps — those are your study targets.'},
+  {id:'feynman',  icon:'🧠', name:'Feynman Technique',  time:'15–25 min',
+   desc:'Explain a concept in the simplest possible language. If you can\'t explain it simply, you don\'t know it yet. Identify the gaps and go back to your notes.'},
+  {id:'timed',    icon:'⏱️', name:'Timed Exam Practice',time:'15–90 min',
+   desc:'Simulate exam conditions. Set a timer, pick a subject, and work through past questions or practice problems without opening your notes.'},
+  {id:'mindmap',  icon:'🗺️', name:'Mind Map Builder',   time:'10–20 min',
+   desc:'Start with a central concept and branch out to related ideas. Connecting ideas visually helps reveal relationships and gaps in your understanding.'},
+];
+
+let _smActive=null,_smTimer=null,_smElapsed=0,_smRunning=false;
+let _fcCards=[],_fcIdx=0,_fcGot=0,_fcMiss=0,_fcFlipped=false;
+let _mmBranches=[];
+
+function smStart(id){
+  _smActive=SM_METHODS.find(m=>m.id===id);
+  if(!_smActive)return;
+  document.getElementById('sm-picker').style.display='none';
+  document.getElementById('sm-session').style.display='block';
+  document.getElementById('sm-sess-label').textContent=_smActive.icon+' '+_smActive.name;
+  document.getElementById('sm-sess-title').textContent='';
+  const body=document.getElementById('sm-session-body');
+  if(id==='recall')  body.innerHTML=smBuildRecall();
+  if(id==='blurt')   body.innerHTML=smBuildBlurt();
+  if(id==='feynman') body.innerHTML=smBuildFeynman();
+  if(id==='timed')   body.innerHTML=smBuildTimed();
+  if(id==='mindmap') body.innerHTML=smBuildMindmap();
+  if(typeof lucide!=='undefined')lucide.createIcons();
+}
+
+function smExitSession(){
+  if(_smTimer){clearInterval(_smTimer);_smTimer=null;}
+  _smRunning=false;_smActive=null;
+  document.getElementById('sm-picker').style.display='block';
+  document.getElementById('sm-session').style.display='none';
+}
+
+function smAward(){
+  addXP(25);
+  showToast('🎓 Method complete! +25 XP');
+  smExitSession();
+}
+
+// ── ACTIVE RECALL ──
+function smBuildRecall(){
+  _fcCards=[];_fcIdx=0;_fcGot=0;_fcMiss=0;_fcFlipped=false;
+  return `
+    <div class="sm-step" id="fc-builder">
+      <div class="sm-step-num">Step 1 — Build your deck</div>
+      <div class="sm-step-title">Add flashcard pairs</div>
+      <div class="sm-step-hint">Type a question and its answer, then click Add. Build at least 5 cards.</div>
+      <div class="frow" style="grid-template-columns:1fr 1fr auto;gap:8px;margin-bottom:.5rem">
+        <div class="fg"><label>Question</label><input type="text" id="fc-q" placeholder="e.g. Define osmosis"/></div>
+        <div class="fg"><label>Answer</label><input type="text" id="fc-a" placeholder="e.g. Movement of water…"/></div>
+        <div class="fg"><label>&nbsp;</label><button class="abtn" onclick="fcAddCard()" style="height:38px;padding:0 16px">Add</button></div>
+      </div>
+      <div id="fc-deck-list" style="display:flex;flex-wrap:wrap;gap:6px;min-height:28px;margin-bottom:.75rem"></div>
+      <button class="sm-done-btn" id="fc-quiz-btn" onclick="fcStartQuiz()" disabled>Start Quiz →</button>
+    </div>
+    <div id="fc-quiz" style="display:none">
+      <div class="sm-step-hint" id="fc-progress" style="text-align:center;margin-bottom:.25rem"></div>
+      <div class="fc-hint">Tap the card to reveal the answer</div>
+      <div class="fc-card" id="fc-card" onclick="fcFlip()">
+        <div class="fc-card-inner">
+          <div class="fc-front" id="fc-front"></div>
+          <div class="fc-back" id="fc-back"></div>
+        </div>
+      </div>
+      <div class="fc-actions" id="fc-actions" style="display:none">
+        <button class="fc-btn got" onclick="fcAnswer(true)">✓ Got it</button>
+        <button class="fc-btn miss" onclick="fcAnswer(false)">✗ Review again</button>
+      </div>
+      <div id="fc-result" style="display:none;text-align:center;padding:1.5rem 0">
+        <div style="font-size:2rem;margin-bottom:.5rem">🎉</div>
+        <div style="font-family:'Fraunces',serif;font-size:1.15rem;font-weight:700;color:var(--text);margin-bottom:.3rem" id="fc-score"></div>
+        <div style="font-size:13px;color:var(--muted)">Well done — your recall is improving!</div>
+        <button class="sm-done-btn" style="margin:1rem auto 0" onclick="smAward()">Claim +25 XP ✓</button>
+      </div>
+    </div>`;
+}
+function fcAddCard(){
+  const q=document.getElementById('fc-q').value.trim(),a=document.getElementById('fc-a').value.trim();
+  if(!q||!a)return;
+  _fcCards.push({q,a});
+  document.getElementById('fc-q').value='';document.getElementById('fc-a').value='';
+  document.getElementById('fc-deck-list').innerHTML=_fcCards.map((c,i)=>
+    `<span style="background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:3px 9px;font-size:12px;color:var(--text)">${i+1}. ${c.q}</span>`).join('');
+  if(_fcCards.length>=5)document.getElementById('fc-quiz-btn').disabled=false;
+}
+function fcStartQuiz(){
+  _fcIdx=0;_fcGot=0;_fcMiss=0;
+  document.getElementById('fc-builder').style.display='none';
+  document.getElementById('fc-quiz').style.display='block';
+  fcShowCard();
+}
+function fcShowCard(){
+  if(_fcIdx>=_fcCards.length){
+    document.getElementById('fc-card').style.display='none';
+    document.getElementById('fc-actions').style.display='none';
+    document.getElementById('fc-result').style.display='block';
+    document.getElementById('fc-score').textContent=`${_fcGot} / ${_fcCards.length} correct`;
+    return;
+  }
+  _fcFlipped=false;
+  document.getElementById('fc-card').classList.remove('flipped');
+  document.getElementById('fc-front').textContent=_fcCards[_fcIdx].q;
+  document.getElementById('fc-back').textContent=_fcCards[_fcIdx].a;
+  document.getElementById('fc-actions').style.display='none';
+  document.getElementById('fc-progress').textContent=`Card ${_fcIdx+1} of ${_fcCards.length} · Got: ${_fcGot} · Missed: ${_fcMiss}`;
+}
+function fcFlip(){if(_fcFlipped)return;_fcFlipped=true;document.getElementById('fc-card').classList.add('flipped');setTimeout(()=>{document.getElementById('fc-actions').style.display='flex'},220)}
+function fcAnswer(got){if(got)_fcGot++;else _fcMiss++;_fcIdx++;fcShowCard()}
+
+// ── BLURTING ──
+function smBuildBlurt(){
+  return `
+    <div class="sm-step">
+      <div class="sm-step-num">Setup</div>
+      <div class="sm-step-title">What topic are you blurting on?</div>
+      <div class="sm-step-hint">Choose a specific topic, not a broad subject. e.g. "Themes in Macbeth" rather than "English".</div>
+      <input type="text" id="blurt-topic" placeholder="e.g. Causes of WW1, Calculus derivatives…" oninput="blurtCheckReady()" style="width:100%;padding:9px 12px;background:var(--surface);border:1px solid var(--border);border-radius:9px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13.5px;color:var(--text);outline:none;margin-bottom:.75rem;box-sizing:border-box;transition:border-color .15s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"/>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem">
+        <span style="font-size:12px;color:var(--muted);padding-top:4px">Timer:</span>
+        ${[5,10,15].map(t=>`<button onclick="blurtSetTime(${t},this)" style="padding:4px 14px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface);color:var(--muted);font-family:'Plus Jakarta Sans',sans-serif;font-size:12.5px;cursor:pointer;transition:all .15s" id="blurt-t${t}">${t} min</button>`).join('')}
+      </div>
+      <button class="sm-done-btn" id="blurt-start-btn" onclick="blurtStart()" disabled>Start Blurting →</button>
+    </div>
+    <div id="blurt-session" style="display:none">
+      <div class="sm-timer-display" id="blurt-time">10:00</div>
+      <div class="sm-step">
+        <div class="sm-step-hint" id="blurt-topic-display" style="font-weight:600;color:var(--text);margin-bottom:.5rem"></div>
+        <div class="sm-step-hint">Write everything you know. Don't stop, don't look at notes. Just dump it all out.</div>
+        <textarea id="blurt-text" rows="9" placeholder="Start writing…" style="margin-top:.5rem"></textarea>
+        <div id="blurt-wc" style="font-size:11px;color:var(--muted);text-align:right;margin-top:.3rem">0 words</div>
+      </div>
+      <div id="blurt-done-wrap" style="display:none">
+        <div class="sm-step" style="background:rgba(22,163,74,.07);border-color:rgba(22,163,74,.3)">
+          <div class="sm-step-title">⏱️ Time's up!</div>
+          <div class="sm-step-hint">Now open your notes and highlight anything you missed. Those gaps are your revision targets.</div>
+        </div>
+        <button class="sm-done-btn" onclick="smAward()">I've checked my notes — Claim +25 XP ✓</button>
+      </div>
+    </div>`;
+}
+let _blurtSecs=600;
+function blurtSetTime(m,el){
+  _blurtSecs=m*60;
+  document.querySelectorAll('[id^=blurt-t]').forEach(b=>{b.style.background='var(--surface)';b.style.color='var(--muted)';b.style.borderColor='var(--border)'});
+  el.style.background='var(--accent)';el.style.color='#fff';el.style.borderColor='var(--accent)';
+  document.getElementById('blurt-time').textContent=`${m}:00`;
+  blurtCheckReady();
+}
+function blurtCheckReady(){
+  const t=document.getElementById('blurt-topic');
+  if(t)document.getElementById('blurt-start-btn').disabled=!t.value.trim();
+}
+function blurtStart(){
+  const topic=document.getElementById('blurt-topic').value.trim();
+  if(!topic)return;
+  document.getElementById('sm-session-card').querySelectorAll('.sm-step')[0].style.display='none';
+  document.getElementById('blurt-session').style.display='block';
+  document.getElementById('blurt-topic-display').textContent='Topic: '+topic;
+  let rem=_blurtSecs;
+  const disp=document.getElementById('blurt-time');
+  const txt=document.getElementById('blurt-text');
+  txt.addEventListener('input',()=>{
+    const w=txt.value.trim().split(/\s+/).filter(Boolean).length;
+    document.getElementById('blurt-wc').textContent=w+' word'+(w===1?'':'s');
+  });
+  _smTimer=setInterval(()=>{
+    rem--;
+    const m=String(Math.floor(rem/60)).padStart(2,'0'),s=String(rem%60).padStart(2,'0');
+    disp.textContent=`${m}:${s}`;
+    if(rem<=30)disp.classList.add('urgent');
+    if(rem<=0){clearInterval(_smTimer);disp.textContent='00:00';document.getElementById('blurt-done-wrap').style.display='block';}
+  },1000);
+}
+
+// ── FEYNMAN TECHNIQUE ──
+function smBuildFeynman(){
+  const steps=[
+    {n:'1',title:'Choose your concept',hint:'Be specific. "Newton\'s third law" is better than "Physics".',ph:'e.g. The role of the mitochondria in cellular respiration',rows:2},
+    {n:'2',title:'Explain it simply',hint:'Imagine you\'re explaining to a 10-year-old. No jargon. Use analogies.',ph:'Write your plain-language explanation here…',rows:6},
+    {n:'3',title:'Identify the gaps',hint:'Where did you hesitate? What couldn\'t you explain clearly? List those weak spots.',ph:'e.g. I couldn\'t explain why the electron transport chain produces ATP…',rows:4},
+    {n:'4',title:'Simplify & review',hint:'Go back to your notes, fill the gaps, then rewrite your explanation even more clearly.',ph:'Your improved explanation…',rows:6},
+  ];
+  return steps.map((s,i)=>`
+    <div class="sm-step">
+      <div class="sm-step-num">Step ${s.n} of 4</div>
+      <div class="sm-step-title">${s.title}</div>
+      <div class="sm-step-hint">${s.hint}</div>
+      <textarea id="feyn-${i}" rows="${s.rows}" placeholder="${s.ph}"></textarea>
+    </div>`).join('')+
+    `<button class="sm-done-btn" id="feyn-done" onclick="feynCheck()">Complete →</button>`;
+}
+function feynCheck(){
+  const filled=['feyn-0','feyn-1','feyn-2','feyn-3'].filter(id=>document.getElementById(id)?.value.trim().length>20);
+  if(filled.length<4){showToast('Complete all 4 steps before finishing');return;}
+  smAward();
+}
+
+// ── TIMED EXAM PRACTICE ──
+function smBuildTimed(){
+  return `
+    <div class="sm-step">
+      <div class="sm-step-num">Setup</div>
+      <div class="sm-step-title">Configure your practice session</div>
+      <div class="sm-step-hint">Pick a subject and how long you want to practice. Work through past questions without opening your notes.</div>
+      <div class="frow" style="grid-template-columns:1fr 1fr;gap:12px;margin-bottom:.75rem">
+        <div class="fg"><label>Subject</label><select id="timed-subj" class="subj-sel" onchange="colourSel(this)"></select></div>
+        <div class="fg"><label>Duration</label>
+          <select id="timed-dur" style="width:100%;padding:8px 10px;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:9px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;outline:none">
+            <option value="15">15 minutes</option>
+            <option value="30" selected>30 minutes</option>
+            <option value="45">45 minutes</option>
+            <option value="60">60 minutes</option>
+            <option value="90">90 minutes</option>
+          </select>
+        </div>
+      </div>
+      <button class="sm-done-btn" id="timed-start-btn" onclick="timedStart()" style="margin-top:.25rem">Begin Practice →</button>
+    </div>
+    <div id="timed-session" style="display:none">
+      <div class="sm-timer-display" id="timed-time">30:00</div>
+      <div style="text-align:center;color:var(--muted);font-size:13.5px;margin-bottom:1.25rem" id="timed-label"></div>
+      <div class="sm-step" style="background:rgba(79,70,229,.05);border-color:var(--accent)">
+        <div class="sm-step-title">📚 Exam mode active</div>
+        <div class="sm-step-hint">Notes closed. Work through your practice questions until the timer finishes. Stay focused — you've got this.</div>
+      </div>
+      <div id="timed-done-wrap" style="display:none">
+        <div class="sm-step" style="background:rgba(22,163,74,.07);border-color:rgba(22,163,74,.3)">
+          <div class="sm-step-title">✅ Session complete!</div>
+          <div class="sm-step-hint">Mark your answers and note which question types tripped you up — those are your revision targets.</div>
+        </div>
+        <button class="sm-done-btn" onclick="timedClaim()">Claim +25 XP ✓</button>
+      </div>
+      <button id="timed-end-btn" class="sm-done-btn" style="background:var(--border);color:var(--text);margin-top:.75rem" onclick="timedEarlyEnd()">End early</button>
+    </div>`;
+}
+function timedStart(){
+  const dur=parseInt(document.getElementById('timed-dur').value);
+  const subj=document.getElementById('timed-subj').value;
+  const subjLabel=userSubjects.find(s=>s.id===subj)?.label||subj||'General';
+  document.getElementById('timed-session').style.display='block';
+  document.getElementById('sm-session-card').querySelectorAll('.sm-step')[0].style.display='none';
+  document.getElementById('timed-label').textContent=`${subjLabel} · ${dur} min`;
+  let rem=dur*60;
+  _smRunning=true;
+  const disp=document.getElementById('timed-time');
+  _smTimer=setInterval(()=>{
+    rem--;
+    const m=String(Math.floor(rem/60)).padStart(2,'0'),s=String(rem%60).padStart(2,'0');
+    disp.textContent=`${m}:${s}`;
+    if(rem<=120)disp.classList.add('urgent');
+    if(rem<=0){
+      clearInterval(_smTimer);disp.textContent='00:00';
+      const sub=document.getElementById('timed-subj').value;
+      studyLog.unshift({id:Date.now(),subject:sub,hours:dur/60,date:todayStr(),note:`Exam practice (${dur} min)`});
+      saveL();renderHoursBar();
+      document.getElementById('timed-done-wrap').style.display='block';
+      document.getElementById('timed-end-btn').style.display='none';
+    }
+  },1000);
+}
+function timedEarlyEnd(){
+  if(_smTimer){clearInterval(_smTimer);_smTimer=null;}
+  document.getElementById('timed-done-wrap').style.display='block';
+  document.getElementById('timed-end-btn').style.display='none';
+}
+function timedClaim(){smAward()}
+
+// ── MIND MAP BUILDER ──
+function smBuildMindmap(){
+  _mmBranches=[{label:'',subs:['']}];
+  return `
+    <div class="sm-step">
+      <div class="sm-step-num">Setup</div>
+      <div class="sm-step-title">Central concept</div>
+      <div class="sm-step-hint">What is the core idea or topic for this mind map?</div>
+      <input type="text" id="mm-root" placeholder="e.g. The Water Cycle, Supply & Demand…" oninput="mmRender()"/>
+    </div>
+    <div id="mm-board" style="margin-bottom:.75rem"></div>
+    <button class="sm-done-btn" id="mm-add-btn" onclick="mmAddBranch()" style="background:var(--border);color:var(--text);margin-bottom:.75rem;display:block;width:auto;padding:0 20px">+ Add main branch</button>
+    <button class="sm-done-btn" id="mm-done-btn" onclick="mmCheck()" disabled>Complete Mind Map →</button>`;
+}
+function mmRender(){
+  const root=document.getElementById('mm-root')?.value.trim()||'Your concept';
+  const board=document.getElementById('mm-board');
+  if(!board)return;
+  let html=`<div style="text-align:center;margin-bottom:.75rem"><div class="mm-root">${root||'Your concept'}</div></div>`;
+  _mmBranches.forEach((b,bi)=>{
+    html+=`<div class="mm-branch-row">
+      <div class="mm-branch-dot"></div>
+      <div class="mm-branch-wrap">
+        <input class="mm-branch-label" type="text" value="${b.label}" placeholder="Main branch ${bi+1}" oninput="_mmBranches[${bi}].label=this.value;mmCheckDone()"/>
+        ${b.subs.map((s,si)=>`<input class="mm-sub-label" type="text" value="${s}" placeholder="Sub-idea" oninput="_mmBranches[${bi}].subs[${si}]=this.value"/>`).join('')}
+        <button class="mm-add-sub" onclick="mmAddSub(${bi})">+ sub-idea</button>
+      </div>
+    </div>`;
+  });
+  board.innerHTML=html;
+  mmCheckDone();
+}
+function mmAddBranch(){_mmBranches.push({label:'',subs:['']});mmRender();}
+function mmAddSub(bi){_mmBranches[bi].subs.push('');mmRender();}
+function mmCheckDone(){
+  const filled=_mmBranches.filter(b=>b.label.trim()).length;
+  const btn=document.getElementById('mm-done-btn');
+  if(btn)btn.disabled=filled<3||!document.getElementById('mm-root')?.value.trim();
+}
+function mmCheck(){smAward();}
+
+function renderStudy(){
+  const g=document.getElementById('sm-grid');
+  if(!g)return;
+  g.innerHTML=SM_METHODS.map(m=>`
+    <div class="sm-card" onclick="smStart('${m.id}')">
+      <div class="sm-card-icon">${m.icon}</div>
+      <div class="sm-card-name">${m.name}</div>
+      <div class="sm-card-desc">${m.desc}</div>
+      <div class="sm-card-meta">
+        <span class="sm-badge">${m.time}</span>
+        <span class="sm-badge xp">+25 XP</span>
+        <button class="sm-start-btn" onclick="event.stopPropagation();smStart('${m.id}')">Start →</button>
+      </div>
+    </div>`).join('');
+  // populate timed-subj select when it exists (called again after session starts)
+  populateSubjSelects();
 }
 
 init().then(()=>{ if(typeof lucide!=='undefined') lucide.createIcons(); checkShowTour(); });
