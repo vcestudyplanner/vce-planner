@@ -405,10 +405,10 @@ select.subj-sel{font-weight:600;border-width:2px}
 .tour-wb-skip:hover{border-color:var(--accent);color:var(--text)}
 #tour-overlay{position:fixed;inset:0;z-index:9981;background:transparent;pointer-events:all;display:none}
 #tour-spotlight{position:fixed;border-radius:12px;box-shadow:0 0 0 9999px rgba(0,0,0,.65),0 0 0 2.5px var(--accent);z-index:9982;pointer-events:none;transition:left .35s cubic-bezier(.4,0,.2,1),top .35s cubic-bezier(.4,0,.2,1),width .35s cubic-bezier(.4,0,.2,1),height .35s cubic-bezier(.4,0,.2,1);display:none}
-#tour-box{position:fixed;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.4rem 1.5rem;width:300px;z-index:9983;box-shadow:0 20px 50px rgba(0,0,0,.25);pointer-events:all;display:none}
+#tour-box{position:fixed;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.4rem 1.5rem;width:320px;z-index:9983;box-shadow:0 20px 50px rgba(0,0,0,.25);pointer-events:all;display:none;max-height:calc(100vh - 40px)}
 .tour-step-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:.45rem}
 .tour-box-title{font-family:'Fraunces',serif;font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:.35rem}
-.tour-box-body{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:1.1rem}
+.tour-box-body{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:1.1rem;max-height:220px;overflow-y:auto}
 .tour-footer{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .tour-dots{display:flex;gap:5px;flex-shrink:0}
 .tour-dot{width:7px;height:7px;border-radius:50%;background:var(--border);transition:background .2s,transform .2s}
@@ -1638,23 +1638,83 @@ function renderHome(){
 
 // ── TOUR ──
 const TOUR_STEPS=[
-  {title:'Your navigation sidebar',body:'Everything in the planner is one click away. 7 sections covering tasks, calendar, study timer, stats, and more.',target:'.sidebar-nav',pos:'right'},
-  {title:'Tasks',body:'Add assignments, essays, or anything with a due date. Set a subject, urgency flag, and optional notes. Tick off tasks to earn XP.',target:'[data-page="tasks"]',pos:'right'},
-  {title:'SACs & Exams',body:'Log upcoming SACs and exams. Each one gets a live countdown timer and a revision checklist to prepare topic by topic.',target:'[data-page="sacs"]',pos:'right'},
-  {title:'Day Planner',body:'Schedule your day hour by hour. Add study blocks or drag tasks from your list into time slots to build a realistic daily plan.',target:'[data-page="planner"]',pos:'right'},
-  {title:'Calendar',body:'See everything in a monthly calendar view — tasks, SACs, exams, and custom events all colour-coded by subject.',target:'[data-page="calendar"]',pos:'right'},
-  {title:'Pomodoro timer',body:'Built-in 25-minute focus timer. Every completed session earns +15 XP and automatically logs study hours under your subject.',target:'[data-page="pomodoro"]',pos:'right'},
-  {title:'Stats',body:'Your study heatmap, streaks, subject breakdown, weekly goal, and XP level — all in one scrollable page.',target:'[data-page="stats"]',pos:'right'},
-  {title:'Colour & dark mode',body:'Pick any accent colour to instantly retheme the whole app. Toggle dark mode with the moon button next to it.',target:'.sidebar-theme',pos:'right'},
-  {title:"You're all set! 🎉",body:'Start by adding your first task, or set your VCE exam date on the Home page for a live countdown. Good luck!',target:null,pos:'center'},
+  // ── Home ──────────────────────────────────────────────────────────
+  {page:'home',   title:'Welcome — your Home screen',
+   body:'This is your dashboard. At a glance you can see how many tasks are due today, what\'s coming this week, your current study streak, and upcoming SACs. Everything updates automatically as you work.',
+   target:'.home-hero',pos:'right'},
+  {page:null,     title:'4 live stat tiles',
+   body:'Due Today counts overdue + tasks due by end of today. This Week shows what\'s due in the next 7 days. Streak tracks consecutive days you\'ve logged study. SACs & Exams counts events still ahead of you.',
+   target:'.home-stats',pos:'right'},
+  {page:null,     title:'Quick-view cards',
+   body:'Your most urgent tasks and nearest SACs are listed right here on Home. You can tick a task off directly from this card without leaving the Home screen — it\'ll disappear once marked done.',
+   target:'.home-grid',pos:'right'},
+  // ── Tasks ──────────────────────────────────────────────────────────
+  {page:'tasks',  title:'Adding a task',
+   body:'Type any task name here and press Enter (or tap Add). You can optionally pick a subject colour, set a due date with the calendar icon, mark it as urgent with the flag, and add a note. Tasks with a due date show a countdown.',
+   target:'#task-input',pos:'right'},
+  {page:null,     title:'Filter & sort your list',
+   body:'Use these buttons to show All, Active, or Done tasks. You can also sort by due date, subject, or urgency. Combine filters to focus on exactly what needs doing right now.',
+   target:'#filter-btns-wrap',pos:'right'},
+  {page:null,     title:'Task cards',
+   body:'Tap the circle on the left to complete a task and earn XP. A 🔥 icon means it\'s marked urgent — keep an eye on those first. Tasks past their due date turn red so nothing slips through.',
+   target:'#page-tasks .task-list',pos:'right'},
+  // ── SACs & Exams ───────────────────────────────────────────────────
+  {page:'sacs',   title:'Logging a SAC or exam',
+   body:'Fill in the event name, pick a subject and date, then hit Add. You can also choose a type (SAC, Exam, Prac, etc.) and attach notes about what the assessment covers.',
+   target:'#ev-name',pos:'right'},
+  {page:null,     title:'Event cards with countdown',
+   body:'Each card shows a live "X days away" countdown. Expand an event to reveal its revision checklist — tick off topics as you study them so you know exactly what\'s left to cover before the day.',
+   target:'#ev-upcoming',pos:'right'},
+  // ── Day Planner ────────────────────────────────────────────────────
+  {page:'planner',title:'Day Planner — navigate days',
+   body:'Use the arrows to flick between days. The planner shows an hourly timeline for the selected date. Your existing tasks with due dates appear in the sidebar so you can drag or click them into a time slot.',
+   target:'.planner-nav',pos:'right'},
+  {page:null,     title:'Scheduling a block',
+   body:'Click any empty time slot — or use this form — to add a study block. Give it a name, pick a subject colour, and set start/end times. You can layer multiple subjects across a single day to plan realistic study sessions.',
+   target:'.plan-add-form',pos:'right'},
+  // ── Calendar ───────────────────────────────────────────────────────
+  {page:'calendar',title:'Monthly calendar',
+   body:'Every task, SAC, exam, and planned block appears here as a colour-coded dot. Click any date to see everything scheduled for that day. Switch months with the arrows at the top.',
+   target:'#page-calendar .card',pos:'right'},
+  // ── Pomodoro ───────────────────────────────────────────────────────
+  {page:'pomodoro',title:'Pomodoro focus timer',
+   body:'This is a 25-minute focus timer based on the Pomodoro technique. Pick a subject, hit Start, and stay focused until the bell. After 4 rounds the app suggests a longer break. Each completed session earns +15 XP.',
+   target:'.pom-ring-wrap',pos:'right'},
+  {page:null,     title:'Study log feeds your stats',
+   body:'Every session you complete is logged under that subject. That data powers your weekly hours bar, the heatmap on Stats, and the subject breakdown — so the more you use the timer, the richer your stats become.',
+   target:'.pom-wrap',pos:'right'},
+  // ── Stats ──────────────────────────────────────────────────────────
+  {page:'stats',  title:'Activity heatmap',
+   body:'Each square is one day — darker means more hours studied. Hover (or tap) any square to see exactly how many hours you logged that day. The heatmap covers the last 26 weeks so you can spot habits over a whole semester.',
+   target:'#st-grid',pos:'right'},
+  {page:null,     title:'Subject breakdown',
+   body:'These bars show how many hours you\'ve put into each subject this week versus your goal. A subject flagged "neglected" hasn\'t had any study logged in the last 7 days — a nudge to balance your revision.',
+   target:'#st-subject-grid',pos:'right'},
+  // ── Theme ──────────────────────────────────────────────────────────
+  {page:null,     title:'Themes & dark mode',
+   body:'Tap any colour swatch to instantly retheme the whole app — accent colour, buttons, highlights, everything. The moon button toggles dark mode. Your choice is saved automatically so it persists across sessions.',
+   target:'.sidebar-theme',pos:'right'},
+  // ── Done ───────────────────────────────────────────────────────────
+  {page:null,     title:"You're all set! 🎉",
+   body:'You now know every feature in VCE Planner. Start by adding a subject in Settings, then drop in your first task. You can replay this tour any time from the sidebar. Good luck with your VCE!',
+   target:null,pos:'center'},
 ];
-let _tourIdx=0;
+let _tourIdx=0,_tourBusy=false;
 function checkShowTour(){if(!localStorage.getItem('vce-tour-done'))setTimeout(()=>{document.getElementById('tour-welcome').style.display='flex'},900)}
 function skipTour(){localStorage.setItem('vce-tour-done','1');document.getElementById('tour-welcome').style.display='none'}
-function replayTour(){document.getElementById('tour-welcome').style.display='flex';localStorage.removeItem('vce-tour-done')}
-function startTour(){document.getElementById('tour-welcome').style.display='none';_tourIdx=0;_showTourStep(0)}
-function _showTourStep(idx){
+function replayTour(){localStorage.removeItem('vce-tour-done');nav('home',document.querySelector('[data-page="home"]'));setTimeout(()=>{document.getElementById('tour-welcome').style.display='flex'},400)}
+function startTour(){document.getElementById('tour-welcome').style.display='none';_tourIdx=0;_tourBusy=false;_showTourStep(0)}
+async function _showTourStep(idx){
   const step=TOUR_STEPS[idx];
+  // Navigate to the required page first
+  if(step.page){
+    const navBtn=document.querySelector(`[data-page="${step.page}"]`);
+    nav(step.page,navBtn);
+    await new Promise(r=>setTimeout(r,180));
+  }
+  // Scroll target into view then wait for layout to settle
+  const targetEl=step.target?document.querySelector(step.target):null;
+  if(targetEl){targetEl.scrollIntoView({behavior:'smooth',block:'nearest'});await new Promise(r=>setTimeout(r,320));}
   const box=document.getElementById('tour-box');
   const spotlight=document.getElementById('tour-spotlight');
   const overlay=document.getElementById('tour-overlay');
@@ -1664,34 +1724,35 @@ function _showTourStep(idx){
   document.getElementById('tour-next-btn').textContent=idx===TOUR_STEPS.length-1?'Finish ✓':'Next →';
   document.getElementById('tour-dots').innerHTML=TOUR_STEPS.map((_,i)=>`<div class="tour-dot${i===idx?' active':''}"></div>`).join('');
   overlay.style.display='block';
-  box.style.cssText='display:block;width:300px;position:fixed;z-index:9983;';
+  box.style.cssText='display:block;width:320px;position:fixed;z-index:9983;';
   const mobile=window.innerWidth<860;
-  if(step.target&&!mobile){
-    const el=document.querySelector(step.target);
-    if(el){
-      const r=el.getBoundingClientRect(),pad=8;
-      spotlight.style.cssText=`display:block;left:${r.left-pad}px;top:${r.top-pad}px;width:${r.width+pad*2}px;height:${r.height+pad*2}px;border-radius:12px;box-shadow:0 0 0 9999px rgba(0,0,0,.65),0 0 0 2.5px var(--accent);z-index:9982;pointer-events:none;position:fixed;transition:all .35s cubic-bezier(.4,0,.2,1)`;
-      let bx=r.right+20,by=Math.max(16,r.top+(r.height/2)-100);
-      if(bx+300>window.innerWidth-12){bx=r.left-320}
-      if(by+220>window.innerHeight-16){by=window.innerHeight-236}
-      box.style.left=bx+'px';box.style.top=by+'px';
-    }
+  if(targetEl&&!mobile){
+    const r=targetEl.getBoundingClientRect(),pad=8;
+    spotlight.style.cssText=`display:block;left:${r.left-pad}px;top:${r.top-pad}px;width:${r.width+pad*2}px;height:${r.height+pad*2}px;border-radius:12px;box-shadow:0 0 0 9999px rgba(0,0,0,.65),0 0 0 2.5px var(--accent);z-index:9982;pointer-events:none;position:fixed;transition:all .35s cubic-bezier(.4,0,.2,1)`;
+    let bx=r.right+20,by=Math.max(16,r.top+(r.height/2)-120);
+    if(bx+330>window.innerWidth-12){bx=Math.max(8,r.left-340)}
+    if(by+260>window.innerHeight-16){by=window.innerHeight-276}
+    if(by<8)by=8;
+    box.style.left=bx+'px';box.style.top=by+'px';box.style.transform='';
   }else{
     spotlight.style.display='none';
     box.style.left='50%';box.style.top='50%';box.style.transform='translate(-50%,-50%)';
   }
+  _tourBusy=false;
 }
-function tourNext(){
+async function tourNext(){
+  if(_tourBusy)return;
+  _tourBusy=true;
   if(_tourIdx>=TOUR_STEPS.length-1){endTour();return}
   _tourIdx++;
-  document.getElementById('tour-box').style.transform='';
-  _showTourStep(_tourIdx);
+  await _showTourStep(_tourIdx);
 }
 function endTour(){
   localStorage.setItem('vce-tour-done','1');
   document.getElementById('tour-box').style.display='none';
   document.getElementById('tour-spotlight').style.display='none';
   document.getElementById('tour-overlay').style.display='none';
+  _tourBusy=false;
 }
 
 init().then(()=>{ if(typeof lucide!=='undefined') lucide.createIcons(); checkShowTour(); });
@@ -1713,7 +1774,7 @@ init().then(()=>{ if(typeof lucide!=='undefined') lucide.createIcons(); checkSho
 <div id="tour-overlay" onclick="tourNext()"></div>
 <div id="tour-spotlight"></div>
 <div id="tour-box">
-  <div class="tour-step-lbl" id="tour-step-lbl">Step 1 of 9</div>
+  <div class="tour-step-lbl" id="tour-step-lbl">Step 1 of 17</div>
   <div class="tour-box-title" id="tour-title"></div>
   <div class="tour-box-body" id="tour-body"></div>
   <div class="tour-footer">
