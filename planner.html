@@ -3,7 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Suede's VCE Study Planner</title>
+<meta name="theme-color" content="#18151e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="VCE Planner">
+<title>VCE Planner</title>
+<link rel="manifest" href="manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <script>
 (function(){
@@ -515,6 +521,66 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 .mm-sub-label{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.3rem .65rem;font-size:12.5px;color:var(--muted);width:100%;margin-bottom:.3rem}
 .mm-add-sub{background:transparent;border:none;color:var(--muted);font-size:12px;cursor:pointer;padding:.2rem 0;font-family:'Plus Jakarta Sans',sans-serif}
 .mm-add-sub:hover{color:var(--accent)}
+
+/* ── SCORES ── */
+.scores-subj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin-bottom:1.5rem}
+.score-subj-card{background:var(--surface);border:1.5px solid var(--border);border-radius:16px;padding:1.25rem 1.4rem}
+.score-subj-header{display:flex;align-items:center;gap:.6rem;margin-bottom:.75rem}
+.score-subj-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.score-subj-name{font-family:'Fraunces',serif;font-size:1rem;font-weight:700;color:var(--text)}
+.score-subj-avg{margin-left:auto;font-family:'Fraunces',serif;font-size:1.5rem;font-weight:700;color:var(--accent)}
+.score-bar-wrap{height:7px;background:var(--border);border-radius:4px;overflow:hidden;margin-bottom:.65rem}
+.score-bar-fill{height:100%;border-radius:4px;background:var(--accent);transition:width .5s cubic-bezier(.4,0,.2,1)}
+.score-history{display:flex;flex-direction:column;gap:5px;max-height:140px;overflow-y:auto}
+.score-row{display:flex;align-items:center;gap:.5rem;padding:.3rem .5rem;border-radius:7px;background:var(--bg);font-size:12.5px}
+.score-row-name{flex:1;color:var(--text);font-weight:500}
+.score-row-pct{font-weight:700;color:var(--text)}
+.score-row-date{color:var(--muted);font-size:11px}
+.score-row-del{background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:14px;line-height:1;padding:2px 4px;border-radius:4px;transition:color .15s}
+.score-row-del:hover{color:var(--high)}
+.score-add-form{background:var(--surface);border:1.5px solid var(--border);border-radius:16px;padding:1.25rem 1.4rem;margin-bottom:1.5rem}
+.score-grade-badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px;margin-left:.4rem}
+/* revision */
+.rev-event-card{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:1.1rem 1.3rem;margin-bottom:.75rem}
+.rev-event-header{display:flex;align-items:center;gap:.75rem;margin-bottom:.6rem}
+.rev-event-name{font-family:'Fraunces',serif;font-size:1rem;font-weight:700;color:var(--text);flex:1}
+.rev-event-days{font-size:12px;font-weight:700;color:var(--accent);white-space:nowrap}
+.rev-plan-btn{font-size:12px;font-weight:600;padding:4px 13px;border-radius:8px;background:var(--accent);color:#fff;border:none;cursor:pointer;transition:all .15s;white-space:nowrap}
+.rev-plan-btn:hover{filter:brightness(1.1)}
+.rev-sessions{display:flex;flex-direction:column;gap:6px;margin-top:.5rem}
+.rev-session-row{display:flex;align-items:center;gap:.6rem;padding:.4rem .7rem;border-radius:9px;background:var(--bg);font-size:12.5px}
+.rev-session-date{font-weight:600;color:var(--text);min-width:90px}
+.rev-session-topic{flex:1;color:var(--muted)}
+.rev-session-add{background:transparent;border:1px solid var(--border);color:var(--muted);font-size:11px;padding:3px 9px;border-radius:6px;cursor:pointer;transition:all .15s;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap}
+.rev-session-add:hover{border-color:var(--accent);color:var(--accent)}
+.rev-session-add.added{background:var(--green-bg);border-color:var(--green);color:var(--green);cursor:default}
+/* AI assistant */
+#ai-fab{position:fixed;bottom:1.5rem;right:1.5rem;width:52px;height:52px;border-radius:50%;background:var(--accent);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,.25);z-index:9000;transition:all .2s;font-size:1.4rem}
+#ai-fab:hover{transform:scale(1.08);filter:brightness(1.1)}
+#ai-panel{position:fixed;bottom:1.5rem;right:1.5rem;width:360px;max-width:calc(100vw - 2rem);height:540px;max-height:calc(100vh - 2rem);background:var(--surface);border:1px solid var(--border);border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.3);z-index:9001;display:none;flex-direction:column;overflow:hidden}
+#ai-panel.open{display:flex}
+.ai-panel-header{background:var(--hbg);padding:.9rem 1.1rem;display:flex;align-items:center;gap:.6rem;flex-shrink:0}
+.ai-panel-title{font-family:'Fraunces',serif;font-size:.95rem;font-weight:700;color:var(--htxt);flex:1}
+.ai-panel-close{background:transparent;border:none;color:rgba(255,255,255,.6);cursor:pointer;font-size:1.2rem;line-height:1;padding:2px 4px;border-radius:4px;transition:color .15s}
+.ai-panel-close:hover{color:#fff}
+.ai-messages{flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:.75rem}
+.ai-msg{max-width:88%;padding:.65rem .9rem;border-radius:14px;font-size:13.5px;line-height:1.6}
+.ai-msg.user{background:var(--accent);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.ai-msg.assistant{background:var(--bg);color:var(--text);align-self:flex-start;border-bottom-left-radius:4px;border:1px solid var(--border)}
+.ai-msg.assistant pre{font-size:12px;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:.4rem .6rem;overflow-x:auto;margin:.4rem 0}
+.ai-input-row{padding:.75rem 1rem;border-top:1px solid var(--border);display:flex;gap:.5rem;flex-shrink:0}
+#ai-input{flex:1;padding:9px 12px;border:1px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:13.5px;outline:none;resize:none;max-height:100px;line-height:1.5;transition:border-color .15s}
+#ai-input:focus{border-color:var(--accent)}
+#ai-send{width:36px;height:36px;border-radius:9px;background:var(--accent);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;align-self:flex-end}
+#ai-send:hover{filter:brightness(1.1)}
+#ai-send:disabled{opacity:.4;cursor:default}
+.ai-key-wrap{padding:1rem;flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:.75rem;text-align:center}
+.ai-key-wrap p{font-size:13px;color:var(--muted);line-height:1.6;max-width:280px}
+.ai-key-wrap input{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;outline:none;transition:border-color .15s}
+.ai-key-wrap input:focus{border-color:var(--accent)}
+.ai-suggestions{display:flex;flex-wrap:wrap;gap:.4rem;padding:.5rem 1rem 0;flex-shrink:0}
+.ai-chip{font-size:11.5px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--bg);color:var(--muted);cursor:pointer;transition:all .15s;font-family:'Plus Jakarta Sans',sans-serif}
+.ai-chip:hover{border-color:var(--accent);color:var(--accent)}
 </style>
 </head>
 <body>
@@ -539,12 +605,15 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
     <div class="sidebar-sep"></div>
     <button class="nav-item" data-page="planner" onclick="nav('planner',this)"><i data-lucide="layout-list"></i>Day Planner</button>
     <button class="nav-item" data-page="sacs" onclick="nav('sacs',this)"><i data-lucide="target"></i>SACs &amp; Exams</button>
+    <button class="nav-item" data-page="revision" onclick="nav('revision',this)"><i data-lucide="calendar-check"></i>Revision Planner</button>
     <button class="nav-item" data-page="calendar" onclick="nav('calendar',this)"><i data-lucide="calendar"></i>Calendar</button>
     <div class="sidebar-sep"></div>
     <button class="nav-item" data-page="study" onclick="nav('study',this)"><i data-lucide="brain"></i>Study Methods</button>
+    <button class="nav-item" data-page="scores" onclick="nav('scores',this)"><i data-lucide="trophy"></i>Scores</button>
     <button class="nav-item" data-page="stats" onclick="nav('stats',this)"><i data-lucide="bar-chart-2"></i>Stats</button>
   </nav>
   <div class="sidebar-bottom">
+    <button class="sidebar-link" id="pwa-install-btn" onclick="pwaInstall()" style="display:none"><i data-lucide="download"></i>Install app</button>
     <a class="sidebar-link" href="suggestions.html"><i data-lucide="message-circle"></i>Suggestions</a>
     <button class="tour-replay-btn" onclick="replayTour()"><i data-lucide="play-circle"></i>Replay tour</button>
     <button class="sidebar-link" onclick="logout()"><i data-lucide="log-out"></i>Sign out</button>
@@ -874,7 +943,85 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
   </div>
 </div></div>
 
+<!-- SCORES -->
+<div class="page" id="page-scores"><div class="container">
+  <div class="page-hdr"><div class="page-hdr-title">Scores</div><div class="page-hdr-sub">Track your SAC results and monitor your study score progress</div></div>
+
+  <!-- add score form -->
+  <div class="score-add-form">
+    <div class="sh">Log a result</div>
+    <div class="frow" style="grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+      <div class="fg"><label>Subject</label><select id="sc-subj" class="subj-sel" onchange="colourSel(this)"></select></div>
+      <div class="fg"><label>Assessment name</label><input type="text" id="sc-name" placeholder="e.g. SAC 1 — Essay"/></div>
+    </div>
+    <div class="frow" style="grid-template-columns:auto auto auto 1fr auto;gap:10px;margin-bottom:.75rem">
+      <div class="fg"><label>Score</label><input type="number" id="sc-score" min="0" max="999" step="1" value="" style="max-width:80px" placeholder="0"/></div>
+      <div class="fg"><label>Out of</label><input type="number" id="sc-max" min="1" max="999" step="1" value="100" style="max-width:80px"/></div>
+      <div class="fg"><label>Date</label><input type="date" id="sc-date"/></div>
+      <div></div>
+      <div class="fg"><label>&nbsp;</label><button class="abtn green" onclick="addScore()" style="min-width:90px;padding:0 18px">+ Add result</button></div>
+    </div>
+  </div>
+
+  <!-- target study score -->
+  <div class="card" style="margin-bottom:1.25rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
+    <div>
+      <div class="sh" style="margin-bottom:.2rem">ATAR target</div>
+      <div style="font-size:13px;color:var(--muted)">Set a goal to see how each subject is tracking</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:.6rem;margin-left:auto">
+      <input type="number" id="sc-atar-target" min="0" max="99.95" step=".05" placeholder="e.g. 90" style="width:90px;padding:7px 10px;border:1px solid var(--border);border-radius:9px;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;outline:none" oninput="saveAtarTarget()"/>
+      <span style="font-size:13px;color:var(--muted)">/ 99.95</span>
+    </div>
+  </div>
+
+  <!-- per-subject cards -->
+  <div class="scores-subj-grid" id="scores-subj-grid"></div>
+
+  <!-- all results table -->
+  <div class="card">
+    <div class="sh">All results</div>
+    <div id="scores-all-list"></div>
+  </div>
+</div></div>
+
+<!-- REVISION PLANNER -->
+<div class="page" id="page-revision"><div class="container">
+  <div class="page-hdr"><div class="page-hdr-title">Revision Planner</div><div class="page-hdr-sub">Spaced revision schedules generated from your upcoming SACs &amp; exams</div></div>
+  <div id="rev-list"></div>
+  <div id="rev-empty" style="display:none;text-align:center;padding:3rem 0;color:var(--muted);font-size:14px">No upcoming SACs or exams found.<br>Add them on the <button onclick="navTo('sacs')" style="background:transparent;border:none;color:var(--accent);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;text-decoration:underline;padding:0">SACs &amp; Exams</button> page first.</div>
+</div></div>
+
 </div><!-- end .main-wrap -->
+
+<!-- AI ASSISTANT FAB -->
+<button id="ai-fab" onclick="aiToggle()" title="AI Study Assistant">✨</button>
+
+<!-- AI ASSISTANT PANEL -->
+<div id="ai-panel">
+  <div class="ai-panel-header">
+    <span style="font-size:1.1rem">✨</span>
+    <div class="ai-panel-title">AI Study Assistant</div>
+    <button class="ai-panel-close" onclick="aiToggle()">✕</button>
+  </div>
+  <!-- key setup screen (shown if no API key) -->
+  <div id="ai-key-screen" class="ai-key-wrap" style="display:none">
+    <div style="font-size:2rem">🔑</div>
+    <p>Enter your Anthropic API key to use the AI assistant. Your key is stored only in this browser and never sent anywhere except Anthropic.</p>
+    <input type="password" id="ai-key-input" placeholder="sk-ant-..."/>
+    <button class="abtn" onclick="aiSaveKey()" style="width:100%">Save key & start chatting</button>
+    <a href="https://console.anthropic.com/" target="_blank" rel="noopener" style="font-size:11.5px;color:var(--muted)">Get an API key at console.anthropic.com →</a>
+  </div>
+  <!-- chat screen -->
+  <div id="ai-chat-screen" style="display:none;flex-direction:column;flex:1;overflow:hidden">
+    <div class="ai-suggestions" id="ai-chips"></div>
+    <div class="ai-messages" id="ai-messages"></div>
+    <div class="ai-input-row">
+      <textarea id="ai-input" rows="1" placeholder="Ask anything about your subjects…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();aiSend()}"></textarea>
+      <button id="ai-send" onclick="aiSend()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+    </div>
+  </div>
+</div>
 
 <script defer>
 // ── DATA ──
@@ -1152,6 +1299,8 @@ function nav(p,btn){
   if(p==='stats')renderStats();
   if(p==='planner'){renderPlanner();renderSchedPanel();}
   if(p==='study')renderStudy();
+  if(p==='scores')renderScores();
+  if(p==='revision')renderRevision();
 }
 function navTo(p){
   const btn=document.querySelector(`.nav-item[data-page="${p}"]`);
@@ -2240,7 +2389,269 @@ function renderStudy(){
   const ld=document.getElementById('log-date');if(ld&&!ld.value)ld.value=todayStr();
 }
 
-init().then(()=>{ if(typeof lucide!=='undefined') lucide.createIcons(); checkShowTour(); });
+// ── SCORES ───────────────────────────────────────────────────────────────────
+let scores=[];
+function saveScores(){localStorage.setItem(UID_PREFIX+'scores',JSON.stringify(scores))}
+function loadScores(){scores=JSON.parse(localStorage.getItem(UID_PREFIX+'scores')||'[]')}
+function saveAtarTarget(){localStorage.setItem(UID_PREFIX+'atar-target',document.getElementById('sc-atar-target').value)}
+
+function addScore(){
+  const subj=document.getElementById('sc-subj').value;
+  const name=document.getElementById('sc-name').value.trim();
+  const score=parseFloat(document.getElementById('sc-score').value);
+  const max=parseFloat(document.getElementById('sc-max').value)||100;
+  const date=document.getElementById('sc-date').value||todayStr();
+  if(!name||isNaN(score)){showToast('Fill in assessment name and score');return;}
+  scores.unshift({id:Date.now(),subj,name,score,max,date});
+  saveScores();
+  document.getElementById('sc-name').value='';
+  document.getElementById('sc-score').value='';
+  renderScores();
+  showToast('Result saved!');
+}
+
+function deleteScore(id){
+  scores=scores.filter(s=>s.id!==id);
+  saveScores();renderScores();
+}
+
+function gradeLabel(pct){
+  if(pct>=90)return{text:'A+',bg:'#dcfce7',col:'#16a34a'};
+  if(pct>=80)return{text:'A', bg:'#dcfce7',col:'#16a34a'};
+  if(pct>=70)return{text:'B', bg:'#dbeafe',col:'#1d4ed8'};
+  if(pct>=60)return{text:'C', bg:'#fef9c3',col:'#a16207'};
+  if(pct>=50)return{text:'D', bg:'#ffedd5',col:'#c2410c'};
+  return{text:'E',bg:'#fee2e2',col:'#dc2626'};
+}
+
+function renderScores(){
+  loadScores();
+  const atarEl=document.getElementById('sc-atar-target');
+  if(atarEl)atarEl.value=localStorage.getItem(UID_PREFIX+'atar-target')||'';
+  const dateEl=document.getElementById('sc-date');
+  if(dateEl&&!dateEl.value)dateEl.value=todayStr();
+  populateSubjectDropdowns();
+
+  // per-subject cards
+  const grid=document.getElementById('scores-subj-grid');
+  if(!grid)return;
+  if(!userSubjects.length){grid.innerHTML='<div style="color:var(--muted);font-size:13px">No subjects yet — add them in the sidebar settings.</div>';return;}
+  const COLOR_DOT=['#5ab87a','#a870e0','#6090e0','#d8903a','#40c8c8','#e87090','#e89030','#8080f0'];
+  grid.innerHTML=userSubjects.map((s,si)=>{
+    const sub=scores.filter(r=>r.subj===s.id);
+    const avg=sub.length?Math.round(sub.reduce((a,r)=>a+(r.score/r.max*100),0)/sub.length):null;
+    const g=avg!==null?gradeLabel(avg):null;
+    const dot=COLOR_DOT[si%COLOR_DOT.length];
+    return `<div class="score-subj-card">
+      <div class="score-subj-header">
+        <div class="score-subj-dot" style="background:${dot}"></div>
+        <div class="score-subj-name">${s.label}</div>
+        <div class="score-subj-avg">${avg!==null?avg+'%':'—'}${g?`<span class="score-grade-badge" style="background:${g.bg};color:${g.col}">${g.text}</span>`:''}</div>
+      </div>
+      <div class="score-bar-wrap"><div class="score-bar-fill" style="width:${avg||0}%;background:${dot}"></div></div>
+      <div class="score-history">
+        ${sub.length?sub.slice(0,5).map(r=>{const pct=Math.round(r.score/r.max*100);const gd=gradeLabel(pct);return`<div class="score-row">
+          <div class="score-row-name">${r.name}</div>
+          <div class="score-row-pct">${r.score}/${r.max} <span style="color:${gd.col}">(${pct}%)</span></div>
+          <div class="score-row-date">${r.date}</div>
+          <button class="score-row-del" onclick="deleteScore(${r.id})">×</button>
+        </div>`}).join(''):'<div style="font-size:12px;color:var(--muted);padding:.25rem 0">No results yet</div>'}
+      </div>
+    </div>`;
+  }).join('');
+
+  // all results list
+  const all=document.getElementById('scores-all-list');
+  if(!all)return;
+  if(!scores.length){all.innerHTML='<div style="color:var(--muted);font-size:13px;padding:.5rem 0">No results logged yet.</div>';return;}
+  const sorted=[...scores].sort((a,b)=>b.date.localeCompare(a.date));
+  all.innerHTML=`<div style="display:flex;flex-direction:column;gap:6px">${sorted.map(r=>{
+    const pct=Math.round(r.score/r.max*100);const gd=gradeLabel(pct);
+    const subName=userSubjects.find(s=>s.id===r.subj)?.label||'Unknown';
+    return`<div class="score-row">
+      <div class="score-row-name">${subName} — ${r.name}</div>
+      <div class="score-row-pct">${r.score}/${r.max} <span style="color:${gd.col}">(${pct}%)</span></div>
+      <div class="score-row-date">${r.date}</div>
+      <button class="score-row-del" onclick="deleteScore(${r.id})">×</button>
+    </div>`;}).join('')}</div>`;
+}
+
+// ── REVISION PLANNER ─────────────────────────────────────────────────────────
+function renderRevision(){
+  const list=document.getElementById('rev-list');
+  const empty=document.getElementById('rev-empty');
+  if(!list)return;
+  const upcoming=events.filter(e=>daysUntil(e.date)>=0).sort((a,b)=>a.date.localeCompare(b.date));
+  if(!upcoming.length){list.innerHTML='';if(empty)empty.style.display='block';return;}
+  if(empty)empty.style.display='none';
+  list.innerHTML=upcoming.map(ev=>{
+    const days=daysUntil(ev.date);
+    const subjName=userSubjects.find(s=>s.id===ev.subject)?.label||ev.subject||'';
+    const sessions=genRevSessions(ev,days);
+    return`<div class="rev-event-card">
+      <div class="rev-event-header">
+        <div>
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.15rem">${subjName} · ${ev.type||'SAC'}</div>
+          <div class="rev-event-name">${ev.name}</div>
+        </div>
+        <div class="rev-event-days">${days===0?'Today!':days===1?'Tomorrow':days+' days'}</div>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:.6rem">Suggested revision sessions based on spaced repetition:</div>
+      <div class="rev-sessions">${sessions.map((s,i)=>`
+        <div class="rev-session-row">
+          <div class="rev-session-date">${s.label}</div>
+          <div class="rev-session-topic">${s.topic}</div>
+          <button class="rev-session-add" id="rev-btn-${ev.id}-${i}" onclick="revAddTask('${ev.id}','${s.date}','${encodeURIComponent(s.task)}',this)">+ Add as task</button>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function genRevSessions(ev,days){
+  const spaced=days<=3?[0,1]:days<=7?[0,2,5]:days<=14?[0,2,5,10]:days<=21?[0,3,7,14]:days<=30?[0,3,7,14,21]:[0,3,7,14,21,days-2];
+  const topics=['Initial overview & topic list','Key concepts & definitions','Practice questions','Weak areas deep dive','Past exam questions','Final summary & notes review','Light review — no new content'];
+  const fmtDate=d=>{const dt=new Date(d+'T00:00:00');return dt.toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short'})};
+  return spaced.filter(offset=>offset<days).map((offset,i)=>{
+    const dt=new Date(TODAY);dt.setDate(dt.getDate()+offset);
+    const ds=localStr(dt);
+    const isToday=offset===0;
+    return{
+      date:ds,
+      label:isToday?'Today':fmtDate(ds),
+      topic:topics[Math.min(i,topics.length-1)],
+      task:`${ev.name} — ${topics[Math.min(i,topics.length-1)]}`,
+    };
+  });
+}
+
+function revAddTask(evId,date,taskEnc,btn){
+  const taskName=decodeURIComponent(taskEnc);
+  const ev=events.find(e=>e.id==evId);
+  tasks.push({id:Date.now(),text:taskName,subject:ev?.subject||'',due:date,done:false,urgent:false,note:'',created:todayStr()});
+  saveT();renderTasks();
+  btn.textContent='✓ Added';btn.classList.add('added');btn.disabled=true;
+  showToast('Task added to your list!');
+}
+
+// ── AI STUDY ASSISTANT ────────────────────────────────────────────────────────
+const AI_MODEL='claude-haiku-4-5-20251001';
+let aiOpen=false,aiHistory=[];
+
+function aiToggle(){
+  aiOpen=!aiOpen;
+  const panel=document.getElementById('ai-panel');
+  panel.classList.toggle('open',aiOpen);
+  if(aiOpen)aiInit();
+}
+
+function aiInit(){
+  const key=localStorage.getItem('vce-ai-key')||'';
+  document.getElementById('ai-key-screen').style.display=key?'none':'flex';
+  const chat=document.getElementById('ai-chat-screen');
+  chat.style.display=key?'flex':'none';
+  if(key&&!aiHistory.length)aiWelcome();
+  aiRenderChips();
+}
+
+function aiWelcome(){
+  const subjList=userSubjects.map(s=>s.label).join(', ')||'your subjects';
+  const upcoming=events.filter(e=>daysUntil(e.date)>=0).slice(0,3).map(e=>`${e.name} in ${daysUntil(e.date)}d`).join(', ')||'none upcoming';
+  aiAddMsg('assistant',`Hi! I'm your VCE study assistant. I can see you're studying **${subjList}** and have upcoming assessments: ${upcoming}.\n\nAsk me to explain a concept, quiz you, summarise notes, or help you plan. What do you need?`);
+}
+
+function aiRenderChips(){
+  const chips=['Quiz me on a topic','Explain a concept simply','Help me plan my revision','What should I study today?','Check my understanding'];
+  document.getElementById('ai-chips').innerHTML=chips.map(c=>`<button class="ai-chip" onclick="aiChip(this)">${c}</button>`).join('');
+}
+
+function aiChip(btn){
+  document.getElementById('ai-input').value=btn.textContent;
+  document.getElementById('ai-input').focus();
+}
+
+function aiSaveKey(){
+  const k=document.getElementById('ai-key-input').value.trim();
+  if(!k.startsWith('sk-')){showToast('Invalid key — should start with sk-');return;}
+  localStorage.setItem('vce-ai-key',k);
+  aiInit();
+}
+
+function aiAddMsg(role,md){
+  aiHistory.push({role,content:md});
+  const msgs=document.getElementById('ai-messages');
+  const div=document.createElement('div');
+  div.className='ai-msg '+role;
+  div.innerHTML=aiMd(md);
+  msgs.appendChild(div);
+  msgs.scrollTop=msgs.scrollHeight;
+}
+
+function aiMd(text){
+  return text
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g,'<em>$1</em>')
+    .replace(/`([^`]+)`/g,'<code style="background:var(--border);padding:1px 4px;border-radius:4px;font-size:12px">$1</code>')
+    .replace(/\n/g,'<br>');
+}
+
+async function aiSend(){
+  const inp=document.getElementById('ai-input');
+  const text=inp.value.trim();
+  if(!text)return;
+  const key=localStorage.getItem('vce-ai-key')||'';
+  if(!key){aiToggle();return;}
+  inp.value='';
+  aiAddMsg('user',text);
+  const send=document.getElementById('ai-send');
+  send.disabled=true;
+
+  // build system prompt with context
+  const subjList=userSubjects.map(s=>s.label).join(', ')||'various subjects';
+  const upcoming=events.filter(e=>daysUntil(e.date)>=0).slice(0,5).map(e=>`${e.name} (${e.subject?userSubjects.find(s=>s.id===e.subject)?.label:''}, ${daysUntil(e.date)} days away)`).join('; ')||'none';
+  const sys=`You are a helpful study assistant for a VCE (Victorian Certificate of Education) student in Australia. The student studies: ${subjList}. Upcoming assessments: ${upcoming}. Be concise, encouraging and specific to VCE. Use markdown formatting sparingly.`;
+
+  // loading indicator
+  const msgs=document.getElementById('ai-messages');
+  const loader=document.createElement('div');
+  loader.className='ai-msg assistant';
+  loader.innerHTML='<span style="opacity:.5">Thinking…</span>';
+  msgs.appendChild(loader);msgs.scrollTop=msgs.scrollHeight;
+
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'x-api-key':key,'anthropic-version':'2023-06-01','content-type':'application/json','anthropic-dangerous-direct-browser-calls':'true'},
+      body:JSON.stringify({model:AI_MODEL,max_tokens:800,system:sys,messages:aiHistory.filter(m=>m.role!=='system').map(m=>({role:m.role,content:m.content}))})
+    });
+    const data=await res.json();
+    loader.remove();
+    if(data.error){aiAddMsg('assistant','Sorry, something went wrong: '+data.error.message);send.disabled=false;return;}
+    const reply=data.content?.[0]?.text||'No response';
+    aiAddMsg('assistant',reply);
+  }catch(err){
+    loader.remove();
+    if(err.message.includes('Failed to fetch')){
+      aiAddMsg('assistant','Network error — check your connection or API key.');
+    } else {
+      aiAddMsg('assistant','Error: '+err.message);
+    }
+  }
+  send.disabled=false;
+}
+
+// ── PWA ──────────────────────────────────────────────────────────────────────
+let _pwaPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();_pwaPrompt=e;const btn=document.getElementById('pwa-install-btn');if(btn)btn.style.display='flex';});
+function pwaInstall(){if(_pwaPrompt){_pwaPrompt.prompt();_pwaPrompt.userChoice.then(()=>{_pwaPrompt=null;const btn=document.getElementById('pwa-install-btn');if(btn)btn.style.display='none';})}}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js'))}
+
+init().then(()=>{
+  if(typeof lucide!=='undefined') lucide.createIcons();
+  checkShowTour();
+  loadScores();
+});
 </script>
 <!-- TOUR WELCOME -->
 <div id="tour-welcome" style="display:none">

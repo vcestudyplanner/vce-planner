@@ -1,0 +1,25 @@
+{
+  "name": "VCE Planner",
+  "short_name": "VCE Planner",
+  "description": "A study planner built for VCE students",
+  "start_url": "/vce-planner/planner.html",
+  "scope": "/vce-planner/",
+  "display": "standalone",
+  "background_color": "#18151e",
+  "theme_color": "#18151e",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='42' fill='%2318151e'/><polyline points='32,98 74,138 160,54' fill='none' stroke='%23f59e0b' stroke-width='24' stroke-linecap='round' stroke-linejoin='round'/></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='110' fill='%2318151e'/><polyline points='86,262 198,370 428,144' fill='none' stroke='%23f59e0b' stroke-width='64' stroke-linecap='round' stroke-linejoin='round'/></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
