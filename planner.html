@@ -829,7 +829,7 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
     <div class="sh">How XP works</div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px">
       <div style="background:var(--high-bg);border:1px solid var(--high);border-radius:12px;padding:.85rem 1rem"><div style="font-size:1.6rem;font-family:'Fraunces',serif;font-weight:800;color:var(--high);line-height:1">+10 XP</div><div style="font-size:13px;font-weight:500;color:var(--text);margin-top:.35rem">Complete a task</div><div style="font-size:11px;color:var(--muted);margin-top:.2rem">Tick off any task</div></div>
-      <div style="background:var(--amber-bg);border:1px solid var(--amber);border-radius:12px;padding:.85rem 1rem"><div style="font-size:1.6rem;font-family:'Fraunces',serif;font-weight:800;color:var(--amber);line-height:1">+15 XP</div><div style="font-size:13px;font-weight:500;color:var(--text);margin-top:.35rem">Finish a Pomodoro</div><div style="font-size:11px;color:var(--muted);margin-top:.2rem">25 min focus session</div></div>
+      <div style="background:var(--amber-bg);border:1px solid var(--amber);border-radius:12px;padding:.85rem 1rem"><div style="font-size:1.6rem;font-family:'Fraunces',serif;font-weight:800;color:var(--amber);line-height:1">+25 XP</div><div style="font-size:13px;font-weight:500;color:var(--text);margin-top:.35rem">Complete a study method</div><div style="font-size:11px;color:var(--muted);margin-top:.2rem">Any method including Pomodoro</div></div>
       <div style="background:var(--sac-bg);border:1px solid var(--sac);border-radius:12px;padding:.85rem 1rem"><div style="font-size:1.6rem;font-family:'Fraunces',serif;font-weight:800;color:var(--sac);line-height:1">+50 XP</div><div style="font-size:13px;font-weight:500;color:var(--text);margin-top:.35rem">SAC completed</div><div style="font-size:11px;color:var(--muted);margin-top:.2rem">Awarded when date passes</div></div>
       <div style="background:var(--exam-bg);border:1px solid var(--mth-br);border-radius:12px;padding:.85rem 1rem"><div style="font-size:1.6rem;font-family:'Fraunces',serif;font-weight:800;color:var(--exam);line-height:1">+75 XP</div><div style="font-size:13px;font-weight:500;color:var(--text);margin-top:.35rem">Exam completed</div><div style="font-size:11px;color:var(--muted);margin-top:.2rem">Awarded when date passes</div></div>
       <div style="background:var(--green-bg);border:1px solid var(--green);border-radius:12px;padding:.85rem 1rem"><div style="font-size:1.6rem;font-family:'Fraunces',serif;font-weight:800;color:var(--green);line-height:1">75+</div><div style="font-size:13px;font-weight:500;color:var(--text);margin-top:.35rem">XP to level up</div><div style="font-size:11px;color:var(--muted);margin-top:.2rem">Each level needs more XP</div></div>
@@ -1709,7 +1709,7 @@ function pomTick(){
       document.getElementById('pom-sessions').textContent=pomSessions;
       const subj=document.getElementById('pom-subj').value;
       studyLog.unshift({id:Date.now(),subject:subj,hours:25/60,date:todayStr(),note:'Pomodoro session'});
-      saveL();renderHoursBar();addXP(15);showToast('🍅 Session done! +15 XP');pomSetMode('short');
+      saveL();renderHoursBar();addXP(25);showToast('Pomodoro done! +25 XP');pomSetMode('short');
     } else {showToast('Break over! 💪');pomSetMode('work')}
     return;
   }
@@ -2047,7 +2047,7 @@ function endTour(){
 
 // ── STUDY METHODS ──────────────────────────────────────────────────────────
 const SM_METHODS=[
-  {id:'pomodoro', icon:'timer', name:'Pomodoro Timer',      time:'25 min focus', xpLabel:'+15 XP / session',
+  {id:'pomodoro', icon:'timer', name:'Pomodoro Timer',      time:'25 min focus', xpLabel:'+25 XP / session',
    desc:'25 minutes of focused work followed by a short break. After 4 rounds take a longer break. The most popular study technique for a reason.'},
   {id:'general',  icon:'clock', name:'General Timer',       time:'Any duration',  xpLabel:'Logs to stats',
    desc:'A simple stopwatch for open-ended study sessions. Pick your subject, start the clock, stop when you\'re done — the hours are automatically logged to your stats.'},
