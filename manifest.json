@@ -5,18 +5,18 @@
   "start_url": "/vce-planner/planner.html",
   "scope": "/vce-planner/",
   "display": "standalone",
-  "background_color": "#18151e",
-  "theme_color": "#18151e",
+  "background_color": "#0f0d14",
+  "theme_color": "#0f0d14",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='42' fill='%2318151e'/><polyline points='32,98 74,138 160,54' fill='none' stroke='%23f59e0b' stroke-width='24' stroke-linecap='round' stroke-linejoin='round'/></svg>",
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='40' fill='%230f0d14'/><path d='M96 36C75 36 33 42 33 42L33 153C33 153 69 147 96 147C123 147 159 153 159 153L159 42C159 42 117 36 96 36Z' fill='none' stroke='white' stroke-width='7.5' stroke-linejoin='round'/><line x1='96' y1='36' x2='96' y2='147' stroke='white' stroke-width='7.5' stroke-linecap='round'/><line x1='48' y1='72' x2='87' y2='69' stroke='rgba(255,255,255,.45)' stroke-width='5.5' stroke-linecap='round'/><line x1='48' y1='90' x2='87' y2='87' stroke='rgba(255,255,255,.45)' stroke-width='5.5' stroke-linecap='round'/><line x1='48' y1='108' x2='87' y2='105' stroke='rgba(255,255,255,.45)' stroke-width='5.5' stroke-linecap='round'/><path d='M141 36L141 93L129 81L117 93L117 36Z' fill='%23f59e0b'/></svg>",
       "sizes": "192x192",
       "type": "image/svg+xml",
       "purpose": "any maskable"
     },
     {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='110' fill='%2318151e'/><polyline points='86,262 198,370 428,144' fill='none' stroke='%23f59e0b' stroke-width='64' stroke-linecap='round' stroke-linejoin='round'/></svg>",
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='110' fill='%230f0d14'/><path d='M256 96C204 96 88 112 88 112L88 408C88 408 184 392 256 392C328 392 424 408 424 408L424 112C424 112 308 96 256 96Z' fill='none' stroke='white' stroke-width='20' stroke-linejoin='round'/><line x1='256' y1='96' x2='256' y2='392' stroke='white' stroke-width='20' stroke-linecap='round'/><line x1='128' y1='192' x2='232' y2='184' stroke='rgba(255,255,255,.45)' stroke-width='15' stroke-linecap='round'/><line x1='128' y1='240' x2='232' y2='232' stroke='rgba(255,255,255,.45)' stroke-width='15' stroke-linecap='round'/><line x1='128' y1='288' x2='232' y2='280' stroke='rgba(255,255,255,.45)' stroke-width='15' stroke-linecap='round'/><path d='M376 96L376 248L344 216L312 248L312 96Z' fill='%23f59e0b'/></svg>",
       "sizes": "512x512",
       "type": "image/svg+xml",
       "purpose": "any maskable"
