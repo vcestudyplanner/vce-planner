@@ -950,17 +950,21 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
   <!-- add score form -->
   <div class="score-add-form">
     <div class="sh">Log a result</div>
-    <div class="frow" style="grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-      <div class="fg"><label>Subject</label><select id="sc-subj" class="subj-sel" onchange="colourSel(this)"></select></div>
-      <div class="fg"><label>Assessment name</label><input type="text" id="sc-name" placeholder="e.g. SAC 1 — Essay"/></div>
+    <div class="frow" style="grid-template-columns:1fr;gap:10px;margin-bottom:10px">
+      <div class="fg">
+        <label>SAC / Exam</label>
+        <select id="sc-event" onchange="scEventPick(this)" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:13.5px;outline:none;cursor:pointer;transition:border-color .15s">
+          <option value="">— pick an assessment —</option>
+        </select>
+      </div>
     </div>
-    <div class="frow" style="grid-template-columns:auto auto auto 1fr auto;gap:10px;margin-bottom:.75rem">
+    <div class="frow" style="grid-template-columns:auto auto 1fr auto;gap:10px;margin-bottom:.75rem">
       <div class="fg"><label>Score</label><input type="number" id="sc-score" min="0" max="999" step="1" value="" style="max-width:80px" placeholder="0"/></div>
       <div class="fg"><label>Out of</label><input type="number" id="sc-max" min="1" max="999" step="1" value="100" style="max-width:80px"/></div>
-      <div class="fg"><label>Date</label><input type="date" id="sc-date"/></div>
       <div></div>
-      <div class="fg"><label>&nbsp;</label><button class="abtn green" onclick="addScore()" style="min-width:90px;padding:0 18px">+ Add result</button></div>
+      <div class="fg"><label>&nbsp;</label><button class="abtn green" onclick="addScore()" style="min-width:110px;padding:0 18px">+ Log score</button></div>
     </div>
+    <div id="sc-event-info" style="display:none;font-size:12.5px;color:var(--muted);margin-top:-.25rem;margin-bottom:.5rem"></div>
   </div>
 
   <!-- target study score -->
@@ -2395,19 +2399,45 @@ function saveScores(){localStorage.setItem(UID_PREFIX+'scores',JSON.stringify(sc
 function loadScores(){scores=JSON.parse(localStorage.getItem(UID_PREFIX+'scores')||'[]')}
 function saveAtarTarget(){localStorage.setItem(UID_PREFIX+'atar-target',document.getElementById('sc-atar-target').value)}
 
+function scEventPick(sel){
+  const evId=sel.value;
+  const info=document.getElementById('sc-event-info');
+  if(!evId){info.style.display='none';return;}
+  const ev=events.find(e=>String(e.id)===String(evId));
+  if(!ev){info.style.display='none';return;}
+  const subjName=userSubjects.find(s=>s.id===ev.subject)?.label||ev.subject||'';
+  info.style.display='block';
+  info.innerHTML=`<span style="font-weight:600;color:var(--text)">${subjName}</span> · ${ev.type||'SAC'} · ${ev.date}`;
+}
+
+function populateScoreEventDropdown(){
+  const sel=document.getElementById('sc-event');
+  if(!sel)return;
+  const sorted=[...events].sort((a,b)=>b.date.localeCompare(a.date));
+  sel.innerHTML='<option value="">— pick an assessment —</option>'+
+    sorted.map(ev=>{
+      const subjName=userSubjects.find(s=>s.id===ev.subject)?.label||'';
+      const daysAgo=Math.round((new Date()-new Date(ev.date+'T00:00:00'))/(1000*60*60*24));
+      const when=daysAgo<0?`in ${Math.abs(daysAgo)}d`:daysAgo===0?'today':daysAgo===1?'yesterday':`${daysAgo}d ago`;
+      return`<option value="${ev.id}">${ev.name}${subjName?' — '+subjName:''} (${when})</option>`;
+    }).join('');
+}
+
 function addScore(){
-  const subj=document.getElementById('sc-subj').value;
-  const name=document.getElementById('sc-name').value.trim();
+  const evId=document.getElementById('sc-event').value;
+  if(!evId){showToast('Pick an assessment first');return;}
+  const ev=events.find(e=>String(e.id)===String(evId));
+  if(!ev){showToast('Assessment not found');return;}
   const score=parseFloat(document.getElementById('sc-score').value);
   const max=parseFloat(document.getElementById('sc-max').value)||100;
-  const date=document.getElementById('sc-date').value||todayStr();
-  if(!name||isNaN(score)){showToast('Fill in assessment name and score');return;}
-  scores.unshift({id:Date.now(),subj,name,score,max,date});
+  if(isNaN(score)||document.getElementById('sc-score').value===''){showToast('Enter your score');return;}
+  scores.unshift({id:Date.now(),eventId:ev.id,subj:ev.subject,name:ev.name,score,max,date:ev.date});
   saveScores();
-  document.getElementById('sc-name').value='';
   document.getElementById('sc-score').value='';
+  document.getElementById('sc-event').value='';
+  document.getElementById('sc-event-info').style.display='none';
   renderScores();
-  showToast('Result saved!');
+  showToast('Score saved!');
 }
 
 function deleteScore(id){
@@ -2428,9 +2458,7 @@ function renderScores(){
   loadScores();
   const atarEl=document.getElementById('sc-atar-target');
   if(atarEl)atarEl.value=localStorage.getItem(UID_PREFIX+'atar-target')||'';
-  const dateEl=document.getElementById('sc-date');
-  if(dateEl&&!dateEl.value)dateEl.value=todayStr();
-  populateSubjectDropdowns();
+  populateScoreEventDropdown();
 
   // per-subject cards
   const grid=document.getElementById('scores-subj-grid');
