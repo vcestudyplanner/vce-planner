@@ -1,4 +1,4 @@
-const CACHE = 'vce-planner-v1';
+const CACHE = 'vce-planner-v2';
 const SHELL = [
   '/vce-planner/planner.html',
   '/vce-planner/index.html',

@@ -27,6 +27,8 @@
   else{var aL=Math.min(l2*100+28,90);st.setProperty('--accent',hex);st.setProperty('--accent-light','hsl('+h2+','+(Math.min(s2,75))+'%,'+aL+'%)');st.setProperty('--bg','hsl('+h2+','+sc(.45)+'%,93%)');st.setProperty('--surface','hsl('+h2+','+sc(.22)+'%,98%)');st.setProperty('--border','hsl('+h2+','+sc(.55)+'%,80%)');st.setProperty('--muted','hsl('+h2+','+sc(.38)+'%,44%)');st.setProperty('--hbg','hsl('+h2+','+sc(.65)+'%,12%)');st.setProperty('--text','hsl('+h2+','+sc(.35)+'%,10%)');st.setProperty('--htxt','#fff');}
 })();
 </script>
+<!-- Capture PWA install prompt before any deferred scripts can miss it -->
+<script>window._pwaPrompt=null;window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();window._pwaPrompt=e;var btn=document.getElementById('pwa-install-btn');if(btn)btn.style.display='flex';});</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230f0d14'/><path d='M32 12C25 12 11 14 11 14L11 51C11 51 23 49 32 49C41 49 53 51 53 51L53 14C53 14 39 12 32 12Z' fill='none' stroke='white' stroke-width='2.5' stroke-linejoin='round'/><line x1='32' y1='12' x2='32' y2='49' stroke='white' stroke-width='2.5' stroke-linecap='round'/><line x1='16' y1='24' x2='29' y2='23' stroke='rgba(255,255,255,.45)' stroke-width='1.8' stroke-linecap='round'/><line x1='16' y1='30' x2='29' y2='29' stroke='rgba(255,255,255,.45)' stroke-width='1.8' stroke-linecap='round'/><line x1='16' y1='36' x2='29' y2='35' stroke='rgba(255,255,255,.45)' stroke-width='1.8' stroke-linecap='round'/><path d='M47 12L47 31L43 27.5L39 31L39 12Z' fill='%23f59e0b'/></svg>">
@@ -89,15 +91,16 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .sidebar-link{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:9px;font-size:12.5px;font-weight:500;color:rgba(255,255,255,.4);text-decoration:none;transition:all .15s;background:transparent;border:none;cursor:pointer;width:100%;text-align:left}
 .sidebar-link svg{width:13px;height:13px}
 .sidebar-link:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.75)}
-.sidebar-theme{display:flex;align-items:center;gap:5px;padding:.35rem .5rem}
-.cpick{position:relative;width:26px;height:26px;border-radius:7px;border:1.5px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);cursor:pointer;display:flex;align-items:center;justify-content:center;overflow:hidden;transition:all .15s}
-.cpick:hover{background:rgba(255,255,255,.15)}
-.cpick input[type=color]{position:absolute;width:300%;height:300%;top:-100%;left:-100%;opacity:0;cursor:pointer;border:none;padding:0}
-.cpick svg{width:13px;height:13px;color:rgba(255,255,255,.65);pointer-events:none;flex-shrink:0}
-.tbtn{width:26px;height:26px;border-radius:7px;border:1.5px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;padding:0}
-.tbtn svg{width:13px;height:13px;color:rgba(255,255,255,.65)}
+.sbr-menu{display:none;flex-direction:column;gap:2px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:.3rem;margin-bottom:.35rem}
+.sbr-menu.open{display:flex}
+.sidebar-theme{display:flex;align-items:center;gap:6px;padding:.4rem .5rem}
+.theme-swatches{display:flex;gap:5px;flex:1;align-items:center;flex-wrap:wrap}
+.theme-swatch{width:17px;height:17px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:transform .15s,border-color .15s;flex-shrink:0;outline:none}
+.theme-swatch:hover{transform:scale(1.25)}
+.theme-swatch.active{border-color:rgba(255,255,255,.85);box-shadow:0 0 0 1px rgba(0,0,0,.3)}
+.tbtn{width:26px;height:26px;border-radius:7px;border:1.5px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;padding:0;flex-shrink:0}
+.tbtn svg{width:13px;height:13px;color:rgba(255,255,255,.8)}
 .tbtn:hover{background:rgba(255,255,255,.15)}
-.tbtn svg{color:rgba(255,255,255,.8)}
 
 /* ── HAMBURGER ── */
 .hamburger{display:none;position:fixed;top:12px;left:12px;z-index:300;width:36px;height:36px;border-radius:9px;background:var(--hbg);border:none;cursor:pointer;align-items:center;justify-content:center}
@@ -478,7 +481,8 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 .sm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;margin-bottom:1.5rem}
 .sm-card{background:var(--surface);border:1.5px solid var(--border);border-radius:16px;padding:1.4rem 1.5rem;cursor:pointer;transition:all .18s;position:relative;overflow:hidden}
 .sm-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.08)}
-.sm-card-icon{font-size:2rem;margin-bottom:.65rem}
+.sm-card-icon{margin-bottom:.65rem}
+.sm-card-icon svg{width:30px;height:30px;color:var(--accent)}
 .sm-card-name{font-family:'Fraunces',serif;font-size:1.05rem;font-weight:700;color:var(--text);margin-bottom:.3rem}
 .sm-card-desc{font-size:12.5px;color:var(--muted);line-height:1.55;margin-bottom:.9rem}
 .sm-card-meta{display:flex;align-items:center;gap:.6rem}
@@ -555,7 +559,8 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 .rev-session-add:hover{border-color:var(--accent);color:var(--accent)}
 .rev-session-add.added{background:var(--green-bg);border-color:var(--green);color:var(--green);cursor:default}
 /* AI assistant */
-#ai-fab{position:fixed;bottom:1.5rem;right:1.5rem;width:52px;height:52px;border-radius:50%;background:var(--accent);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,.25);z-index:9000;transition:all .2s;font-size:1.4rem}
+#ai-fab{position:fixed;bottom:1.5rem;right:1.5rem;width:52px;height:52px;border-radius:50%;background:var(--accent);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,.25);z-index:9000;transition:all .2s}
+#ai-fab svg{width:22px;height:22px}
 #ai-fab:hover{transform:scale(1.08);filter:brightness(1.1)}
 #ai-panel{position:fixed;bottom:1.5rem;right:1.5rem;width:360px;max-width:calc(100vw - 2rem);height:540px;max-height:calc(100vh - 2rem);background:var(--surface);border:1px solid var(--border);border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.3);z-index:9001;display:none;flex-direction:column;overflow:hidden}
 #ai-panel.open{display:flex}
@@ -586,7 +591,8 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 .badge-card{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:1rem .9rem;text-align:center;transition:all .2s;position:relative}
 .badge-card.earned{border-color:var(--accent);background:linear-gradient(135deg,var(--surface),color-mix(in srgb,var(--accent) 6%,var(--surface)))}
 .badge-card.locked{opacity:.45;filter:grayscale(.6)}
-.badge-icon{font-size:1.8rem;margin-bottom:.4rem;line-height:1}
+.badge-icon{margin-bottom:.5rem;line-height:1;display:flex;justify-content:center}
+.badge-icon svg{width:26px;height:26px}
 .badge-name{font-family:'Fraunces',serif;font-size:.78rem;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:.2rem}
 .badge-desc{font-size:10.5px;color:var(--muted);line-height:1.4}
 .badge-new{position:absolute;top:.4rem;right:.5rem;font-size:9px;font-weight:700;background:var(--accent);color:#fff;padding:1px 5px;border-radius:6px;letter-spacing:.04em}
@@ -647,17 +653,19 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
     <button class="nav-item" data-page="stats" onclick="nav('stats',this)"><i data-lucide="bar-chart-2"></i>Stats</button>
   </nav>
   <div class="sidebar-bottom">
-    <button class="sidebar-link" id="pwa-install-btn" onclick="pwaInstall()" style="display:none"><i data-lucide="download"></i>Install app</button>
-    <button class="sidebar-link" id="notif-btn" onclick="openNotifModal()"><i data-lucide="bell"></i>Notifications</button>
-    <a class="sidebar-link" href="suggestions.html"><i data-lucide="message-circle"></i>Suggestions</a>
-    <button class="tour-replay-btn" onclick="replayTour()"><i data-lucide="play-circle"></i>Replay tour</button>
-    <button class="sidebar-link" onclick="logout()"><i data-lucide="log-out"></i>Sign out</button>
+    <div class="sbr-menu" id="sbr-menu">
+      <button class="sidebar-link" id="pwa-install-btn" onclick="pwaInstall()" style="display:none"><i data-lucide="download"></i>Install app</button>
+      <button class="sidebar-link" onclick="openNotifModal();closeSbrMenu()"><i data-lucide="bell"></i>Notifications</button>
+      <a class="sidebar-link" href="suggestions.html"><i data-lucide="message-circle"></i>Suggestions</a>
+      <button class="sidebar-link" onclick="replayTour();closeSbrMenu()"><i data-lucide="play-circle"></i>Replay tour</button>
+    </div>
     <div class="sidebar-theme">
-      <label class="cpick" title="Choose colour">
-        <input type="color" id="accent-picker" value="#4f46e5" oninput="setAccentColor(this.value)">
-        <i data-lucide="palette"></i>
-      </label>
-      <button class="tbtn" id="dark-toggle" onclick="toggleDark()" title="Toggle dark mode"><i data-lucide="moon"></i></button>
+      <div class="theme-swatches" id="theme-swatches"></div>
+      <button class="tbtn" id="dark-toggle" onclick="toggleDark()" title="Toggle dark/light mode"><i data-lucide="moon"></i></button>
+    </div>
+    <div style="display:flex;gap:3px">
+      <button class="sidebar-link" id="sbr-settings-btn" onclick="toggleSbrMenu()" style="flex:1"><i data-lucide="settings"></i>Settings</button>
+      <button class="sidebar-link" onclick="logout()" title="Sign out" style="padding:7px 10px;flex-shrink:0"><i data-lucide="log-out"></i></button>
     </div>
   </div>
 </aside>
@@ -678,7 +686,7 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
   <div class="home-stats">
     <div class="hstat"><div class="hstat-num" id="hs-today">0</div><div class="hstat-label">Due today</div></div>
     <div class="hstat"><div class="hstat-num" id="hs-week">0</div><div class="hstat-label">Due this week</div></div>
-    <div class="hstat"><div class="hstat-num" id="hs-streak">0</div><div class="hstat-label">Day streak 🔥</div></div>
+    <div class="hstat"><div class="hstat-num" id="hs-streak">0</div><div class="hstat-label">Day streak <i data-lucide="flame" style="width:11px;height:11px;color:#f97316;vertical-align:-1px"></i></div></div>
     <div class="hstat"><div class="hstat-num" id="hs-sacs">0</div><div class="hstat-label">Upcoming SACs</div></div>
   </div>
   <div class="h-quote"><div class="h-qmark">"</div><div><div class="h-qtext" id="h-qt"></div><div class="h-qauthor" id="h-qa"></div></div></div>
@@ -780,9 +788,9 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
   <div class="page-hdr"><div class="page-hdr-title">Stats</div><div class="page-hdr-sub">Progress, streaks and subject insights all in one place</div></div>
   <div id="xp-stats"></div>
   <div class="home-stats" style="grid-template-columns:repeat(5,1fr)">
-    <div class="hstat"><div class="hstat-num" id="st-streak">0</div><div class="hstat-label">🔥 Streak</div></div>
-    <div class="hstat"><div class="hstat-num" id="st-best">0</div><div class="hstat-label">⚡ Best streak</div></div>
-    <div class="hstat"><div class="hstat-num" id="st-days">0</div><div class="hstat-label">📅 Active days</div></div>
+    <div class="hstat"><div class="hstat-num" id="st-streak">0</div><div class="hstat-label"><i data-lucide="flame" style="width:11px;height:11px;color:#f97316;vertical-align:-1px"></i> Streak</div></div>
+    <div class="hstat"><div class="hstat-num" id="st-best">0</div><div class="hstat-label"><i data-lucide="zap" style="width:11px;height:11px;color:#f59e0b;vertical-align:-1px"></i> Best streak</div></div>
+    <div class="hstat"><div class="hstat-num" id="st-days">0</div><div class="hstat-label"><i data-lucide="calendar-days" style="width:11px;height:11px;vertical-align:-1px"></i> Active days</div></div>
     <div class="hstat"><div class="hstat-num" id="st-wtasks">0</div><div class="hstat-label">Tasks this week</div></div>
     <div class="hstat"><div class="hstat-num" id="st-whrs">0h</div><div class="hstat-label">Study hrs this week</div></div>
   </div>
@@ -824,7 +832,7 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
       <div style="background:var(--amber-bg);border:1px solid var(--amber);border-radius:12px;padding:.85rem 1rem"><div style="font-size:1.6rem;font-family:'Fraunces',serif;font-weight:800;color:var(--amber);line-height:1">+15 XP</div><div style="font-size:13px;font-weight:500;color:var(--text);margin-top:.35rem">Finish a Pomodoro</div><div style="font-size:11px;color:var(--muted);margin-top:.2rem">25 min focus session</div></div>
       <div style="background:var(--sac-bg);border:1px solid var(--sac);border-radius:12px;padding:.85rem 1rem"><div style="font-size:1.6rem;font-family:'Fraunces',serif;font-weight:800;color:var(--sac);line-height:1">+50 XP</div><div style="font-size:13px;font-weight:500;color:var(--text);margin-top:.35rem">SAC completed</div><div style="font-size:11px;color:var(--muted);margin-top:.2rem">Awarded when date passes</div></div>
       <div style="background:var(--exam-bg);border:1px solid var(--mth-br);border-radius:12px;padding:.85rem 1rem"><div style="font-size:1.6rem;font-family:'Fraunces',serif;font-weight:800;color:var(--exam);line-height:1">+75 XP</div><div style="font-size:13px;font-weight:500;color:var(--text);margin-top:.35rem">Exam completed</div><div style="font-size:11px;color:var(--muted);margin-top:.2rem">Awarded when date passes</div></div>
-      <div style="background:var(--green-bg);border:1px solid var(--green);border-radius:12px;padding:.85rem 1rem"><div style="font-size:1.6rem;font-family:'Fraunces',serif;font-weight:800;color:var(--green);line-height:1">100 XP</div><div style="font-size:13px;font-weight:500;color:var(--text);margin-top:.35rem">= Level up!</div><div style="font-size:11px;color:var(--muted);margin-top:.2rem">Every 100 XP = +1 level</div></div>
+      <div style="background:var(--green-bg);border:1px solid var(--green);border-radius:12px;padding:.85rem 1rem"><div style="font-size:1.6rem;font-family:'Fraunces',serif;font-weight:800;color:var(--green);line-height:1">75+</div><div style="font-size:13px;font-weight:500;color:var(--text);margin-top:.35rem">XP to level up</div><div style="font-size:11px;color:var(--muted);margin-top:.2rem">Each level needs more XP</div></div>
       <div style="background:var(--eng-bg);border:1px solid var(--eng-br);border-radius:12px;padding:.85rem 1rem"><div style="font-size:1.6rem;font-family:'Fraunces',serif;font-weight:800;color:var(--eng);line-height:1" id="xp-total-display">0 XP</div><div style="font-size:13px;font-weight:500;color:var(--text);margin-top:.35rem">Your total XP</div><div style="font-size:11px;color:var(--muted);margin-top:.2rem">Level <span id="xp-level-display">1</span> · <span id="xp-title-display">Rookie</span></div></div>
     </div>
   </div>
@@ -1050,18 +1058,18 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 </div><!-- end .main-wrap -->
 
 <!-- AI ASSISTANT FAB -->
-<button id="ai-fab" onclick="aiToggle()" title="AI Study Assistant">✨</button>
+<button id="ai-fab" onclick="aiToggle()" title="AI Study Assistant"><i data-lucide="sparkles"></i></button>
 
 <!-- AI ASSISTANT PANEL -->
 <div id="ai-panel">
   <div class="ai-panel-header">
-    <span style="font-size:1.1rem">✨</span>
+    <i data-lucide="sparkles" style="width:18px;height:18px;color:var(--accent)"></i>
     <div class="ai-panel-title">AI Study Assistant</div>
     <button class="ai-panel-close" onclick="aiToggle()">✕</button>
   </div>
   <!-- key setup screen (shown if no API key) -->
   <div id="ai-key-screen" class="ai-key-wrap" style="display:none">
-    <div style="font-size:2rem">🔑</div>
+    <i data-lucide="key-round" style="width:32px;height:32px;color:var(--accent)"></i>
     <p>Enter your Anthropic API key to use the AI assistant. Your key is stored only in this browser and never sent anywhere except Anthropic.</p>
     <input type="password" id="ai-key-input" placeholder="sk-ant-..."/>
     <button class="abtn" onclick="aiSaveKey()" style="width:100%">Save key & start chatting</button>
@@ -1124,7 +1132,7 @@ function renderFilterBtns(){
   const fw=document.getElementById('filter-btns-wrap');if(!fw)return;
   fw.innerHTML=`<button class="fp active" data-filter="all">All</button>
     <button class="fp" data-filter="todo">To do</button>
-    <button class="fp" data-filter="urgent">🔥 Urgent</button>
+    <button class="fp" data-filter="urgent"><i data-lucide="flame" style="width:12px;height:12px;vertical-align:-1px"></i> Urgent</button>
     ${userSubjects.map(s=>`<button class="fp" data-filter="${s.id}">${s.label}</button>`).join('')}
     <button class="fp" data-filter="done">Done</button>
     <select class="ssort" id="sort-select" onchange="renderTasks()">
@@ -1137,6 +1145,7 @@ function renderFilterBtns(){
     fw.querySelectorAll('.fp').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');renderTasks();
   }));
+  if(typeof lucide!=='undefined')lucide.createIcons();
 }
 
 function populateSubjectDropdowns(){
@@ -1227,11 +1236,36 @@ function applyPalette(color,dark){
     r.setProperty('--htxt','#fff');
   }
 }
+const THEME_PRESETS=[
+  {name:'Indigo', hex:'#4f46e5'},
+  {name:'Violet', hex:'#7c3aed'},
+  {name:'Rose',   hex:'#e11d48'},
+  {name:'Amber',  hex:'#d97706'},
+  {name:'Emerald',hex:'#059669'},
+  {name:'Ocean',  hex:'#0ea5e9'},
+];
+function renderThemeSwatches(){
+  const el=document.getElementById('theme-swatches');if(!el)return;
+  const cur=(localStorage.getItem('vce-accent')||'#4f46e5').toLowerCase();
+  el.innerHTML=THEME_PRESETS.map(p=>`<button class="theme-swatch${p.hex===cur?' active':''}" style="background:${p.hex}" title="${p.name}" onclick="setAccentColor('${p.hex}')"></button>`).join('');
+}
 function setAccentColor(color){
   localStorage.setItem('vce-accent',color);
-  const p=document.getElementById('accent-picker');if(p)p.value=color;
   const dark=document.documentElement.getAttribute('data-theme')==='dark';
   applyPalette(color,dark);
+  renderThemeSwatches();
+}
+function toggleSbrMenu(){
+  const m=document.getElementById('sbr-menu');if(!m)return;
+  m.classList.toggle('open');
+  const btn=document.getElementById('sbr-settings-btn');
+  if(btn){const open=m.classList.contains('open');btn.innerHTML=`<i data-lucide="${open?'x':'settings'}"></i>${open?'Close':'Settings'}`;if(typeof lucide!=='undefined')lucide.createIcons();}
+}
+function closeSbrMenu(){
+  const m=document.getElementById('sbr-menu');if(!m)return;
+  m.classList.remove('open');
+  const btn=document.getElementById('sbr-settings-btn');
+  if(btn){btn.innerHTML='<i data-lucide="settings"></i>Settings';if(typeof lucide!=='undefined')lucide.createIcons();}
 }
 function toggleDark(){
   const dark=document.documentElement.getAttribute('data-theme')==='dark';
@@ -1269,7 +1303,13 @@ function launchConfetti(){
 function playSound(t){try{const c=new(window.AudioContext||window.webkitAudioContext)();const o=c.createOscillator();const g=c.createGain();o.connect(g);g.connect(c.destination);if(t==='complete'){o.frequency.setValueAtTime(523,c.currentTime);o.frequency.setValueAtTime(659,c.currentTime+.1);o.frequency.setValueAtTime(784,c.currentTime+.2);g.gain.setValueAtTime(.3,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+.5);o.start();o.stop(c.currentTime+.5)}else if(t==='bell'){o.type='sine';o.frequency.setValueAtTime(880,c.currentTime);g.gain.setValueAtTime(.4,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+1.5);o.start();o.stop(c.currentTime+1.5)}}catch(e){}}
 
 // ── XP & LEVEL TITLES ──
-const XPL=10,XPP=100,XP_SAC=50,XP_EXAM=75;
+const XPL=10,XP_SAC=50,XP_EXAM=75;
+// Progressive XP: level n requires xpForLevel(n) cumulative XP
+// Each level needs 50 more than the last: L2=100, L3=250, L4=450, L5=700…
+function xpForLevel(n){if(n<=1)return 0;return(n-1)*(75+25*(n-2));}
+function levelFromXP(totalXP){let lv=1;while(xpForLevel(lv+1)<=totalXP)lv++;return lv;}
+function xpInLevel(totalXP){const lv=levelFromXP(totalXP);return totalXP-xpForLevel(lv);}
+function xpNeededForLevel(lv){return xpForLevel(lv+1)-xpForLevel(lv);}
 const LEVEL_TITLES=[
   [1,'Rookie'],       // Lv 1
   [2,'Student'],      // Lv 2
@@ -1288,9 +1328,9 @@ function getLevelTitle(lv){
 }
 function addXP(a){xp+=a;localStorage.setItem(UID_PREFIX+'xp',xp);renderXP()}
 function renderXP(){
-  const lv=Math.floor(xp/XPP)+1,lx=xp%XPP,pct=Math.round(lx/XPP*100);
+  const lv=levelFromXP(xp),lx=xpInLevel(xp),needed=xpNeededForLevel(lv),pct=Math.round(lx/needed*100);
   const title=getLevelTitle(lv);
-  const h=`<div class="xp-bar-wrap"><div class="xp-level">Lv ${lv} ${title}</div><div class="xp-track"><div class="xp-fill" style="width:${pct}%"></div></div><div class="xp-label">${lx}/${XPP} XP</div></div>`;
+  const h=`<div class="xp-bar-wrap"><div class="xp-level">Lv ${lv} ${title}</div><div class="xp-track"><div class="xp-fill" style="width:${pct}%"></div></div><div class="xp-label">${lx}/${needed} XP</div></div>`;
   ['xp-home','xp-tasks','xp-stats'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=h});
 }
 
@@ -1471,6 +1511,7 @@ async function init(){
   document.getElementById('pom-sessions').textContent=pomSessions;
   updatePomDisplay();
   renderXP();
+  if(typeof lucide!=='undefined')lucide.createIcons();
 }
 function toggleTask(id){
   const t=tasks.find(x=>x.id===id);if(!t)return;t.done=!t.done;
@@ -1762,15 +1803,15 @@ function renderStats(){
     const overdue=tasks.filter(t=>t.subject===s.id&&!t.done&&t.due&&t.due<ts).length;
     const hrs=Math.round((totals[s.id]||0)*10)/10,pct2=total?Math.round(done/total*100):0;
     const neglected=(totals[s.id]||0)<0.5&&studyLog.length>3;
-    return`<div class="ins-subj-card" style="background:${BG[s.id]};border-color:${BR[s.id]}"><div class="ins-subj-name" style="color:${NC[s.id]}">${s.label}</div><div class="ins-bar-row" style="margin-bottom:.25rem"><div class="ins-bar-label" style="font-size:10px">Tasks done</div><div class="ins-bar-track"><div class="ins-bar-fill" style="width:${pct2}%;background:${NC[s.id]}"></div></div><div class="ins-bar-val">${done}/${total}</div></div><div style="font-size:11px;color:var(--muted);margin-top:.3rem">⏱ ${hrs}h logged${overdue>0?` · <span style="color:var(--high)">⚠️ ${overdue} overdue</span>`:''}${neglected?` · <span style="color:var(--amber)">📉 low study</span>`:''}</div></div>`;
+    return`<div class="ins-subj-card" style="background:${BG[s.id]};border-color:${BR[s.id]}"><div class="ins-subj-name" style="color:${NC[s.id]}">${s.label}</div><div class="ins-bar-row" style="margin-bottom:.25rem"><div class="ins-bar-label" style="font-size:10px">Tasks done</div><div class="ins-bar-track"><div class="ins-bar-fill" style="width:${pct2}%;background:${NC[s.id]}"></div></div><div class="ins-bar-val">${done}/${total}</div></div><div style="font-size:11px;color:var(--muted);margin-top:.3rem">${hrs}h logged${overdue>0?` · <span style="color:var(--high)">${overdue} overdue</span>`:''}${neglected?` · <span style="color:var(--amber)">low study</span>`:''}</div></div>`;
   }).join('')||'<div style="font-size:13px;color:var(--muted)">No subjects yet.</div>';
   // neglect alert
   const neglected=userSubjects.filter(s=>(totals[s.id]||0)<0.5&&studyLog.length>3).map(s=>s.label);
   const nw=document.getElementById('st-neglect-wrap');
-  if(neglected.length){nw.innerHTML=`<div class="sh">Heads up</div><div class="ins-neglect" style="background:var(--amber-bg);border:1px solid var(--amber);margin:0"><div style="font-size:1.5rem">📉</div><div><div style="font-size:13px;font-weight:600;color:var(--amber)">Neglected subjects</div><div style="font-size:12px;color:var(--muted);margin-top:.2rem">Not much study logged for: <strong>${neglected.join(', ')}</strong>.</div></div></div>`}
-  else{nw.innerHTML=`<div class="sh">Looking good</div><div style="font-size:13px;color:var(--muted)">No neglected subjects — balanced workload. 👍</div>`}
+  if(neglected.length){nw.innerHTML=`<div class="sh">Heads up</div><div class="ins-neglect" style="background:var(--amber-bg);border:1px solid var(--amber);margin:0"><div style="color:var(--amber)"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg></div><div><div style="font-size:13px;font-weight:600;color:var(--amber)">Neglected subjects</div><div style="font-size:12px;color:var(--muted);margin-top:.2rem">Not much study logged for: <strong>${neglected.join(', ')}</strong>.</div></div></div>`}
+  else{nw.innerHTML=`<div class="sh">Looking good</div><div style="font-size:13px;color:var(--muted)">No neglected subjects — balanced workload.</div>`}
   // XP display
-  const lv=Math.floor(xp/XPP)+1;
+  const lv=levelFromXP(xp);
   const xtd=document.getElementById('xp-total-display'),xld=document.getElementById('xp-level-display'),xtitle=document.getElementById('xp-title-display');
   if(xtd)xtd.textContent=xp+' XP';if(xld)xld.textContent=lv;if(xtitle)xtitle.textContent=getLevelTitle(lv);
   renderBadges();
@@ -2006,19 +2047,19 @@ function endTour(){
 
 // ── STUDY METHODS ──────────────────────────────────────────────────────────
 const SM_METHODS=[
-  {id:'pomodoro', icon:'🍅', name:'Pomodoro Timer',      time:'25 min focus', xpLabel:'+15 XP / session',
+  {id:'pomodoro', icon:'timer', name:'Pomodoro Timer',      time:'25 min focus', xpLabel:'+15 XP / session',
    desc:'25 minutes of focused work followed by a short break. After 4 rounds take a longer break. The most popular study technique for a reason.'},
-  {id:'general',  icon:'⏱️', name:'General Timer',       time:'Any duration',  xpLabel:'Logs to stats',
+  {id:'general',  icon:'clock', name:'General Timer',       time:'Any duration',  xpLabel:'Logs to stats',
    desc:'A simple stopwatch for open-ended study sessions. Pick your subject, start the clock, stop when you\'re done — the hours are automatically logged to your stats.'},
-  {id:'recall',   icon:'🃏', name:'Active Recall',       time:'10–20 min',     xpLabel:'+25 XP',
+  {id:'recall',   icon:'layers', name:'Active Recall',       time:'10–20 min',     xpLabel:'+25 XP',
    desc:'Build a set of flashcard Q&A pairs from your notes, then test yourself. Seeing the question before the answer is far more effective than re-reading.'},
-  {id:'blurt',    icon:'✍️', name:'Blurting',            time:'5–15 min',      xpLabel:'+25 XP',
+  {id:'blurt',    icon:'pencil-line', name:'Blurting',            time:'5–15 min',      xpLabel:'+25 XP',
    desc:'Set a topic, start the timer, and write down everything you know without looking at your notes. Then check for gaps — those are your study targets.'},
-  {id:'feynman',  icon:'🧠', name:'Feynman Technique',   time:'15–25 min',     xpLabel:'+25 XP',
+  {id:'feynman',  icon:'lightbulb', name:'Feynman Technique',   time:'15–25 min',     xpLabel:'+25 XP',
    desc:'Explain a concept in the simplest possible language. If you can\'t explain it simply, you don\'t know it yet. Identify the gaps and go back to your notes.'},
-  {id:'timed',    icon:'📋', name:'Timed Exam Practice', time:'15–90 min',     xpLabel:'+25 XP',
+  {id:'timed',    icon:'clipboard-list', name:'Timed Exam Practice', time:'15–90 min',     xpLabel:'+25 XP',
    desc:'Simulate exam conditions. Set a timer, pick a subject, and work through past questions or practice problems without opening your notes.'},
-  {id:'mindmap',  icon:'🗺️', name:'Mind Map Builder',    time:'10–20 min',     xpLabel:'+25 XP',
+  {id:'mindmap',  icon:'git-branch', name:'Mind Map Builder',    time:'10–20 min',     xpLabel:'+25 XP',
    desc:'Start with a central concept and branch out to related ideas. Connecting ideas visually helps reveal relationships and gaps in your understanding.'},
 ];
 
@@ -2183,7 +2224,7 @@ function smBuildRecall(){
         <button class="fc-btn miss" onclick="fcAnswer(false)">✗ Review again</button>
       </div>
       <div id="fc-result" style="display:none;text-align:center;padding:1.5rem 0">
-        <div style="font-size:2rem;margin-bottom:.5rem">🎉</div>
+        <div style="margin-bottom:.75rem;color:var(--accent)"><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
         <div style="font-family:'Fraunces',serif;font-size:1.15rem;font-weight:700;color:var(--text);margin-bottom:.3rem" id="fc-score"></div>
         <div style="font-size:13px;color:var(--muted)">Well done — your recall is improving!</div>
         <button class="sm-done-btn" style="margin:1rem auto 0" onclick="smAward()">Claim +25 XP ✓</button>
@@ -2430,7 +2471,7 @@ function renderStudy(){
   document.getElementById('sm-session').style.display='none';
   g.innerHTML=SM_METHODS.map(m=>`
     <div class="sm-card" onclick="smStart('${m.id}')">
-      <div class="sm-card-icon">${m.icon}</div>
+      <div class="sm-card-icon"><i data-lucide="${m.icon}"></i></div>
       <div class="sm-card-name">${m.name}</div>
       <div class="sm-card-desc">${m.desc}</div>
       <div class="sm-card-meta">
@@ -2441,8 +2482,8 @@ function renderStudy(){
     </div>`).join('');
   populateSubjectDropdowns();
   renderHoursBar();
-  // pre-fill today's date in manual log
   const ld=document.getElementById('log-date');if(ld&&!ld.value)ld.value=todayStr();
+  if(typeof lucide!=='undefined')lucide.createIcons();
 }
 
 // ── SCORES ───────────────────────────────────────────────────────────────────
@@ -2723,42 +2764,40 @@ async function aiSend(){
 }
 
 // ── PWA ──────────────────────────────────────────────────────────────────────
-let _pwaPrompt=null;
-window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();_pwaPrompt=e;const btn=document.getElementById('pwa-install-btn');if(btn)btn.style.display='flex';});
-function pwaInstall(){if(_pwaPrompt){_pwaPrompt.prompt();_pwaPrompt.userChoice.then(()=>{_pwaPrompt=null;const btn=document.getElementById('pwa-install-btn');if(btn)btn.style.display='none';})}}
+function pwaInstall(){const p=window._pwaPrompt;if(p){p.prompt();p.userChoice.then(()=>{window._pwaPrompt=null;const btn=document.getElementById('pwa-install-btn');if(btn)btn.style.display='none';});}}
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js'))}
 
 // ── ACHIEVEMENT BADGES ───────────────────────────────────────────────────────
 const BADGE_DEFS=[
   // Tasks
-  {id:'first-task',   icon:'✅', name:'First Step',        desc:'Complete your first task',       check:()=>tasks.filter(t=>t.done).length>=1},
-  {id:'tasks-10',     icon:'🎯', name:'Getting Things Done',desc:'Complete 10 tasks',              check:()=>tasks.filter(t=>t.done).length>=10},
-  {id:'tasks-50',     icon:'⚡', name:'Task Machine',       desc:'Complete 50 tasks',              check:()=>tasks.filter(t=>t.done).length>=50},
-  {id:'tasks-100',    icon:'💯', name:'Centurion',          desc:'Complete 100 tasks',             check:()=>tasks.filter(t=>t.done).length>=100},
+  {id:'first-task',   icon:'check-circle-2', name:'First Step',        desc:'Complete your first task',       check:()=>tasks.filter(t=>t.done).length>=1},
+  {id:'tasks-10',     icon:'target',         name:'Getting Things Done',desc:'Complete 10 tasks',              check:()=>tasks.filter(t=>t.done).length>=10},
+  {id:'tasks-50',     icon:'zap',            name:'Task Machine',       desc:'Complete 50 tasks',              check:()=>tasks.filter(t=>t.done).length>=50},
+  {id:'tasks-100',    icon:'star',           name:'Centurion',          desc:'Complete 100 tasks',             check:()=>tasks.filter(t=>t.done).length>=100},
   // Streaks
-  {id:'streak-3',     icon:'🔥', name:'On Fire',            desc:'3-day study streak',             check:()=>calcBestStreak()>=3},
-  {id:'streak-7',     icon:'🌟', name:'Week Warrior',       desc:'7-day study streak',             check:()=>calcBestStreak()>=7},
-  {id:'streak-14',    icon:'🏆', name:'Fortnight Focus',    desc:'14-day study streak',            check:()=>calcBestStreak()>=14},
-  {id:'streak-30',    icon:'👑', name:'Unstoppable',        desc:'30-day study streak',            check:()=>calcBestStreak()>=30},
+  {id:'streak-3',     icon:'flame',          name:'On Fire',            desc:'3-day study streak',             check:()=>calcBestStreak()>=3},
+  {id:'streak-7',     icon:'sparkles',       name:'Week Warrior',       desc:'7-day study streak',             check:()=>calcBestStreak()>=7},
+  {id:'streak-14',    icon:'trophy',         name:'Fortnight Focus',    desc:'14-day study streak',            check:()=>calcBestStreak()>=14},
+  {id:'streak-30',    icon:'crown',          name:'Unstoppable',        desc:'30-day study streak',            check:()=>calcBestStreak()>=30},
   // Study hours
-  {id:'hours-1',      icon:'⏰', name:'Clock In',           desc:'Log your first study hour',      check:()=>studyLog.reduce((a,l)=>a+l.hours,0)>=1},
-  {id:'hours-10',     icon:'📚', name:'Bookworm',           desc:'Log 10 hours of study',          check:()=>studyLog.reduce((a,l)=>a+l.hours,0)>=10},
-  {id:'hours-50',     icon:'🎓', name:'Scholar',            desc:'Log 50 hours of study',          check:()=>studyLog.reduce((a,l)=>a+l.hours,0)>=50},
-  {id:'hours-100',    icon:'🧠', name:'VCE Grind',          desc:'Log 100 hours of study',         check:()=>studyLog.reduce((a,l)=>a+l.hours,0)>=100},
+  {id:'hours-1',      icon:'clock',          name:'Clock In',           desc:'Log your first study hour',      check:()=>studyLog.reduce((a,l)=>a+l.hours,0)>=1},
+  {id:'hours-10',     icon:'book-open',      name:'Bookworm',           desc:'Log 10 hours of study',          check:()=>studyLog.reduce((a,l)=>a+l.hours,0)>=10},
+  {id:'hours-50',     icon:'book',           name:'Scholar',            desc:'Log 50 hours of study',          check:()=>studyLog.reduce((a,l)=>a+l.hours,0)>=50},
+  {id:'hours-100',    icon:'brain',          name:'VCE Grind',          desc:'Log 100 hours of study',         check:()=>studyLog.reduce((a,l)=>a+l.hours,0)>=100},
   // SACs & scores
-  {id:'first-sac',    icon:'📝', name:'Assessment Ready',   desc:'Add your first SAC or exam',     check:()=>events.length>=1},
-  {id:'first-score',  icon:'🏅', name:'Result Logged',      desc:'Log your first SAC score',       check:()=>scores.length>=1},
-  {id:'score-90',     icon:'✨', name:'High Achiever',      desc:'Score 90% or above on any SAC',  check:()=>scores.some(s=>s.score/s.max>=.9)},
+  {id:'first-sac',    icon:'file-text',      name:'Assessment Ready',   desc:'Add your first SAC or exam',     check:()=>events.length>=1},
+  {id:'first-score',  icon:'award',          name:'Result Logged',      desc:'Log your first SAC score',       check:()=>scores.length>=1},
+  {id:'score-90',     icon:'sparkles',       name:'High Achiever',      desc:'Score 90% or above on any SAC',  check:()=>scores.some(s=>s.score/s.max>=.9)},
   // XP & levels
-  {id:'xp-100',       icon:'⚔️', name:'XP Earner',          desc:'Reach 100 XP',                  check:()=>xp>=100},
-  {id:'xp-500',       icon:'🛡️', name:'Dedicated',          desc:'Reach 500 XP',                  check:()=>xp>=500},
-  {id:'xp-1000',      icon:'💎', name:'Diamond Scholar',    desc:'Reach 1000 XP',                 check:()=>xp>=1000},
+  {id:'xp-100',       icon:'zap',            name:'XP Earner',          desc:'Reach 100 XP',                  check:()=>xp>=100},
+  {id:'xp-500',       icon:'shield',         name:'Dedicated',          desc:'Reach 500 XP',                  check:()=>xp>=500},
+  {id:'xp-1000',      icon:'gem',            name:'Diamond Scholar',    desc:'Reach 1000 XP',                 check:()=>xp>=1000},
   // Study methods
-  {id:'method-first', icon:'🧪', name:'Experimenter',       desc:'Complete any study method',      check:()=>parseInt(localStorage.getItem(UID_PREFIX+'methods-done')||'0')>=1},
-  {id:'method-all',   icon:'🗺️', name:'Method Master',      desc:'Try all 7 study methods',        check:()=>(JSON.parse(localStorage.getItem(UID_PREFIX+'methods-set')||'[]')).length>=7},
+  {id:'method-first', icon:'flask-conical',  name:'Experimenter',       desc:'Complete any study method',      check:()=>parseInt(localStorage.getItem(UID_PREFIX+'methods-done')||'0')>=1},
+  {id:'method-all',   icon:'map',            name:'Method Master',      desc:'Try all 7 study methods',        check:()=>(JSON.parse(localStorage.getItem(UID_PREFIX+'methods-set')||'[]')).length>=7},
   // Special
-  {id:'planner-use',  icon:'🗓️', name:'Planner Pro',        desc:'Add 5 day planner blocks',       check:()=>Object.values(planData).flat().length>=5},
-  {id:'early-bird',   icon:'🌅', name:'Early Bird',         desc:'Have 3 tasks due before 8am',    check:()=>false}, // fun locked badge
+  {id:'planner-use',  icon:'calendar-days',  name:'Planner Pro',        desc:'Add 5 day planner blocks',       check:()=>Object.values(planData).flat().length>=5},
+  {id:'early-bird',   icon:'sunrise',        name:'Early Bird',         desc:'Have 3 tasks due before 8am',    check:()=>false},
 ];
 
 function calcBestStreak(){
@@ -2779,18 +2818,19 @@ function renderBadges(){
     if(earned&&!seen.has(b.id)){newlyEarned.push(b.id);seen.add(b.id);}
     return`<div class="badge-card${earned?' earned':' locked'}">
       ${earned&&newlyEarned.includes(b.id)?'<div class="badge-new">NEW</div>':''}
-      <div class="badge-icon">${b.icon}</div>
+      <div class="badge-icon"><i data-lucide="${b.icon}"></i></div>
       <div class="badge-name">${b.name}</div>
       <div class="badge-desc">${b.desc}</div>
     </div>`;
   }).join('');
   grid.innerHTML=html;
+  if(typeof lucide!=='undefined')lucide.createIcons();
   const earned=BADGE_DEFS.filter(b=>b.check()).length;
   const cnt=document.getElementById('badges-count');
   if(cnt)cnt.textContent=`${earned} / ${BADGE_DEFS.length} unlocked`;
   if(newlyEarned.length){
     localStorage.setItem(seenKey,JSON.stringify([...seen]));
-    newlyEarned.forEach(id=>{const b=BADGE_DEFS.find(x=>x.id===id);if(b)showToast(`${b.icon} Badge unlocked: ${b.name}!`);});
+    newlyEarned.forEach(id=>{const b=BADGE_DEFS.find(x=>x.id===id);if(b)showToast(`Badge unlocked: ${b.name}!`);});
   }
 }
 
