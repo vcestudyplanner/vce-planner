@@ -317,6 +317,19 @@ select.subj-sel{font-weight:600;border-width:2px}
 .cdot.rel{background:var(--rel-bg);color:var(--rel)}.cdot.mth{background:var(--mth-bg);color:var(--mth)}
 .cdot.gmth{background:var(--gmth-bg);color:var(--gmth)}.cdot.urgent{background:var(--high-bg);color:var(--high)}
 .cdot.custom{background:var(--amber-bg);color:var(--amber)}.cdot.calevent{background:var(--border);color:var(--accent)}
+.cdot.classroom{background:#e8f5e9;color:#2e7d32}
+[data-theme=dark] .cdot.classroom{background:#0d2010;color:#66bb6a}
+/* ── CLASSROOM PANEL ── */
+.cl-panel{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:1.25rem 1.5rem;margin-bottom:1.25rem;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.cl-panel-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem}
+.cl-panel-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);display:flex;align-items:center;gap:6px}
+.cl-item-row{display:flex;align-items:center;gap:10px;padding:.5rem 0;border-bottom:1px solid var(--border)}
+.cl-item-row:last-child{border-bottom:none}
+.cl-item-dot{width:8px;height:8px;border-radius:50%;background:#4caf50;flex-shrink:0}
+.cl-item-name{flex:1;font-size:13px;font-weight:500;color:var(--text);min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cl-item-due{font-size:11px;color:var(--muted);white-space:nowrap;flex-shrink:0}
+.cl-item-due.soon{color:var(--amber);font-weight:600}
+.cl-item-due.overdue{color:var(--high);font-weight:600}
 
 /* ── POMODORO ── */
 .pom-wrap{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start}
@@ -727,6 +740,7 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
     <div class="hstat"><div class="hstat-num" id="hs-sacs">0</div><div class="hstat-label">Upcoming SACs</div></div>
   </div>
   <div class="h-quote"><div class="h-qmark">"</div><div><div class="h-qtext" id="h-qt"></div><div class="h-qauthor" id="h-qa"></div></div></div>
+  <div id="h-classroom" style="display:none"></div>
   <div id="h-getstarted" style="display:none;margin-bottom:1.25rem">
     <div class="card" style="margin-bottom:0;border:1.5px dashed var(--border)">
       <div class="sh" style="margin-bottom:.75rem">Get started</div>
@@ -991,6 +1005,26 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
       <div style="font-size:12px;color:var(--accent);font-weight:500;padding-bottom:10px" id="ce-repeat-preview"></div>
     </div>
     <div id="ce-list" style="display:none;margin-top:1rem"></div>
+  </div>
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:.3rem">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4caf50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+      <div class="sh" style="margin-bottom:0">Google Classroom Sync</div>
+    </div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:1rem;line-height:1.5">Paste your Google Classroom iCal link to automatically import assignments into this calendar. <a onclick="showClassroomHelp()" style="color:var(--accent);cursor:pointer;text-decoration:underline">How do I get the link?</a></div>
+    <div id="classroom-help" style="display:none;background:var(--bg);border-radius:10px;padding:.85rem 1rem;margin-bottom:1rem;font-size:12.5px;color:var(--text);line-height:1.7;border:1px solid var(--border)">
+      <strong>Steps to get your iCal link:</strong><br>
+      1. Open <strong>calendar.google.com</strong> in your browser<br>
+      2. On the left, find your Classroom calendar under "Other calendars"<br>
+      3. Click the <strong>three dots</strong> next to it → <strong>Settings</strong><br>
+      4. Scroll down to <strong>"Secret address in iCal format"</strong><br>
+      5. Copy that link and paste it below
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <input type="text" id="classroom-ical-url" placeholder="https://calendar.google.com/calendar/ical/…" style="flex:1;font-size:13px"/>
+      <button class="abtn" onclick="saveAndSyncClassroom()" style="white-space:nowrap;flex-shrink:0">Sync now</button>
+    </div>
+    <div id="classroom-sync-status" style="font-size:12px;color:var(--muted);margin-top:.6rem"></div>
   </div>
 </div></div>
 
@@ -1304,7 +1338,7 @@ const PLAN_ICONS={
   break:`<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><line x1="6" x2="6" y1="2" y2="4"/><line x1="10" x2="10" y1="2" y2="4"/><line x1="14" x2="14" y1="2" y2="4"/></svg>`,
   other:`<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
 };
-const CE_COLS={blue:{dot:'calevent',bg:'#e8f0ff',tx:'#3060c0',br:'#a8c0f0'},purple:{dot:'rel',bg:'var(--rel-bg)',tx:'var(--rel)',br:'var(--rel-br)'},green:{dot:'eng',bg:'var(--eng-bg)',tx:'var(--eng)',br:'var(--eng-br)'},orange:{dot:'custom',bg:'var(--amber-bg)',tx:'var(--amber)',br:'var(--gmth-br)'},red:{dot:'urgent',bg:'var(--high-bg)',tx:'var(--high)',br:'#e8b0b0'}};
+const CE_COLS={blue:{dot:'calevent',bg:'#e8f0ff',tx:'#3060c0',br:'#a8c0f0'},purple:{dot:'rel',bg:'var(--rel-bg)',tx:'var(--rel)',br:'var(--rel-br)'},green:{dot:'eng',bg:'var(--eng-bg)',tx:'var(--eng)',br:'var(--eng-br)'},orange:{dot:'custom',bg:'var(--amber-bg)',tx:'var(--amber)',br:'var(--gmth-br)'},red:{dot:'urgent',bg:'var(--high-bg)',tx:'var(--high)',br:'#e8b0b0'},classroom:{dot:'classroom',bg:'#e8f5e9',tx:'#2e7d32',br:'#a5d6a7'}};
 
 let tasks=[],events=[],studyLog=[],planData={},calEvents=[],weekGoal=5,pomSessions=0,vceExamDate='',xp=0;
 function loadUserData(){
@@ -1507,7 +1541,7 @@ function nav(p,btn){
   btn.classList.add('active');
   closeSidebar();
   if(p==='home')renderHome();
-  if(p==='calendar')renderCal();
+  if(p==='calendar'){renderCal();const _u=localStorage.getItem(UID_PREFIX+'classroom-ical');const _i=document.getElementById('classroom-ical-url');if(_i&&_u)_i.value=_u;const _ts=localStorage.getItem(UID_PREFIX+'classroom-synced');const _s=document.getElementById('classroom-sync-status');if(_s&&_ts){const _t=new Date(_ts).toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'});_s.textContent=`✓ Last synced ${_t}`;}};
   if(p==='sacs'){renderEvents();updateEvLink()}
   if(p==='stats')renderStats();
   if(p==='planner'){renderPlanner();renderSchedPanel();}
@@ -1606,6 +1640,10 @@ async function init(){
   const _pulled=await syncPull();
   if(_pulled){loadUserData();loadScores();}
   renderSubjOv();
+  // Auto-sync Classroom if URL saved and last sync >30min ago
+  const _clUrl=localStorage.getItem(UID_PREFIX+'classroom-ical');
+  const _clTs=localStorage.getItem(UID_PREFIX+'classroom-synced');
+  if(_clUrl&&(!_clTs||Date.now()-new Date(_clTs).getTime()>30*60*1000))syncClassroom(_clUrl);
   renderFilterBtns();
   populateSubjectDropdowns();
 
@@ -1813,6 +1851,113 @@ function renderCal(){
   if(btn&&!ceListVisible)btn.textContent=`Show events (${calEvents.length})`;
 }
 
+// ── GOOGLE CLASSROOM ICAL SYNC ──
+function parseIcalDate(val){
+  // Strip timezone/params, handle both DATE and DATETIME
+  const raw=val.replace(/Z$/,'').split('T')[0];
+  return raw.slice(0,4)+'-'+raw.slice(4,6)+'-'+raw.slice(6,8);
+}
+
+function parseIcal(text){
+  const unescape=s=>s.replace(/\\n/gi,' ').replace(/\\,/g,',').replace(/\\;/g,';').replace(/\\\\/g,'\\').trim();
+  const lines=text.replace(/\r\n/g,'\n').replace(/\r/g,'\n').split('\n');
+  const unfolded=[];
+  for(const l of lines){
+    if((l.startsWith(' ')||l.startsWith('\t'))&&unfolded.length)unfolded[unfolded.length-1]+=l.slice(1);
+    else unfolded.push(l);
+  }
+  const evs=[];let cur=null;
+  for(const l of unfolded){
+    if(l==='BEGIN:VEVENT'){cur={};}
+    else if(l==='END:VEVENT'){if(cur&&cur.summary&&cur.dtstart)evs.push(cur);cur=null;}
+    else if(cur){
+      const ci=l.indexOf(':');if(ci===-1)continue;
+      const prop=l.slice(0,ci).split(';')[0].toUpperCase();
+      const val=l.slice(ci+1);
+      if(prop==='SUMMARY')cur.summary=unescape(val);
+      else if(prop==='DTSTART')cur.dtstart=parseIcalDate(val);
+      else if(prop==='DTEND')cur.dtend=parseIcalDate(val);
+      else if(prop==='DESCRIPTION')cur.desc=unescape(val);
+      else if(prop==='UID')cur.uid=val.trim();
+    }
+  }
+  return evs;
+}
+
+function showClassroomHelp(){
+  const el=document.getElementById('classroom-help');
+  if(el)el.style.display=el.style.display==='none'?'block':'none';
+}
+
+async function saveAndSyncClassroom(){
+  const inp=document.getElementById('classroom-ical-url');
+  const url=(inp?.value||'').trim();
+  if(!url){showToast('Paste your iCal URL first');return;}
+  localStorage.setItem(UID_PREFIX+'classroom-ical',url);
+  await syncClassroom(url);
+}
+
+async function syncClassroom(url){
+  url=url||localStorage.getItem(UID_PREFIX+'classroom-ical');
+  if(!url)return;
+  const statusEl=document.getElementById('classroom-sync-status');
+  if(statusEl)statusEl.textContent='Syncing…';
+  try{
+    const proxy='https://api.allorigins.win/get?url='+encodeURIComponent(url);
+    const res=await fetch(proxy);
+    if(!res.ok)throw new Error('Network error');
+    const json=await res.json();
+    if(!json.contents)throw new Error('Empty response');
+    const parsed=parseIcal(json.contents);
+    // Remove old classroom-sourced events, keep manual ones
+    calEvents=calEvents.filter(e=>e.source!=='classroom');
+    const today=todayStr();
+    for(const ev of parsed){
+      if(!ev.dtstart||ev.dtstart<today)continue; // skip past events
+      calEvents.push({id:'cl-'+ev.uid,name:ev.summary,date:ev.dtstart,time:'',colour:'classroom',rn:0,ru:'weeks',source:'classroom',desc:ev.desc||''});
+    }
+    calEvents.sort((a,b)=>a.date.localeCompare(b.date));
+    saveCE();renderCal();renderClassroomPanel();
+    const ts=new Date().toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'});
+    localStorage.setItem(UID_PREFIX+'classroom-synced',new Date().toISOString());
+    if(statusEl)statusEl.textContent=`✓ Synced ${parsed.length} assignments · Last updated ${ts}`;
+    const urlInp=document.getElementById('classroom-ical-url');
+    if(urlInp)urlInp.value=url;
+    showToast(`Classroom synced — ${parsed.filter(e=>e.dtstart>=today).length} upcoming assignments`);
+  }catch(e){
+    if(statusEl)statusEl.textContent='⚠ Sync failed — check your iCal URL and try again';
+    showToast('Sync failed — check the URL');
+  }
+}
+
+function renderClassroomPanel(){
+  const el=document.getElementById('h-classroom');if(!el)return;
+  const classroomEvs=calEvents.filter(e=>e.source==='classroom'&&e.date>=todayStr())
+    .sort((a,b)=>a.date.localeCompare(b.date)).slice(0,6);
+  if(!classroomEvs.length){el.style.display='none';return;}
+  el.style.display='block';
+  const rows=classroomEvs.map(ev=>{
+    const d=Math.round((new Date(ev.date+'T00:00:00')-TODAY)/86400000);
+    const dLabel=d===0?'Today':d===1?'Tomorrow':`${d} days`;
+    const cls=d<=1?'overdue':d<=3?'soon':'';
+    return`<div class="cl-item-row">
+      <div class="cl-item-dot"></div>
+      <div class="cl-item-name">${ev.name}</div>
+      <div class="cl-item-due ${cls}">${dLabel}</div>
+    </div>`;
+  }).join('');
+  el.innerHTML=`<div class="cl-panel">
+    <div class="cl-panel-hdr">
+      <div class="cl-panel-title">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#4caf50" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
+        Google Classroom
+      </div>
+      <button onclick="syncClassroom()" style="font-size:11px;color:var(--accent);background:none;border:none;cursor:pointer;font-weight:600">Refresh</button>
+    </div>
+    ${rows}
+  </div>`;
+}
+
 // ── POMODORO ──
 const POM={work:{secs:25*60,label:'FOCUS SESSION',color:'var(--accent)'},short:{secs:5*60,label:'SHORT BREAK',color:'var(--green)'},long:{secs:15*60,label:'LONG BREAK',color:'var(--mth)'}};
 let pomMode='work',pomRem=POM.work.secs,pomRunning=false,pomInterval=null;
@@ -1978,7 +2123,7 @@ async function loadDailyGif(){
 }
 
 function renderHome(){
-  renderVCECd();renderXP();
+  renderVCECd();renderXP();renderClassroomPanel();
   const gs=document.getElementById('h-getstarted');
   if(gs)gs.style.display=(tasks.length===0&&events.length===0)?'block':'none';
   const h=new Date().getHours();
