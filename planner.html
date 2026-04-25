@@ -92,8 +92,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .sidebar-link:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.75)}
 .sbr-menu{display:none;flex-direction:column;gap:2px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:.3rem;margin-bottom:.35rem}
 .sbr-menu.open{display:flex}
-.sidebar-theme{display:flex;align-items:center;gap:6px;padding:.4rem .5rem}
-.theme-swatches{display:flex;gap:5px;flex:1;align-items:center;flex-wrap:wrap}
+.theme-swatches{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 .theme-swatch{width:17px;height:17px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:transform .15s,border-color .15s;flex-shrink:0;outline:none}
 .theme-swatch:hover{transform:scale(1.25)}
 .theme-swatch.active{border-color:rgba(255,255,255,.85);box-shadow:0 0 0 1px rgba(0,0,0,.3)}
@@ -148,7 +147,7 @@ select.subj-sel{font-weight:600;border-width:2px}
 .home-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.25rem}
 .hstat{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.25rem;transition:transform .15s}
 .hstat:hover{transform:translateY(-2px)}
-.hstat-num{font-family:'Fraunces',serif;font-size:2.1rem;font-weight:700;color:var(--accent);line-height:1;margin-bottom:3px}
+.hstat-num{font-family:'Fraunces',serif;font-size:2.1rem;font-weight:700;color:var(--text);line-height:1;margin-bottom:3px}
 .hstat-label{font-size:11px;color:var(--muted);font-weight:500}
 
 /* ── HOME GRID ── */
@@ -661,13 +660,14 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
       <button class="sidebar-link" onclick="openNotifModal();closeSbrMenu()"><i data-lucide="bell"></i>Notifications</button>
       <a class="sidebar-link" href="suggestions.html"><i data-lucide="message-circle"></i>Suggestions</a>
       <button class="sidebar-link" onclick="replayTour();closeSbrMenu()"><i data-lucide="play-circle"></i>Replay tour</button>
+      <div style="padding:.4rem .5rem .2rem;border-top:1px solid rgba(255,255,255,.08);margin-top:.2rem">
+        <div style="font-size:10px;color:rgba(255,255,255,.3);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.4rem">Accent colour</div>
+        <div class="theme-swatches" id="theme-swatches"></div>
+      </div>
     </div>
-    <div class="sidebar-theme">
-      <div class="theme-swatches" id="theme-swatches"></div>
-      <button class="tbtn" id="dark-toggle" onclick="toggleDark()" title="Toggle dark/light mode"><i data-lucide="moon"></i></button>
-    </div>
-    <div style="display:flex;gap:3px">
+    <div style="display:flex;gap:3px;align-items:center">
       <button class="sidebar-link" id="sbr-settings-btn" onclick="toggleSbrMenu()" style="flex:1"><i data-lucide="settings"></i>Settings</button>
+      <button class="tbtn" id="dark-toggle" onclick="toggleDark()" title="Toggle dark/light mode" style="margin-right:2px"><i data-lucide="moon"></i></button>
       <button class="sidebar-link" onclick="logout()" title="Sign out" style="padding:7px 10px;flex-shrink:0"><i data-lucide="log-out"></i></button>
     </div>
   </div>
