@@ -4,80 +4,78 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VCE Study Planner</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%231a1714'/><rect x='12' y='10' width='26' height='34' rx='3' fill='none' stroke='%23e8a87c' stroke-width='2.5'/><line x1='19' y1='20' x2='31' y2='20' stroke='%23e8a87c' stroke-width='2' stroke-linecap='round'/><line x1='19' y1='27' x2='31' y2='27' stroke='%23e8a87c' stroke-width='2' stroke-linecap='round'/><line x1='19' y1='34' x2='25' y2='34' stroke='%23e8a87c' stroke-width='2' stroke-linecap='round'/><circle cx='46' cy='46' r='13' fill='%23c84b2f'/><line x1='46' y1='39' x2='46' y2='46' stroke='white' stroke-width='2.5' stroke-linecap='round'/><line x1='46' y1='46' x2='50' y2='50' stroke='white' stroke-width='2.5' stroke-linecap='round'/></svg>">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230f0d14'/><path d='M32 12C25 12 11 14 11 14L11 51C11 51 23 49 32 49C41 49 53 51 53 51L53 14C53 14 39 12 32 12Z' fill='none' stroke='white' stroke-width='2.5' stroke-linejoin='round'/><line x1='32' y1='12' x2='32' y2='49' stroke='white' stroke-width='2.5' stroke-linecap='round'/><line x1='16' y1='24' x2='29' y2='23' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-opacity='0.45'/><line x1='16' y1='30' x2='29' y2='29' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-opacity='0.45'/><line x1='16' y1='36' x2='29' y2='35' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-opacity='0.45'/><path d='M47 12L47 31L43 27.5L39 31L39 12Z' fill='%23f59e0b'/></svg>">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'DM Sans',sans-serif;background:#111010;color:#f0ede8;min-height:100vh;display:flex;flex-direction:column}
-.land-header{background:#0e0d0c;padding:0 2rem;height:54px;display:flex;align-items:center;border-bottom:1px solid #2e2b28}
-.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;color:#fff;display:flex;align-items:center;gap:8px}
-.logo span{color:#e8a87c}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#f8f7f4;color:#1a1714;min-height:100vh;display:flex;flex-direction:column}
+.land-header{background:#ffffff;padding:0 2rem;height:54px;display:flex;align-items:center;border-bottom:1px solid #ede9e3}
+.logo{font-family:'Fraunces',serif;font-weight:700;font-size:1rem;color:#1a1714;display:flex;align-items:center;gap:8px}
+.logo span{color:#6366f1}
 .logo svg{flex-shrink:0}
 .land-main{flex:1;display:flex;align-items:center;justify-content:center;padding:2rem 1rem}
 
 /* AUTH CARD */
-.auth-card{background:#1e1c1a;border:1px solid #2e2b28;border-radius:20px;padding:2rem;width:100%;max-width:420px}
-.auth-title{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:#fff;margin-bottom:.3rem}
-.auth-sub{font-size:13px;color:#8a8078;margin-bottom:1.5rem;line-height:1.5}
+.auth-card{background:#ffffff;border:1px solid #ede9e3;border-radius:20px;padding:2rem;width:100%;max-width:420px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.auth-title{font-family:'Fraunces',serif;font-size:1.5rem;font-weight:700;color:#1a1714;margin-bottom:.3rem}
+.auth-sub{font-size:13px;color:#8a8278;margin-bottom:1.5rem;line-height:1.55}
 .fg{display:flex;flex-direction:column;gap:5px;margin-bottom:.85rem}
-.fg label{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:#7a7068}
-input[type=text]{width:100%;height:42px;padding:0 12px;background:#111010;border:1px solid #2e2b28;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;color:#f0ede8;outline:none;transition:border-color .15s}
-input:focus{border-color:#e8693a}
-.abtn{width:100%;height:42px;background:#c84b2f;color:#fff;border:none;border-radius:10px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;margin-top:.25rem}
-.abtn:hover{background:#e8693a}
+.fg label{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:#8a8278}
+input[type=text]{width:100%;height:42px;padding:0 12px;background:#f8f7f4;border:1px solid #ede9e3;border-radius:10px;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;color:#1a1714;outline:none;transition:border-color .15s}
+input:focus{border-color:#6366f1;background:#fff}
+.abtn{width:100%;height:42px;background:#6366f1;color:#fff;border:none;border-radius:10px;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;margin-top:.25rem}
+.abtn:hover{background:#4f46e5}
 .abtn:disabled{opacity:.5;cursor:default}
-.err-msg{background:rgba(200,75,47,.15);border:1px solid rgba(200,75,47,.4);border-radius:9px;padding:.6rem .9rem;font-size:13px;color:#e8693a;margin-bottom:.85rem;display:none}
+.err-msg{background:#fef2f2;border:1px solid #fecaca;border-radius:9px;padding:.6rem .9rem;font-size:13px;color:#dc2626;margin-bottom:.85rem;display:none}
 .err-msg.show{display:block}
 
 /* GOOGLE BUTTON */
-.google-btn{width:100%;height:46px;background:#fff;color:#1a1714;border:1px solid #e0e0e0;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .15s;margin-top:.5rem}
-.google-btn:hover{background:#f5f5f5;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.google-btn{width:100%;height:46px;background:#fff;color:#1a1714;border:1px solid #ede9e3;border-radius:10px;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .15s;margin-top:.5rem;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.google-btn:hover{background:#f8f7f4;box-shadow:0 2px 8px rgba(0,0,0,.1)}
 .google-btn:disabled{opacity:.5;cursor:default}
-.divider{display:flex;align-items:center;gap:10px;margin:1.25rem 0;color:#4a4540;font-size:12px}
-.divider::before,.divider::after{content:'';flex:1;height:1px;background:#2e2b28}
 
 /* STEPS */
 .step{display:none}.step.active{display:block}
 
 /* SETUP STEP */
-.setup-card{background:#1e1c1a;border:1px solid #2e2b28;border-radius:20px;padding:2rem;width:100%;max-width:820px}
+.setup-card{background:#ffffff;border:1px solid #ede9e3;border-radius:20px;padding:2rem;width:100%;max-width:820px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
 .step-indicator{display:flex;align-items:center;gap:8px;margin-bottom:1.5rem}
-.step-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;flex-shrink:0}
-.step-dot.done{background:#c84b2f;color:#fff}
-.step-dot.current{background:#2e2b28;color:#f0ede8;border:2px solid #c84b2f}
-.step-dot.future{background:#1e1c1a;color:#7a7068;border:2px solid #2e2b28}
-.step-line{flex:1;height:1px;background:#2e2b28}
+.step-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;flex-shrink:0}
+.step-dot.done{background:#6366f1;color:#fff}
+.step-dot.current{background:#eef0ff;color:#6366f1;border:2px solid #6366f1}
+.step-dot.future{background:#f8f7f4;color:#8a8278;border:2px solid #ede9e3}
+.step-line{flex:1;height:1px;background:#ede9e3}
 
 /* SUBJECT PICKER */
-.subj-search{width:100%;height:40px;padding:0 12px;background:#111010;border:1px solid #2e2b28;border-radius:9px;font-family:'DM Sans',sans-serif;font-size:14px;color:#f0ede8;outline:none;transition:border-color .15s;margin-bottom:1rem}
-.subj-search:focus{border-color:#e8693a}
+.subj-search{width:100%;height:40px;padding:0 12px;background:#f8f7f4;border:1px solid #ede9e3;border-radius:9px;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;color:#1a1714;outline:none;transition:border-color .15s;margin-bottom:1rem}
+.subj-search:focus{border-color:#6366f1;background:#fff}
 .subj-category{margin-bottom:1.1rem}
-.subj-cat-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#7a7068;margin-bottom:.5rem}
+.subj-cat-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#8a8278;margin-bottom:.5rem}
 .subj-chips{display:flex;flex-wrap:wrap;gap:6px}
-.subj-chip{padding:5px 12px;border-radius:20px;border:1px solid #2e2b28;background:#1e1c1a;color:#8a8078;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;user-select:none}
-.subj-chip:hover{border-color:#c84b2f;color:#f0ede8}
-.subj-chip.selected{background:#c84b2f;border-color:#c84b2f;color:#fff}
+.subj-chip{padding:5px 12px;border-radius:20px;border:1px solid #ede9e3;background:#f8f7f4;color:#8a8278;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;user-select:none}
+.subj-chip:hover{border-color:#6366f1;color:#6366f1}
+.subj-chip.selected{background:#6366f1;border-color:#6366f1;color:#fff}
 .subj-scroll{max-height:380px;overflow-y:auto;padding-right:4px;margin-bottom:1rem}
-.subj-scroll::-webkit-scrollbar{width:4px}.subj-scroll::-webkit-scrollbar-track{background:#111010}.subj-scroll::-webkit-scrollbar-thumb{background:#2e2b28;border-radius:2px}
-.selected-preview{background:#111010;border-radius:10px;padding:.75rem 1rem;margin-bottom:1rem;min-height:44px}
-.selected-preview-label{font-size:11px;color:#7a7068;margin-bottom:.4rem}
+.subj-scroll::-webkit-scrollbar{width:4px}.subj-scroll::-webkit-scrollbar-track{background:#f8f7f4}.subj-scroll::-webkit-scrollbar-thumb{background:#ede9e3;border-radius:2px}
+.selected-preview{background:#f8f7f4;border:1px solid #ede9e3;border-radius:10px;padding:.75rem 1rem;margin-bottom:1rem;min-height:44px}
+.selected-preview-label{font-size:11px;color:#8a8278;margin-bottom:.4rem}
 .selected-chips{display:flex;flex-wrap:wrap;gap:5px}
 .sel-chip{padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600;cursor:pointer;transition:opacity .15s}
 .sel-chip:hover{opacity:.7}
 .btn-row{display:flex;gap:10px}
-.abtn-outline{flex:1;height:42px;background:transparent;color:#f0ede8;border:1px solid #2e2b28;border-radius:10px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s}
-.abtn-outline:hover{border-color:#c84b2f;color:#c84b2f}
+.abtn-outline{flex:1;height:42px;background:transparent;color:#1a1714;border:1px solid #ede9e3;border-radius:10px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s}
+.abtn-outline:hover{border-color:#6366f1;color:#6366f1}
 .abtn.primary{flex:1}
 .spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:6px}
-.spinner-dark{border-color:rgba(0,0,0,.2);border-top-color:#333}
+.spinner-dark{border-color:rgba(0,0,0,.15);border-top-color:#6366f1}
 @keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
 <header class="land-header">
   <div class="logo">
-    <svg width="26" height="26" viewBox="0 0 36 36"><rect width="36" height="36" rx="8" fill="#2a2520"/><rect x="7" y="8" width="15" height="20" rx="2" fill="none" stroke="#e8a87c" stroke-width="1.5"/><line x1="11" y1="14" x2="19" y2="14" stroke="#e8a87c" stroke-width="1.2" stroke-linecap="round"/><line x1="11" y1="18" x2="19" y2="18" stroke="#e8a87c" stroke-width="1.2" stroke-linecap="round"/><line x1="11" y1="22" x2="15" y2="22" stroke="#e8a87c" stroke-width="1.2" stroke-linecap="round"/><circle cx="26" cy="25" r="8" fill="#c84b2f"/><line x1="26" y1="21" x2="26" y2="25" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="26" y1="25" x2="28.5" y2="27.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+    <svg width="26" height="26" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#0f0d14"/><path d="M32 12C25 12 11 14 11 14L11 51C11 51 23 49 32 49C41 49 53 51 53 51L53 14C53 14 39 12 32 12Z" fill="none" stroke="white" stroke-width="2.5" stroke-linejoin="round"/><line x1="32" y1="12" x2="32" y2="49" stroke="white" stroke-width="2.5" stroke-linecap="round"/><line x1="16" y1="24" x2="29" y2="23" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-opacity="0.45"/><line x1="16" y1="30" x2="29" y2="29" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-opacity="0.45"/><line x1="16" y1="36" x2="29" y2="35" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-opacity="0.45"/><path d="M47 12L47 31L43 27.5L39 31L39 12Z" fill="#f59e0b"/></svg>
     VCE <span>Study Planner</span>
   </div>
 </header>
