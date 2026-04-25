@@ -684,7 +684,7 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
     <button class="nav-item" data-page="stats" onclick="nav('stats',this)"><i data-lucide="bar-chart-2"></i>Stats</button>
     <div style="margin-top:auto;padding-top:.75rem">
       <button id="pwa-install-btn" onclick="pwaInstall()" style="display:flex;align-items:center;gap:9px;width:100%;padding:9px 13px;border-radius:10px;border:1px solid rgba(99,102,241,.35);background:rgba(99,102,241,.12);color:rgba(165,180,252,.9);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;text-align:left">
-        <i data-lucide="smartphone" style="width:15px;height:15px;flex-shrink:0"></i>Get the App
+        <i data-lucide="smartphone" style="width:15px;height:15px;flex-shrink:0"></i><span>Get the App</span>
       </button>
     </div>
   </nav>
@@ -1632,6 +1632,7 @@ async function init(){
   updatePomDisplay();
   renderXP();
   if(typeof lucide!=='undefined')lucide.createIcons();
+  setPwaBtn(!!localStorage.getItem('vce-pwa-installed')||window.matchMedia('(display-mode: standalone)').matches);
 }
 function toggleTask(id){
   const t=tasks.find(x=>x.id===id);if(!t)return;t.done=!t.done;
@@ -2888,8 +2889,14 @@ async function aiSend(){
 // ── PWA ──────────────────────────────────────────────────────────────────────
 function pwaInstall(){
   const p=window._pwaPrompt;
-  if(p){p.prompt();p.userChoice.then(r=>{window._pwaPrompt=null;if(r.outcome==='accepted')showToast('App installed! 🎉')});}
-  else{showToast('In your browser menu, tap "Install VCE Planner" or "Add to Home Screen"');}
+  if(p){p.prompt();p.userChoice.then(r=>{window._pwaPrompt=null;if(r.outcome==='accepted'){localStorage.setItem('vce-pwa-installed','1');setPwaBtn(true);showToast('App installed! 🎉');}});}
+  else{showToast('Open VCE Planner from your home screen or app drawer');}
+}
+function setPwaBtn(installed){
+  const btn=document.getElementById('pwa-install-btn');
+  if(!btn)return;
+  const lbl=btn.querySelector('span');
+  if(lbl)lbl.textContent=installed?'Open the App':'Get the App';
 }
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js'))}
 
