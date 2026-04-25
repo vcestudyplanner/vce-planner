@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#18151e">
+<meta name="theme-color" content="#1e2028">
+<link rel="apple-touch-icon" href="icon-192.svg">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -23,8 +24,8 @@
   if(mx===mn){h2=s2=0}else{var d=mx-mn;s2=l2>0.5?d/(2-mx-mn):d/(mx+mn);if(mx===r2)h2=((g2-b2)/d+(g2<b2?6:0))/6;else if(mx===g2)h2=((b2-r2)/d+2)/6;else h2=((r2-g2)/d+4)/6;}
   h2=Math.round(h2*360);s2=Math.round(s2*100);
   var sc=function(v){return Math.round(s2*v);},st=document.documentElement.style;
-  if(dark){var aS=Math.min(s2+15,90);st.setProperty('--accent','hsl('+h2+','+aS+'%,65%)');st.setProperty('--accent-light','hsl('+h2+','+aS+'%,80%)');st.setProperty('--bg','hsl('+h2+','+sc(.55)+'%,9%)');st.setProperty('--surface','hsl('+h2+','+sc(.45)+'%,15%)');st.setProperty('--border','hsl('+h2+','+sc(.60)+'%,27%)');st.setProperty('--muted','hsl('+h2+','+sc(.35)+'%,56%)');st.setProperty('--hbg','hsl('+h2+','+sc(.65)+'%,6%)');st.setProperty('--text','hsl('+h2+','+sc(.25)+'%,94%)');st.setProperty('--htxt','hsl('+h2+','+sc(.2)+'%,96%)');}
-  else{var aL=Math.min(l2*100+28,90);st.setProperty('--accent',hex);st.setProperty('--accent-light','hsl('+h2+','+(Math.min(s2,75))+'%,'+aL+'%)');st.setProperty('--bg','hsl('+h2+','+sc(.45)+'%,93%)');st.setProperty('--surface','hsl('+h2+','+sc(.22)+'%,98%)');st.setProperty('--border','hsl('+h2+','+sc(.55)+'%,80%)');st.setProperty('--muted','hsl('+h2+','+sc(.38)+'%,44%)');st.setProperty('--hbg','hsl('+h2+','+sc(.65)+'%,12%)');st.setProperty('--text','hsl('+h2+','+sc(.35)+'%,10%)');st.setProperty('--htxt','#fff');}
+  if(dark){var aS=Math.min(s2+15,88);st.setProperty('--accent','hsl('+h2+','+aS+'%,65%)');st.setProperty('--accent-light','hsl('+h2+','+aS+'%,80%)');st.setProperty('--hbg','hsl('+h2+','+Math.round(s2*0.18)+'%,7%)');}
+  else{var aL=Math.min(l2*100+28,90);st.setProperty('--accent',hex);st.setProperty('--accent-light','hsl('+h2+','+(Math.min(s2,72))+'%,'+aL+'%)');st.setProperty('--hbg','hsl('+h2+','+Math.round(s2*0.3)+'%,13%)');};
 })();
 </script>
 <!-- Capture PWA install prompt before any deferred scripts can miss it -->
@@ -34,42 +35,40 @@
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230f0d14'/><path d='M32 12C25 12 11 14 11 14L11 51C11 51 23 49 32 49C41 49 53 51 53 51L53 14C53 14 39 12 32 12Z' fill='none' stroke='white' stroke-width='2.5' stroke-linejoin='round'/><line x1='32' y1='12' x2='32' y2='49' stroke='white' stroke-width='2.5' stroke-linecap='round'/><line x1='16' y1='24' x2='29' y2='23' stroke='rgba(255,255,255,.45)' stroke-width='1.8' stroke-linecap='round'/><line x1='16' y1='30' x2='29' y2='29' stroke='rgba(255,255,255,.45)' stroke-width='1.8' stroke-linecap='round'/><line x1='16' y1='36' x2='29' y2='35' stroke='rgba(255,255,255,.45)' stroke-width='1.8' stroke-linecap='round'/><path d='M47 12L47 31L43 27.5L39 31L39 12Z' fill='%23f59e0b'/></svg>">
 <style>
 :root{
-  --bg:#edeaff;--surface:#f8f7ff;--border:#c8c0f5;
-  --text:#130f2a;--muted:#5a4fa0;--accent:#4f46e5;--accent-light:#818cf8;
-  --c5:#1a6a6a;--c5-bg:#e4f4f4;--c5-br:#a0d0d0;
-  --c6:#8b1a3a;--c6-bg:#fce8ee;--c6-br:#e0a8b8;
-  --c7:#c06010;--c7-bg:#fef0e0;--c7-br:#e8c890;
-  --c8:#2a2a8a;--c8-bg:#eeeeff;--c8-br:#b0b0e0;
-  --eng:#2d5a3d;--eng-bg:#e8f4ec;--eng-br:#b8d4c0;
-  --rel:#5a2d7a;--rel-bg:#f0e8f8;--rel-br:#cdb8e0;
-  --mth:#1e3a6e;--mth-bg:#e8eef8;--mth-br:#b0c4e0;
-  --gmth:#7a4a1e;--gmth-bg:#f8f0e8;--gmth-br:#e0c8a8;
-  --sac:#8b1a3a;--sac-bg:#fce8ee;
-  --exam:#1a4a6e;--exam-bg:#deeaf8;
-  --high:#ef4444;--high-bg:#fee2e2;
-  --green:#16a34a;--green-bg:#dcfce7;
-  --amber:#d97706;--amber-bg:#fef3c7;
-  --hbg:#120e2a;--htxt:#fff;
-  --accent-light:#818cf8;
+  --bg:#f3f4f6;--surface:#ffffff;--border:#e4e6eb;
+  --text:#111827;--muted:#6b7280;--accent:#4f46e5;--accent-light:#818cf8;
+  --hbg:#1e2028;--htxt:#ffffff;
+  --c5:#0d7a7a;--c5-bg:#e6f6f6;--c5-br:#9dd4d4;
+  --c6:#9b1239;--c6-bg:#fde8ee;--c6-br:#f0a8bc;
+  --c7:#b45309;--c7-bg:#fef3c7;--c7-br:#fcd34d;
+  --c8:#3730a3;--c8-bg:#eef2ff;--c8-br:#c7d2fe;
+  --eng:#166534;--eng-bg:#f0fdf4;--eng-br:#bbf7d0;
+  --rel:#6b21a8;--rel-bg:#faf5ff;--rel-br:#d8b4fe;
+  --mth:#1e40af;--mth-bg:#eff6ff;--mth-br:#bfdbfe;
+  --gmth:#92400e;--gmth-bg:#fffbeb;--gmth-br:#fde68a;
+  --sac:#9b1239;--sac-bg:#fde8ee;
+  --exam:#1e40af;--exam-bg:#eff6ff;
+  --high:#dc2626;--high-bg:#fef2f2;
+  --green:#16a34a;--green-bg:#f0fdf4;
+  --amber:#d97706;--amber-bg:#fffbeb;
 }
 [data-theme=dark]{
-  --bg:#0d0b1a;--surface:#17142b;--border:#302860;
-  --text:#ece8ff;--muted:#8878c8;--accent:#818cf8;
-  --c5:#40c8c8;--c5-bg:#0a2020;--c5-br:#1a4040;
-  --c6:#e87090;--c6-bg:#2a0a18;--c6-br:#481828;
-  --c7:#e89030;--c7-bg:#281408;--c7-br:#483010;
-  --c8:#8080f0;--c8-bg:#0a0a28;--c8-br:#181848;
-  --eng:#5ab87a;--eng-bg:#1a2e20;--eng-br:#2a4830;
-  --rel:#a870e0;--rel-bg:#22183a;--rel-br:#3a2858;
-  --mth:#6090e0;--mth-bg:#141e38;--mth-br:#1e3058;
-  --gmth:#d8903a;--gmth-bg:#2a1e10;--gmth-br:#483018;
-  --sac:#e8507a;--sac-bg:#2a101a;
-  --exam:#5890d8;--exam-bg:#101828;
-  --high:#f87171;--high-bg:#450a0a;
+  --bg:#0f1012;--surface:#18191e;--border:#2c2e36;
+  --text:#f0f1f3;--muted:#70737d;--accent:#818cf8;--accent-light:#a5b4fc;
+  --hbg:#09090b;--htxt:#ffffff;
+  --c5:#2dd4bf;--c5-bg:#0a1f1e;--c5-br:#134e4a;
+  --c6:#f472b6;--c6-bg:#1f0a14;--c6-br:#500724;
+  --c7:#fbbf24;--c7-bg:#1c1208;--c7-br:#451a03;
+  --c8:#818cf8;--c8-bg:#0e0e1f;--c8-br:#1e1b4b;
+  --eng:#4ade80;--eng-bg:#0a1c0f;--eng-br:#14532d;
+  --rel:#c084fc;--rel-bg:#160b24;--rel-br:#3b0764;
+  --mth:#60a5fa;--mth-bg:#0c1526;--mth-br:#1e3a5f;
+  --gmth:#fb923c;--gmth-bg:#1c1008;--gmth-br:#431407;
+  --sac:#f472b6;--sac-bg:#1f0a14;
+  --exam:#60a5fa;--exam-bg:#0c1526;
+  --high:#f87171;--high-bg:#3b0a0a;
   --green:#4ade80;--green-bg:#052e16;
-  --amber:#fbbf24;--amber-bg:#451a03;
-  --hbg:#07051a;--htxt:#ece8ff;
-  --accent-light:#a5b4fc;
+  --amber:#fbbf24;--amber-bg:#1c1208;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;font-size:15px;transition:background .3s,color .3s}
@@ -657,8 +656,8 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
     <button class="nav-item" data-page="stats" onclick="nav('stats',this)"><i data-lucide="bar-chart-2"></i>Stats</button>
   </nav>
   <div class="sidebar-bottom">
+    <button class="sidebar-link pwa-install-visible" id="pwa-install-btn" onclick="pwaInstall()" style="display:none;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;margin-bottom:2px"><i data-lucide="smartphone"></i>Add to home screen</button>
     <div class="sbr-menu" id="sbr-menu">
-      <button class="sidebar-link" id="pwa-install-btn" onclick="pwaInstall()" style="display:none"><i data-lucide="download"></i>Install app</button>
       <button class="sidebar-link" onclick="openNotifModal();closeSbrMenu()"><i data-lucide="bell"></i>Notifications</button>
       <a class="sidebar-link" href="suggestions.html"><i data-lucide="message-circle"></i>Suggestions</a>
       <button class="sidebar-link" onclick="replayTour();closeSbrMenu()"><i data-lucide="play-circle"></i>Replay tour</button>
@@ -1232,29 +1231,15 @@ function hexToHsl(hex){
 function applyPalette(color,dark){
   const[h,s,l]=hexToHsl(color);
   const r=document.documentElement.style;
-  const sc=v=>Math.round(s*v);
   if(dark){
-    const aS=Math.min(s+15,90);
+    const aS=Math.min(s+15,88);
     r.setProperty('--accent',`hsl(${h},${aS}%,65%)`);
     r.setProperty('--accent-light',`hsl(${h},${aS}%,80%)`);
-    r.setProperty('--bg',`hsl(${h},${sc(.55)}%,9%)`);
-    r.setProperty('--surface',`hsl(${h},${sc(.45)}%,15%)`);
-    r.setProperty('--border',`hsl(${h},${sc(.60)}%,27%)`);
-    r.setProperty('--muted',`hsl(${h},${sc(.35)}%,56%)`);
-    r.setProperty('--hbg',`hsl(${h},${sc(.65)}%,6%)`);
-    r.setProperty('--text',`hsl(${h},${sc(.25)}%,94%)`);
-    r.setProperty('--htxt',`hsl(${h},${sc(.2)}%,96%)`);
+    r.setProperty('--hbg',`hsl(${h},${Math.round(s*0.18)}%,7%)`);
   }else{
-    const aL=Math.min(l+28,90);
     r.setProperty('--accent',color);
-    r.setProperty('--accent-light',`hsl(${h},${Math.min(s,75)}%,${aL}%)`);
-    r.setProperty('--bg',`hsl(${h},${sc(.45)}%,93%)`);
-    r.setProperty('--surface',`hsl(${h},${sc(.22)}%,98%)`);
-    r.setProperty('--border',`hsl(${h},${sc(.55)}%,80%)`);
-    r.setProperty('--muted',`hsl(${h},${sc(.38)}%,44%)`);
-    r.setProperty('--hbg',`hsl(${h},${sc(.65)}%,12%)`);
-    r.setProperty('--text',`hsl(${h},${sc(.35)}%,10%)`);
-    r.setProperty('--htxt','#fff');
+    r.setProperty('--accent-light',`hsl(${h},${Math.min(s,72)}%,${Math.min(l+28,90)}%)`);
+    r.setProperty('--hbg',`hsl(${h},${Math.round(s*0.3)}%,13%)`);
   }
 }
 const THEME_PRESETS=[
