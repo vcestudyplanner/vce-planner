@@ -645,6 +645,12 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 .atar-subj-inp{width:72px;padding:5px 8px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;text-align:center;outline:none;transition:border-color .15s}
 .atar-subj-inp:focus{border-color:var(--accent)}
 .atar-subj-scaled{font-size:12px;color:var(--muted);min-width:32px;text-align:right}
+/* ── SYNC DOT ── */
+.sync-dot{width:7px;height:7px;border-radius:50%;background:transparent;flex-shrink:0;transition:background .3s;margin:0 2px}
+.sync-dot.saving{background:var(--amber);animation:syncp .8s ease-in-out infinite}
+.sync-dot.saved{background:var(--green)}
+.sync-dot.error{background:var(--high)}
+@keyframes syncp{0%,100%{opacity:.4}50%{opacity:1}}
 </style>
 </head>
 <body>
@@ -689,6 +695,7 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
     </div>
     <div style="display:flex;gap:3px;align-items:center">
       <button class="sidebar-link" id="sbr-settings-btn" onclick="toggleSbrMenu()" style="flex:1"><i data-lucide="settings"></i>Settings</button>
+      <div id="sync-dot" class="sync-dot" title=""></div>
       <button class="tbtn" id="dark-toggle" onclick="toggleDark()" title="Toggle dark/light mode" style="margin-right:2px"><i data-lucide="moon"></i></button>
       <button class="sidebar-link" onclick="logout()" title="Sign out" style="padding:7px 10px;flex-shrink:0"><i data-lucide="log-out"></i></button>
     </div>
@@ -1131,6 +1138,92 @@ const {createClient}=supabase;
 const sb=createClient(SUPA_URL,SUPA_KEY);
 let currentUser=null,currentProfile=null,userSubjects=[],UID_PREFIX='anon-';
 
+// ── CLOUD SYNC ──
+let _syncTimer=null,_syncing=false,_cloudApplying=false;
+
+// Intercept localStorage writes to trigger cloud push
+(function(){
+  const _orig=localStorage.setItem.bind(localStorage);
+  localStorage.setItem=function(k,v){
+    _orig(k,v);
+    if(!_cloudApplying&&UID_PREFIX!=='anon-'&&k.startsWith(UID_PREFIX))scheduleSyncPush();
+  };
+})();
+
+function collectLocalData(){
+  const d={};
+  for(let i=0;i<localStorage.length;i++){
+    const k=localStorage.key(i);
+    if(k&&k.startsWith(UID_PREFIX))d[k.slice(UID_PREFIX.length)]=localStorage.getItem(k);
+  }
+  return d;
+}
+
+function applyCloudData(cloud){
+  _cloudApplying=true;
+  try{
+    for(const[sk,v]of Object.entries(cloud)){
+      if(typeof v==='string')localStorage.setItem(UID_PREFIX+sk,v);
+    }
+  }finally{_cloudApplying=false;}
+}
+
+function setSyncStatus(s){
+  const el=document.getElementById('sync-dot');
+  if(!el)return;
+  el.className='sync-dot'+(s?' '+s:'');
+  el.title=s==='saving'?'Saving…':s==='saved'?'Synced':s==='error'?'Sync failed':'';
+}
+
+async function syncPush(){
+  if(!currentUser||_syncing)return;
+  _syncing=true;setSyncStatus('saving');
+  try{
+    const now=new Date().toISOString();
+    const{error}=await sb.from('user_data').upsert({user_id:currentUser.id,data:collectLocalData(),updated_at:now},{onConflict:'user_id'});
+    if(error)throw error;
+    localStorage.setItem('vce-synced-at',now);
+    setSyncStatus('saved');
+    setTimeout(()=>setSyncStatus(''),2500);
+  }catch(e){setSyncStatus('error');setTimeout(()=>setSyncStatus(''),4000);}
+  finally{_syncing=false;}
+}
+
+async function syncPull(){
+  if(!currentUser)return false;
+  try{
+    const{data,error}=await sb.from('user_data').select('data,updated_at').eq('user_id',currentUser.id).maybeSingle();
+    if(error||!data?.data)return false;
+    const localTs=localStorage.getItem('vce-synced-at')||'0';
+    if(data.updated_at>localTs){
+      applyCloudData(data.data);
+      localStorage.setItem('vce-synced-at',data.updated_at);
+      return true;
+    }
+  }catch(e){}
+  return false;
+}
+
+function scheduleSyncPush(){
+  clearTimeout(_syncTimer);
+  setSyncStatus('saving');
+  _syncTimer=setTimeout(syncPush,2000);
+}
+
+function reloadAndRender(){
+  loadUserData();
+  loadScores();
+  renderHome();
+  renderTasks();
+  renderHoursBar();
+  renderXP();
+  renderVCECd();
+}
+
+document.addEventListener('visibilitychange',()=>{
+  if(!document.hidden)syncPull().then(pulled=>{if(pulled)reloadAndRender();});
+});
+
 const COLOR_CSS=[
   {fg:'var(--eng)',bg:'var(--eng-bg)',br:'var(--eng-br)'},
   {fg:'var(--rel)',bg:'var(--rel-bg)',br:'var(--rel-br)'},
@@ -1505,6 +1598,8 @@ async function init(){
   document.title=profile.name+"'s VCE Planner";
 
   loadUserData();
+  const _pulled=await syncPull();
+  if(_pulled){loadUserData();loadScores();}
   renderSubjOv();
   renderFilterBtns();
   populateSubjectDropdowns();
