@@ -85,7 +85,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .nav-item{display:flex;align-items:center;gap:12px;padding:10px 13px;border-radius:10px;border:none;background:transparent;color:rgba(255,255,255,.48);font-family:'Plus Jakarta Sans',sans-serif;font-size:13.5px;font-weight:500;cursor:pointer;transition:all .15s;width:100%;text-align:left;white-space:nowrap}
 .nav-item svg{width:15px;height:15px;flex-shrink:0}
 .nav-item:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.85)}
-.nav-item.active{background:var(--accent);color:#fff;font-weight:600}
+.nav-item.active{background:rgba(99,102,241,.16);color:var(--accent-light);font-weight:600}
+[data-theme=dark] .nav-item.active{background:rgba(129,140,248,.14);color:var(--accent-light)}
 .sidebar-bottom{padding:.75rem;border-top:1px solid rgba(255,255,255,.07);display:flex;flex-direction:column;gap:3px}
 .sidebar-link{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:9px;font-size:12.5px;font-weight:500;color:rgba(255,255,255,.4);text-decoration:none;transition:all .15s;background:transparent;border:none;cursor:pointer;width:100%;text-align:left}
 .sidebar-link svg{width:13px;height:13px}
@@ -111,7 +112,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .container{max-width:960px;margin:0 auto;padding:2rem 2.5rem}
 
 /* ── PAGE HEADER ── */
-.page-hdr{margin-bottom:1.75rem;padding-bottom:1.25rem;border-bottom:1px solid var(--border)}
+.page-hdr{margin-bottom:2rem}
 .page-hdr-title{font-family:'Fraunces',serif;font-size:1.75rem;font-weight:700;color:var(--text);line-height:1.2}
 .page-hdr-sub{font-size:13px;color:var(--muted);margin-top:.3rem}
 
@@ -134,7 +135,7 @@ textarea{height:54px;padding:9px 11px;resize:none;line-height:1.5}
 select.subj-sel{font-weight:600;border-width:2px}
 
 /* ── HOME HERO ── */
-.home-hero{background:linear-gradient(140deg,#eef0ff 0%,#f8f7f4 55%,#f3f0fc 100%);border:1px solid #e2dff5;border-radius:20px;padding:2.5rem;margin-bottom:1.25rem;position:relative;overflow:hidden}
+.home-hero{background:linear-gradient(120deg,#eef0ff,#f8f7f4 68%);border:1px solid var(--border);border-radius:20px;padding:2.5rem;margin-bottom:1.25rem;position:relative;overflow:hidden}
 .home-hero::after{content:'';position:absolute;right:-40px;top:-40px;width:220px;height:220px;background:radial-gradient(circle,rgba(99,102,241,.1),transparent 70%);pointer-events:none}
 .home-greeting{font-family:'Fraunces',serif;font-size:2.4rem;font-weight:700;color:var(--text);line-height:1.15;margin-bottom:.4rem}
 .home-greeting em{font-style:italic;color:var(--accent)}
@@ -216,7 +217,7 @@ select.subj-sel{font-weight:600;border-width:2px}
 
 /* ── TASKS ── */
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.25rem}
-.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:.9rem 1.1rem;position:relative;overflow:hidden;transition:transform .15s,box-shadow .15s;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.25rem;position:relative;overflow:hidden;transition:transform .15s,box-shadow .15s;box-shadow:0 1px 3px rgba(0,0,0,.04)}
 .stat-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.07)}
 .stat-label{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:5px}
 .stat-num{font-family:'Fraunces',serif;font-size:1.8rem;font-weight:700;color:var(--text);line-height:1}
@@ -585,10 +586,6 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 #ai-fab{position:fixed;bottom:1.5rem;right:1.5rem;width:52px;height:52px;border-radius:50%;background:var(--accent);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,.25);z-index:9000;transition:all .2s}
 #ai-fab svg{width:22px;height:22px}
 #ai-fab:hover{transform:scale(1.08);filter:brightness(1.1)}
-#side-tab{position:fixed;right:0;top:50%;transform:translateY(-50%);background:var(--accent);color:#fff;border:none;border-radius:12px 0 0 12px;padding:.75rem .55rem;cursor:pointer;z-index:8000;display:flex;flex-direction:column;align-items:center;gap:6px;box-shadow:-3px 0 18px rgba(0,0,0,.2);transition:all .2s;writing-mode:vertical-rl}
-#side-tab:hover{padding-right:.75rem;filter:brightness(1.1)}
-#side-tab svg{width:15px;height:15px;writing-mode:horizontal-tb}
-#side-tab span{font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:600;letter-spacing:.06em;writing-mode:vertical-rl;text-orientation:mixed}
 #ai-panel{position:fixed;bottom:1.5rem;right:1.5rem;width:360px;max-width:calc(100vw - 2rem);height:540px;max-height:calc(100vh - 2rem);background:var(--surface);border:1px solid var(--border);border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.3);z-index:9001;display:none;flex-direction:column;overflow:hidden}
 #ai-panel.open{display:flex}
 .ai-panel-header{background:var(--hbg);padding:.9rem 1.1rem;display:flex;align-items:center;gap:.6rem;flex-shrink:0}
@@ -723,9 +720,9 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
       <div class="sh" style="margin-bottom:.75rem">Get started</div>
       <div style="font-size:13px;color:var(--muted);margin-bottom:1rem">You're all set up — add your subjects, tasks and SACs to make the most of your planner.</div>
       <div style="display:flex;flex-wrap:wrap;gap:.6rem">
-        <button class="abtn" onclick="navTo('tasks')" style="font-size:12.5px;padding:.5rem 1rem;display:flex;align-items:center;gap:6px"><i data-lucide="plus-circle" style="width:14px;height:14px"></i>Add a task</button>
-        <button class="abtn" onclick="navTo('sacs')" style="font-size:12.5px;padding:.5rem 1rem;background:transparent;border:1.5px solid var(--accent);color:var(--accent);display:flex;align-items:center;gap:6px"><i data-lucide="target" style="width:14px;height:14px"></i>Add a SAC</button>
-        <button class="abtn" onclick="navTo('study')" style="font-size:12.5px;padding:.5rem 1rem;background:transparent;border:1.5px solid var(--border);color:var(--muted);display:flex;align-items:center;gap:6px"><i data-lucide="brain" style="width:14px;height:14px"></i>Start studying</button>
+        <button class="abtn" onclick="navTo('tasks')" style="font-size:12.5px;display:flex;align-items:center;gap:6px"><i data-lucide="plus-circle" style="width:14px;height:14px"></i>Add a task</button>
+        <button class="abtn" onclick="navTo('sacs')" style="font-size:12.5px;background:transparent;border:1.5px solid var(--border);color:var(--text);display:flex;align-items:center;gap:6px"><i data-lucide="target" style="width:14px;height:14px"></i>Add a SAC</button>
+        <button class="abtn" onclick="navTo('study')" style="font-size:12.5px;background:transparent;border:1.5px solid var(--border);color:var(--text);display:flex;align-items:center;gap:6px"><i data-lucide="brain" style="width:14px;height:14px"></i>Start studying</button>
       </div>
     </div>
   </div>
@@ -1095,12 +1092,6 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 </div></div>
 
 </div><!-- end .main-wrap -->
-
-<!-- SIDE TAB -->
-<button id="side-tab" onclick="navTo('home')" title="Go to Home">
-  <i data-lucide="layout-dashboard"></i>
-  <span>VCE PLANNER</span>
-</button>
 
 <!-- AI ASSISTANT FAB -->
 <button id="ai-fab" onclick="aiToggle()" title="AI Study Assistant"><i data-lucide="sparkles"></i></button>
