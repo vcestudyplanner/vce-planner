@@ -1783,7 +1783,7 @@ function renderPlanner(){
   const slots=planData[plannerDateStr]||[];
   const el=document.getElementById('plan-slots');
   if(!slots.length)el.innerHTML='<div class="plan-empty">No blocks planned — add one below!</div>';
-  else el.innerHTML=slots.map(b=>{const icon=PLAN_ICONS[b.type]||'⭐';const sb=b.subj&&SUBJ[b.subj]?`<span class="badge b-${b.subj}" style="font-size:10px">${SUBJ[b.subj].label}</span>`:'';const bg=b.subj&&BG[b.subj]?`background:${BG[b.subj]};border-color:${BR[b.subj]}`:'';return`<div class="plan-slot ${b.type==='gym'||b.type==='sport'?'custom-block':''}" style="${bg}"><div class="plan-slot-time">${b.time}</div><div class="plan-slot-body"><div class="plan-slot-title">${icon} ${b.title}${b.taskId?'<span style="font-size:10px;color:var(--muted);margin-left:6px">📋 from tasks</span>':''}</div><div class="plan-slot-meta">${b.type.charAt(0).toUpperCase()+b.type.slice(1)} ${sb}</div></div><button class="plan-slot-del" onclick="removePlanBlock('${plannerDateStr}',${b.id})">×</button></div>`}).join('');
+  else el.innerHTML=slots.map(b=>{const icon=PLAN_ICONS[b.type]||'⭐';const sb=b.subj&&SUBJ[b.subj]?`<span class="badge b-${b.subj}" style="font-size:10px">${SUBJ[b.subj].label}</span>`:'';const bg=b.subj&&BG[b.subj]?`background:${BG[b.subj]};border-color:${BR[b.subj]}`:'';const revTag=b.revSacId?'<span style="font-size:10px;color:var(--rel);margin-left:6px;font-weight:600">revision</span>':'';return`<div class="plan-slot ${b.type==='gym'||b.type==='sport'?'custom-block':''}" style="${bg}"><div class="plan-slot-time">${b.time||'—'}</div><div class="plan-slot-body"><div class="plan-slot-title">${icon} ${b.title}${b.taskId?'<span style="font-size:10px;color:var(--muted);margin-left:6px">📋 from tasks</span>':''}${revTag}</div><div class="plan-slot-meta">${b.type.charAt(0).toUpperCase()+b.type.slice(1)} ${sb}</div></div><button class="plan-slot-del" onclick="removePlanBlock('${plannerDateStr}',${b.id})">×</button></div>`}).join('');
   renderSchedPanel();
 }
 
@@ -2971,6 +2971,8 @@ function rsToggleDone(evId,itemId){
   item.done=!item.done;
   item.missed=false;
   rsSave(evId,data);
+  const ev=events.find(e=>e.id==evId);
+  if(ev)rsSyncToPlanner(ev,data);
   rsRenderItems(evId,data);
   rsRenderSchedule(evId,data);
 }
@@ -2980,6 +2982,7 @@ function rsMissedAction(evId,itemId,action){
   if(action==='reschedule'){item.scheduledDate=null;item.missed=false;}
   else{item.missed=true;item.done=true;}
   rsSave(evId,data);
+  _rsEvId=evId;
   rsRebuild();
 }
 
@@ -3079,9 +3082,36 @@ function rsRebuild(){
   let data=rsLoad(_rsEvId)||rsDefault(ev);
   data=rsBuildSchedule(ev,data);
   rsSave(_rsEvId,data);
+  rsSyncToPlanner(ev,data);
   rsRenderItems(_rsEvId,data);
   rsRenderSchedule(_rsEvId,data);
-  showToast('Schedule updated!');
+  showToast('Schedule updated and synced to planner!');
+}
+
+function rsSyncToPlanner(ev,data){
+  const sacId=ev.id;
+  // Remove old revision entries for this SAC from calEvents and planData
+  calEvents=calEvents.filter(e=>e.revSacId!==sacId);
+  Object.keys(planData).forEach(ds=>{
+    planData[ds]=planData[ds].filter(b=>b.revSacId!==sacId);
+    if(!planData[ds].length)delete planData[ds];
+  });
+  // Add fresh entries for each scheduled, undone, non-missed item
+  data.items.forEach(item=>{
+    if(!item.scheduledDate||item.done||item.missed)return;
+    const ds=item.scheduledDate;
+    const label=`📚 ${item.name} (${formatDur(item.dur)})`;
+    // Calendar event
+    calEvents.push({id:Date.now()+Math.random(),name:label,date:ds,time:'',colour:'purple',rn:0,ru:'weeks',revSacId:sacId,revItemId:item.id});
+    // Day planner block
+    if(!planData[ds])planData[ds]=[];
+    planData[ds].push({id:Date.now()+Math.random(),time:'',title:label,type:'study',subj:ev.subject,revSacId:sacId,revItemId:item.id});
+  });
+  calEvents.sort((a,b)=>a.date.localeCompare(b.date));
+  Object.keys(planData).forEach(ds=>planData[ds].sort((a,b)=>(a.time||'').localeCompare(b.time||'')));
+  saveCE();saveP();
+  if(document.getElementById('page-calendar').classList.contains('active'))renderCal();
+  if(document.getElementById('page-planner').classList.contains('active'))renderPlanner();
 }
 
 // ── render items ──
