@@ -2924,6 +2924,7 @@ function pwaInstall(){
 function setPwaBtn(installed){
   const btn=document.getElementById('pwa-install-btn');
   if(!btn)return;
+  if(window.matchMedia('(display-mode: standalone)').matches){btn.style.display='none';return;}
   const lbl=btn.querySelector('span');
   if(lbl)lbl.textContent=installed?'Open the App':'Get the App';
 }
