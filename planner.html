@@ -1662,6 +1662,7 @@ async function init(){
     document.getElementById('main-wrap').classList.add('sidebar-hidden');
     document.getElementById('sidebar-show-tab').classList.add('visible');
   }
+  checkShowTour();
 }
 function toggleTask(id){
   const t=tasks.find(x=>x.id===id);if(!t)return;t.done=!t.done;
@@ -2142,7 +2143,7 @@ const TOUR_STEPS=[
    target:null,pos:'center'},
 ];
 let _tourIdx=0,_tourBusy=false;
-function checkShowTour(){if(!localStorage.getItem(UID_PREFIX+'tour-done'))setTimeout(()=>{document.getElementById('tour-welcome').style.display='flex'},600)}
+function checkShowTour(){if(!localStorage.getItem(UID_PREFIX+'tour-done'))document.getElementById('tour-welcome').style.display='flex'}
 function skipTour(){localStorage.setItem(UID_PREFIX+'tour-done','1');document.getElementById('tour-welcome').style.display='none'}
 function replayTour(){localStorage.removeItem(UID_PREFIX+'tour-done');nav('home',document.querySelector('[data-page="home"]'));setTimeout(()=>{document.getElementById('tour-welcome').style.display='flex'},400)}
 function startTour(){document.getElementById('tour-welcome').style.display='none';_tourIdx=0;_tourBusy=false;_showTourStep(0)}
@@ -3150,11 +3151,9 @@ function initNotifications(){
 }
 
 init().then(()=>{
-  if(typeof lucide!=='undefined') lucide.createIcons();
-  checkShowTour();
   loadScores();
   initNotifications();
-});
+}).catch(e=>console.error('init failed:',e));
 </script>
 <!-- NOTIFICATIONS MODAL -->
 <div id="notif-modal">
