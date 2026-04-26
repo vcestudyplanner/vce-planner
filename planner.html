@@ -585,7 +585,7 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 .rev-event-header{display:flex;align-items:center;gap:.75rem;margin-bottom:.6rem}
 .rev-event-name{font-family:'Fraunces',serif;font-size:1rem;font-weight:700;color:var(--text);flex:1}
 .rev-event-days{font-size:12px;font-weight:700;color:var(--accent);white-space:nowrap}
-.rev-plan-btn{font-size:12px;font-weight:600;padding:4px 13px;border-radius:8px;background:var(--accent);color:#fff;border:none;cursor:pointer;transition:all .15s;white-space:nowrap}
+.rev-plan-btn{font-size:12px;font-weight:600;padding:5px 14px;border-radius:8px;background:var(--accent);color:#fff;border:none;cursor:pointer;transition:all .15s;white-space:nowrap;display:inline-flex;align-items:center;gap:5px}
 .rev-plan-btn:hover{filter:brightness(1.1)}
 .rev-sessions{display:flex;flex-direction:column;gap:6px;margin-top:.5rem}
 .rev-session-row{display:flex;align-items:center;gap:.6rem;padding:.4rem .7rem;border-radius:9px;background:var(--bg);font-size:12.5px}
@@ -594,6 +594,74 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 .rev-session-add{background:transparent;border:1px solid var(--border);color:var(--muted);font-size:11px;padding:3px 9px;border-radius:6px;cursor:pointer;transition:all .15s;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap}
 .rev-session-add:hover{border-color:var(--accent);color:var(--accent)}
 .rev-session-add.added{background:var(--green-bg);border-color:var(--green);color:var(--green);cursor:default}
+/* ── REVISION SCHEDULE MODAL ── */
+#rs-modal{position:fixed;inset:0;z-index:5000;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);display:none;align-items:flex-start;justify-content:center;padding:1.5rem 1rem;overflow-y:auto}
+#rs-modal.open{display:flex}
+.rs-box{background:var(--surface);border:1px solid var(--border);border-radius:20px;width:100%;max-width:900px;display:flex;flex-direction:column;min-height:0}
+.rs-head{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.75rem;flex-shrink:0}
+.rs-head-info{flex:1;min-width:0}
+.rs-head-subj{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.1rem}
+.rs-head-name{font-family:'Fraunces',serif;font-size:1.15rem;font-weight:700;color:var(--text)}
+.rs-head-date{font-size:12px;color:var(--muted);margin-top:.1rem}
+.rs-close{background:transparent;border:1px solid var(--border);color:var(--muted);width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.rs-close:hover{border-color:var(--high);color:var(--high)}
+.rs-body{display:grid;grid-template-columns:320px 1fr;gap:0;flex:1;min-height:0}
+@media(max-width:700px){.rs-body{grid-template-columns:1fr}}
+.rs-left{border-right:1px solid var(--border);padding:1.25rem;display:flex;flex-direction:column;gap:1rem;overflow-y:auto;max-height:75vh}
+.rs-right{padding:1.25rem;overflow-y:auto;max-height:75vh}
+.rs-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.6rem}
+.rs-item-form{display:flex;flex-direction:column;gap:.5rem;background:var(--bg);border-radius:12px;padding:.75rem}
+.rs-item-form input,.rs-item-form select{border:1px solid var(--border);border-radius:8px;padding:7px 10px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;background:var(--surface);color:var(--text);outline:none;width:100%}
+.rs-item-form input:focus,.rs-item-form select:focus{border-color:var(--accent)}
+.rs-item-form-row{display:grid;grid-template-columns:1fr 90px;gap:.4rem}
+.rs-add-btn{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:7px 14px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;width:100%}
+.rs-add-btn:hover{filter:brightness(1.1)}
+.rs-items-list{display:flex;flex-direction:column;gap:5px}
+.rs-item-row{display:flex;align-items:center;gap:.5rem;padding:.5rem .7rem;border-radius:9px;background:var(--bg);border:1px solid transparent;transition:all .15s}
+.rs-item-row.done{opacity:.5}
+.rs-item-row.done .rs-item-name{text-decoration:line-through}
+.rs-item-check{width:17px;height:17px;border-radius:5px;border:1.5px solid var(--border);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.rs-item-check.checked{background:var(--green);border-color:var(--green);color:#fff}
+.rs-item-check svg{width:11px;height:11px}
+.rs-item-name{flex:1;font-size:13px;color:var(--text);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rs-item-dur{font-size:11px;color:var(--muted);white-space:nowrap;background:var(--border);border-radius:5px;padding:1px 6px}
+.rs-item-del{background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:15px;line-height:1;padding:0 2px;border-radius:4px;transition:color .15s;flex-shrink:0}
+.rs-item-del:hover{color:var(--high)}
+.rs-item-drag{color:var(--muted);cursor:grab;font-size:14px;flex-shrink:0;user-select:none}
+/* day availability */
+.rs-days-grid{display:flex;flex-direction:column;gap:4px}
+.rs-day-row{display:flex;align-items:center;gap:.5rem;padding:.3rem .5rem;border-radius:8px;background:var(--bg)}
+.rs-day-label{font-size:12px;font-weight:600;color:var(--text);min-width:72px}
+.rs-day-modes{display:flex;gap:3px}
+.rs-day-mode{font-size:11px;font-weight:600;padding:3px 8px;border-radius:6px;border:1.5px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .15s}
+.rs-day-mode:hover{border-color:var(--accent);color:var(--accent)}
+.rs-day-mode.active-full{background:#dcfce7;border-color:#22c55e;color:#16a34a}
+.rs-day-mode.active-light{background:#fef9c3;border-color:#eab308;color:#a16207}
+.rs-day-mode.active-off{background:#fee2e2;border-color:#ef4444;color:#dc2626}
+[data-theme=dark] .rs-day-mode.active-full{background:#14532d;border-color:#22c55e;color:#4ade80}
+[data-theme=dark] .rs-day-mode.active-light{background:#422006;border-color:#eab308;color:#fde047}
+[data-theme=dark] .rs-day-mode.active-off{background:#450a0a;border-color:#ef4444;color:#f87171}
+.rs-day-hrs{width:52px;font-size:12px;padding:3px 6px;border:1.5px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;outline:none}
+.rs-day-hrs:focus{border-color:var(--accent)}
+/* schedule output */
+.rs-schedule-empty{text-align:center;padding:2rem;color:var(--muted);font-size:13px}
+.rs-sched-day{margin-bottom:.9rem}
+.rs-sched-day-hdr{display:flex;align-items:center;gap:.5rem;margin-bottom:.35rem}
+.rs-sched-date{font-size:12px;font-weight:700;color:var(--text)}
+.rs-sched-load{font-size:11px;color:var(--muted)}
+.rs-sched-items{display:flex;flex-direction:column;gap:4px}
+.rs-sched-item{display:flex;align-items:center;gap:.5rem;padding:.4rem .7rem;border-radius:8px;font-size:12.5px;border-left:3px solid var(--accent)}
+.rs-sched-item.done-sched{opacity:.45;border-left-color:var(--green)}
+.rs-sched-item-name{flex:1;color:var(--text)}
+.rs-sched-item-dur{font-size:11px;color:var(--muted);white-space:nowrap}
+.rs-sched-hw{font-size:11px;color:var(--muted);padding:.25rem .5rem;background:var(--bg);border-radius:6px;margin-top:.2rem}
+.rs-rebuild-btn{background:transparent;border:1px solid var(--accent);color:var(--accent);border-radius:8px;padding:5px 14px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;margin-bottom:.75rem}
+.rs-rebuild-btn:hover{background:var(--accent);color:#fff}
+.rs-missed-row{display:flex;align-items:center;gap:.4rem;padding:.35rem .7rem;border-radius:8px;background:var(--high-bg);border:1px solid var(--high);font-size:12px;margin-bottom:.35rem}
+.rs-missed-label{flex:1;color:var(--high);font-weight:600}
+.rs-missed-btn{font-size:11px;font-weight:600;padding:2px 8px;border-radius:5px;border:none;cursor:pointer;transition:all .15s}
+.rs-missed-reschedule{background:var(--accent);color:#fff}
+.rs-missed-skip{background:var(--border);color:var(--muted)}
 /* AI assistant */
 #ai-fab{position:fixed;bottom:1.5rem;right:1.5rem;width:52px;height:52px;border-radius:50%;background:var(--accent);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,.25);z-index:9000;transition:all .2s}
 #ai-fab svg{width:22px;height:22px}
@@ -2763,13 +2831,17 @@ function renderRevision(){
     const days=daysUntil(ev.date);
     const subjName=userSubjects.find(s=>s.id===ev.subject)?.label||ev.subject||'';
     const sessions=genRevSessions(ev,days);
+    const hasSchedule=!!localStorage.getItem(UID_PREFIX+'rs-'+ev.id);
     return`<div class="rev-event-card">
       <div class="rev-event-header">
         <div>
           <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.15rem">${subjName} · ${ev.type||'SAC'}</div>
           <div class="rev-event-name">${ev.name}</div>
         </div>
-        <div class="rev-event-days">${days===0?'Today!':days===1?'Tomorrow':days+' days'}</div>
+        <div style="display:flex;align-items:center;gap:.5rem">
+          <div class="rev-event-days">${days===0?'Today!':days===1?'Tomorrow':days+' days'}</div>
+          <button class="rev-plan-btn" onclick="openRevSchedule(${ev.id})"><i data-lucide="calendar-range" style="width:13px;height:13px"></i>${hasSchedule?'View Schedule':'Build Schedule'}</button>
+        </div>
       </div>
       <div style="font-size:12px;color:var(--muted);margin-bottom:.6rem">Suggested revision sessions based on spaced repetition:</div>
       <div class="rev-sessions">${sessions.map((s,i)=>`
@@ -2807,6 +2879,288 @@ function revAddTask(evId,date,taskEnc,btn){
   saveT();renderTasks();
   btn.textContent='✓ Added';btn.classList.add('added');btn.disabled=true;
   showToast('Task added to your list!');
+}
+
+// ── REVISION SCHEDULE ─────────────────────────────────────────────────────────
+let _rsEvId=null;
+
+function rsKey(evId){return UID_PREFIX+'rs-'+evId}
+function rsLoad(evId){
+  try{return JSON.parse(localStorage.getItem(rsKey(evId)))||null}catch(e){return null}
+}
+function rsSave(evId,data){localStorage.setItem(rsKey(evId),JSON.stringify(data))}
+function rsDefault(ev){
+  // Build default availability: every day from today up to (not including) the SAC
+  const avail={};
+  const days=daysUntil(ev.date);
+  for(let i=0;i<days;i++){
+    const d=new Date(TODAY);d.setDate(d.getDate()+i);
+    const ds=localStr(d);
+    const dow=d.getDay(); // 0=Sun
+    avail[ds]={mode:dow===0?'off':'full',hrs:2};
+  }
+  return{items:[],avail,defaultHrs:2};
+}
+
+// ── open / close ──
+function openRevSchedule(evId){
+  _rsEvId=evId;
+  const ev=events.find(e=>e.id==evId);
+  if(!ev)return;
+  let data=rsLoad(evId);
+  if(!data){data=rsDefault(ev);rsSave(evId,data);}
+  // Refresh availability keys in case days have passed or new days added
+  data=rsSyncAvailDays(ev,data);
+  rsSave(evId,data);
+  const subjName=userSubjects.find(s=>s.id===ev.subject)?.label||ev.subject||'';
+  const ds=new Date(ev.date+'T00:00:00').toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('rs-head-subj').textContent=subjName+' · '+(ev.type==='exam'?'EXAM':'SAC');
+  document.getElementById('rs-head-name').textContent=ev.name;
+  document.getElementById('rs-head-date').textContent=ds+' · '+daysUntil(ev.date)+' days away';
+  document.getElementById('rs-modal').classList.add('open');
+  rsRenderItems(evId,data);
+  rsRenderAvail(evId,data);
+  rsRenderSchedule(evId,data);
+  if(typeof lucide!=='undefined')lucide.createIcons();
+}
+function closeRevSchedule(){
+  document.getElementById('rs-modal').classList.remove('open');
+  _rsEvId=null;
+}
+function rsSyncAvailDays(ev,data){
+  const days=daysUntil(ev.date);
+  for(let i=0;i<days;i++){
+    const d=new Date(TODAY);d.setDate(d.getDate()+i);
+    const ds=localStr(d);
+    if(!data.avail[ds]){
+      const dow=d.getDay();
+      data.avail[ds]={mode:dow===0?'off':'full',hrs:data.defaultHrs||2};
+    }
+  }
+  return data;
+}
+
+// ── items ──
+function rsAddItem(){
+  if(!_rsEvId)return;
+  const name=document.getElementById('rs-item-name').value.trim();
+  const type=document.getElementById('rs-item-type').value;
+  const dur=parseInt(document.getElementById('rs-item-dur').value)||60;
+  if(!name){showToast('Enter a name for the revision item');return}
+  const data=rsLoad(_rsEvId)||rsDefault(events.find(e=>e.id==_rsEvId));
+  data.items.push({id:Date.now(),name,type,dur,done:false,missed:false,scheduledDate:null});
+  rsSave(_rsEvId,data);
+  document.getElementById('rs-item-name').value='';
+  document.getElementById('rs-item-dur').value='';
+  rsRenderItems(_rsEvId,data);
+  rsRebuild();
+}
+function rsDeleteItem(evId,itemId){
+  const data=rsLoad(evId);if(!data)return;
+  data.items=data.items.filter(i=>i.id!=itemId);
+  rsSave(evId,data);
+  rsRenderItems(evId,data);
+  rsRenderSchedule(evId,data);
+}
+function rsToggleDone(evId,itemId){
+  const data=rsLoad(evId);if(!data)return;
+  const item=data.items.find(i=>i.id==itemId);
+  if(!item)return;
+  item.done=!item.done;
+  item.missed=false;
+  rsSave(evId,data);
+  rsRenderItems(evId,data);
+  rsRenderSchedule(evId,data);
+}
+function rsMissedAction(evId,itemId,action){
+  const data=rsLoad(evId);if(!data)return;
+  const item=data.items.find(i=>i.id==itemId);if(!item)return;
+  if(action==='reschedule'){item.scheduledDate=null;item.missed=false;}
+  else{item.missed=true;item.done=true;}
+  rsSave(evId,data);
+  rsRebuild();
+}
+
+// ── availability ──
+function rsSetDayMode(evId,date,mode){
+  const data=rsLoad(evId);if(!data)return;
+  if(!data.avail[date])data.avail[date]={mode:'full',hrs:data.defaultHrs||2};
+  data.avail[date].mode=mode;
+  rsSave(evId,data);
+  rsRenderAvail(evId,data);
+}
+function rsSetDayHrs(evId,date,val){
+  const data=rsLoad(evId);if(!data)return;
+  if(!data.avail[date])data.avail[date]={mode:'full',hrs:2};
+  data.avail[date].hrs=parseFloat(val)||0;
+  rsSave(evId,data);
+}
+
+// ── scheduling algorithm ──
+function rsBuildSchedule(ev,data){
+  const today=todayStr();
+  const days=[];
+  const d=daysUntil(ev.date);
+  for(let i=0;i<d;i++){
+    const dt=new Date(TODAY);dt.setDate(dt.getDate()+i);
+    days.push(localStr(dt));
+  }
+  // Task load per day: rough 30 min per task due that day
+  const taskLoad={};
+  tasks.forEach(t=>{if(!t.done&&t.due)taskLoad[t.due]=(taskLoad[t.due]||0)+30;});
+  // Clear scheduled dates for undone, non-missed items so we reassign
+  data.items.forEach(item=>{if(!item.done&&!item.missed)item.scheduledDate=null;});
+  const queue=data.items.filter(i=>!i.done&&!i.missed).map(i=>({...i}));
+  let qi=0;
+  days.forEach(ds=>{
+    const avail=data.avail[ds]||{mode:'full',hrs:data.defaultHrs||2};
+    let totalMins=0;
+    if(avail.mode==='full')totalMins=(avail.hrs||2)*60;
+    else if(avail.mode==='light')totalMins=(avail.hrs||2)*30;
+    else totalMins=0;
+    const hwMins=Math.min(taskLoad[ds]||0,totalMins*0.5); // never let hw eat >50%
+    let remaining=Math.max(0,totalMins-hwMins);
+    while(qi<queue.length&&remaining>0){
+      if(queue[qi].dur<=remaining+15){ // 15 min tolerance
+        const orig=data.items.find(i=>i.id===queue[qi].id);
+        if(orig)orig.scheduledDate=ds;
+        remaining-=queue[qi].dur;
+        qi++;
+      } else if(queue[qi].dur>totalMins){
+        // item longer than whole day — schedule anyway
+        const orig=data.items.find(i=>i.id===queue[qi].id);
+        if(orig)orig.scheduledDate=ds;
+        qi++;
+        break;
+      } else {
+        break; // item doesn't fit today, move to next day
+      }
+    }
+  });
+  return data;
+}
+
+function rsRebuild(){
+  if(!_rsEvId)return;
+  const ev=events.find(e=>e.id==_rsEvId);if(!ev)return;
+  let data=rsLoad(_rsEvId)||rsDefault(ev);
+  data=rsBuildSchedule(ev,data);
+  rsSave(_rsEvId,data);
+  rsRenderItems(_rsEvId,data);
+  rsRenderSchedule(_rsEvId,data);
+  showToast('Schedule updated!');
+}
+
+// ── render items ──
+function rsRenderItems(evId,data){
+  const el=document.getElementById('rs-items-list');if(!el)return;
+  if(!data.items.length){el.innerHTML='<div style="font-size:12px;color:var(--muted);text-align:center;padding:.5rem">No items yet — add some above</div>';return}
+  const typeLabel={
+    'practice-sac':'Practice SAC','past-exam':'Past Exam','questions':'Questions',
+    'summary':'Summary','flashcards':'Flashcards','notes':'Notes','other':'Other'
+  };
+  el.innerHTML=data.items.map(item=>`
+    <div class="rs-item-row${item.done?' done':''}">
+      <div class="rs-item-check${item.done?' checked':''}" onclick="rsToggleDone(${evId},${item.id})" title="${item.done?'Mark undone':'Mark done'}">
+        ${item.done?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>':''}
+      </div>
+      <div class="rs-item-name" title="${item.name}">${item.name}<span style="font-size:10px;color:var(--muted);margin-left:4px">${typeLabel[item.type]||''}</span></div>
+      <div class="rs-item-dur">${item.dur}m</div>
+      <button class="rs-item-del" onclick="rsDeleteItem(${evId},${item.id})">×</button>
+    </div>`).join('');
+}
+
+// ── render availability ──
+function rsRenderAvail(evId,data){
+  const el=document.getElementById('rs-days-grid');if(!el)return;
+  const ev=events.find(e=>e.id==evId);if(!ev)return;
+  const days=daysUntil(ev.date);
+  const rows=[];
+  for(let i=0;i<days;i++){
+    const d=new Date(TODAY);d.setDate(d.getDate()+i);
+    const ds=localStr(d);
+    const a=data.avail[ds]||{mode:'full',hrs:data.defaultHrs||2};
+    const dayLabel=i===0?'Today':i===1?'Tomorrow':d.toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short'});
+    rows.push(`<div class="rs-day-row">
+      <div class="rs-day-label" style="font-size:11px">${dayLabel}</div>
+      <div class="rs-day-modes">
+        <button class="rs-day-mode${a.mode==='full'?' active-full':''}" onclick="rsSetDayMode(${evId},'${ds}','full')">Full</button>
+        <button class="rs-day-mode${a.mode==='light'?' active-light':''}" onclick="rsSetDayMode(${evId},'${ds}','light')">Light</button>
+        <button class="rs-day-mode${a.mode==='off'?' active-off':''}" onclick="rsSetDayMode(${evId},'${ds}','off')">Off</button>
+      </div>
+      <input class="rs-day-hrs" type="number" min="0" max="12" step=".5" value="${a.hrs||2}" onchange="rsSetDayHrs(${evId},'${ds}',this.value)" title="Study hours for this day"/>
+    </div>`);
+  }
+  el.innerHTML=rows.length?rows.join(''):'<div style="font-size:12px;color:var(--muted)">No days remaining before this SAC.</div>';
+}
+
+// ── render schedule output ──
+function rsRenderSchedule(evId,data){
+  const el=document.getElementById('rs-schedule-out');if(!el)return;
+  const ev=events.find(e=>e.id==evId);if(!ev)return;
+  const today=todayStr();
+  const taskLoad={};
+  tasks.forEach(t=>{if(!t.done&&t.due)taskLoad[t.due]=(taskLoad[t.due]||0)+1;});
+  // Group items by scheduledDate
+  const byDate={};
+  data.items.forEach(item=>{
+    if(item.done&&item.missed)return;
+    const ds=item.scheduledDate;
+    if(!ds)return;
+    if(!byDate[ds])byDate[ds]=[];
+    byDate[ds].push(item);
+  });
+  const unscheduled=data.items.filter(i=>!i.done&&!i.missed&&!i.scheduledDate);
+  const days=daysUntil(ev.date);
+  if(!Object.keys(byDate).length&&!unscheduled.length){
+    el.innerHTML='<div class="rs-schedule-empty">Add revision items on the left, then click <strong>Rebuild Schedule</strong> to generate your plan.</div>';
+    return;
+  }
+  let html='';
+  // Missed items (past days, undone)
+  const missedItems=data.items.filter(i=>{
+    if(i.done||i.missed||!i.scheduledDate)return false;
+    return i.scheduledDate<today;
+  });
+  missedItems.forEach(item=>{
+    html+=`<div class="rs-missed-row">
+      <div class="rs-missed-label">⚠ Missed: ${item.name}</div>
+      <button class="rs-missed-btn rs-missed-reschedule" onclick="rsMissedAction(${evId},${item.id},'reschedule')">Reschedule</button>
+      <button class="rs-missed-btn rs-missed-skip" onclick="rsMissedAction(${evId},${item.id},'skip')">Skip</button>
+    </div>`;
+  });
+  // Future/today days
+  for(let i=0;i<days;i++){
+    const d=new Date(TODAY);d.setDate(d.getDate()+i);
+    const ds=localStr(d);
+    const items=byDate[ds];
+    if(!items||!items.length)continue;
+    const dayLabel=i===0?'Today':i===1?'Tomorrow':d.toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'short'});
+    const totalMins=items.reduce((s,it)=>s+it.dur,0);
+    const hwCount=taskLoad[ds]||0;
+    html+=`<div class="rs-sched-day">
+      <div class="rs-sched-day-hdr">
+        <div class="rs-sched-date">${dayLabel}</div>
+        <div class="rs-sched-load">${formatDur(totalMins)} revision${hwCount?` · ${hwCount} task${hwCount>1?'s':''} due`:''}</div>
+      </div>
+      <div class="rs-sched-items">
+        ${items.map(item=>`<div class="rs-sched-item${item.done?' done-sched':''}" style="background:${item.done?'var(--bg)':'var(--bg)'}">
+          <div class="rs-sched-item-name">${item.done?'✓ ':''} ${item.name}</div>
+          <div class="rs-sched-item-dur">~${formatDur(item.dur)}</div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }
+  if(unscheduled.length){
+    html+=`<div style="font-size:12px;color:var(--high);background:var(--high-bg);border-radius:8px;padding:.5rem .75rem;margin-top:.5rem">⚠ ${unscheduled.length} item${unscheduled.length>1?'s':''} couldn't be scheduled — not enough available days. Adjust day availability or remove items.</div>`;
+  }
+  el.innerHTML=html||'<div class="rs-schedule-empty">No items scheduled yet. Add items and click Rebuild Schedule.</div>';
+}
+
+function formatDur(mins){
+  if(mins<60)return mins+'m';
+  const h=Math.floor(mins/60),m=mins%60;
+  return m?`${h}h ${m}m`:`${h}h`;
 }
 
 // ── AI STUDY ASSISTANT ────────────────────────────────────────────────────────
@@ -3182,6 +3536,55 @@ init().then(()=>{
       <button onclick="closeNotifModal()" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:0 18px;border-radius:10px;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;cursor:pointer">Cancel</button>
     </div>
     <div id="notif-status" style="font-size:12px;color:var(--muted);margin-top:.6rem;text-align:center;min-height:16px"></div>
+  </div>
+</div>
+
+<!-- REVISION SCHEDULE MODAL -->
+<div id="rs-modal">
+  <div class="rs-box">
+    <div class="rs-head">
+      <div class="rs-head-info">
+        <div class="rs-head-subj" id="rs-head-subj"></div>
+        <div class="rs-head-name" id="rs-head-name"></div>
+        <div class="rs-head-date" id="rs-head-date"></div>
+      </div>
+      <button class="rs-close" onclick="closeRevSchedule()">✕</button>
+    </div>
+    <div class="rs-body">
+      <!-- LEFT: items + availability -->
+      <div class="rs-left">
+        <div>
+          <div class="rs-section-title">Revision Items</div>
+          <div class="rs-item-form">
+            <input type="text" id="rs-item-name" placeholder="e.g. 2019 Practice SAC, Chapter 3 questions…"/>
+            <div class="rs-item-form-row">
+              <select id="rs-item-type">
+                <option value="practice-sac">Practice SAC</option>
+                <option value="past-exam">Past Exam</option>
+                <option value="questions">Question Set</option>
+                <option value="summary">Topic Summary</option>
+                <option value="flashcards">Flashcards</option>
+                <option value="notes">Notes Review</option>
+                <option value="other">Other</option>
+              </select>
+              <input type="number" id="rs-item-dur" placeholder="mins" min="5" max="600" step="5" title="How long (minutes)"/>
+            </div>
+            <button class="rs-add-btn" onclick="rsAddItem()">+ Add item</button>
+          </div>
+          <div class="rs-items-list" id="rs-items-list" style="margin-top:.6rem"></div>
+        </div>
+        <div>
+          <div class="rs-section-title" style="margin-bottom:.35rem">Day Availability <span style="font-weight:400;font-size:10px;color:var(--muted)">(hours available to study)</span></div>
+          <div class="rs-days-grid" id="rs-days-grid"></div>
+        </div>
+        <button class="rs-rebuild-btn" onclick="rsRebuild()" style="margin-top:.25rem;width:100%">↺ Rebuild Schedule</button>
+      </div>
+      <!-- RIGHT: schedule output -->
+      <div class="rs-right">
+        <div class="rs-section-title">Your Study Schedule</div>
+        <div id="rs-schedule-out"></div>
+      </div>
+    </div>
   </div>
 </div>
 
