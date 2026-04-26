@@ -38,6 +38,7 @@
   --bg:#f8f7f4;--surface:#ffffff;--border:#ede9e3;
   --text:#1a1714;--muted:#8a8278;--accent:#6366f1;--accent-light:#a5b4fc;
   --hbg:#1e1c19;--htxt:#ffffff;
+  --sbg:#eeedf8;--stxt:#1a1714;--smuted:rgba(26,23,20,.42);--ssep:#dddaf0;--shover:rgba(99,102,241,.08);--slink:rgba(26,23,20,.4);
   --c5:#5e9a7c;--c5-bg:#f1f8f4;--c5-br:#c4e4d2;
   --c6:#c07898;--c6-bg:#fcf0f5;--c6-br:#e8c4d4;
   --c7:#b87848;--c7-bg:#faf4ec;--c7-br:#e8d4b8;
@@ -56,6 +57,7 @@
   --bg:#1d1b18;--surface:#252220;--border:#38342c;
   --text:#f0ede8;--muted:#7a7068;--accent:#818cf8;--accent-light:#a5b4fc;
   --hbg:#131211;--htxt:#ffffff;
+  --sbg:#131211;--stxt:#ffffff;--smuted:rgba(255,255,255,.38);--ssep:rgba(255,255,255,.07);--shover:rgba(255,255,255,.07);--slink:rgba(255,255,255,.4);
   --c5:#72c098;--c5-bg:#141c16;--c5-br:#203428;
   --c6:#e090b0;--c6-bg:#201418;--c6-br:#3a2030;
   --c7:#e0a870;--c7-bg:#201808;--c7-br:#382c14;
@@ -74,41 +76,50 @@
 body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;font-size:15px;transition:background .3s,color .3s}
 
 /* ── SIDEBAR ── */
-.sidebar{width:230px;background:var(--hbg);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:200;overflow-y:auto;scrollbar-width:none;transition:transform .3s}
+.sidebar{width:230px;background:var(--sbg);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:200;overflow-y:auto;scrollbar-width:none;transition:transform .3s}
 .sidebar::-webkit-scrollbar{display:none}
-.sidebar-logo{padding:1.5rem 1.25rem 1.25rem;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.07);margin-bottom:.5rem}
-.logo-wordmark{font-family:'Fraunces',serif;font-size:1.05rem;font-weight:700;color:var(--htxt);line-height:1.25}
-.logo-wordmark span{color:var(--accent-light)}
-.logo-user{font-size:11px;color:rgba(255,255,255,.38);margin-top:2px}
+.sidebar.collapsed{transform:translateX(-230px)}
+.sidebar-logo{padding:1.5rem 1.25rem 1.25rem;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--ssep);margin-bottom:.5rem}
+.logo-wordmark{font-family:'Fraunces',serif;font-size:1.05rem;font-weight:700;color:var(--stxt);line-height:1.25}
+.logo-wordmark span{color:var(--accent)}
+.logo-user{font-size:11px;color:var(--smuted);margin-top:2px}
 .sidebar-nav{flex:1;padding:.5rem .75rem;display:flex;flex-direction:column;gap:3px}
-.sidebar-sep{height:1px;background:rgba(255,255,255,.07);margin:.6rem .5rem}
-.nav-item{display:flex;align-items:center;gap:12px;padding:10px 13px;border-radius:10px;border:none;background:transparent;color:rgba(255,255,255,.48);font-family:'Plus Jakarta Sans',sans-serif;font-size:13.5px;font-weight:500;cursor:pointer;transition:all .15s;width:100%;text-align:left;white-space:nowrap}
+.sidebar-sep{height:1px;background:var(--ssep);margin:.6rem .5rem}
+.nav-item{display:flex;align-items:center;gap:12px;padding:10px 13px;border-radius:10px;border:none;background:transparent;color:var(--smuted);font-family:'Plus Jakarta Sans',sans-serif;font-size:13.5px;font-weight:500;cursor:pointer;transition:all .15s;width:100%;text-align:left;white-space:nowrap}
 .nav-item svg{width:15px;height:15px;flex-shrink:0}
-.nav-item:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.85)}
-.nav-item.active{background:rgba(99,102,241,.16);color:var(--accent-light);font-weight:600}
+.nav-item:hover{background:var(--shover);color:var(--stxt)}
+.nav-item.active{background:rgba(99,102,241,.14);color:var(--accent);font-weight:600}
 [data-theme=dark] .nav-item.active{background:rgba(129,140,248,.14);color:var(--accent-light)}
-.sidebar-bottom{padding:.75rem;border-top:1px solid rgba(255,255,255,.07);display:flex;flex-direction:column;gap:3px}
-.sidebar-link{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:9px;font-size:12.5px;font-weight:500;color:rgba(255,255,255,.4);text-decoration:none;transition:all .15s;background:transparent;border:none;cursor:pointer;width:100%;text-align:left}
+.sidebar-bottom{padding:.75rem;border-top:1px solid var(--ssep);display:flex;flex-direction:column;gap:3px}
+.sidebar-link{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:9px;font-size:12.5px;font-weight:500;color:var(--slink);text-decoration:none;transition:all .15s;background:transparent;border:none;cursor:pointer;width:100%;text-align:left}
 .sidebar-link svg{width:13px;height:13px}
-.sidebar-link:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.75)}
-.sbr-menu{display:none;flex-direction:column;gap:2px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:.3rem;margin-bottom:.35rem}
+.sidebar-link:hover{background:var(--shover);color:var(--stxt)}
+.sbr-menu{display:none;flex-direction:column;gap:2px;background:var(--shover);border:1px solid var(--ssep);border-radius:12px;padding:.3rem;margin-bottom:.35rem}
 .sbr-menu.open{display:flex}
 .theme-swatches{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 .theme-swatch{width:17px;height:17px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:transform .15s,border-color .15s;flex-shrink:0;outline:none}
 .theme-swatch:hover{transform:scale(1.25)}
-.theme-swatch.active{border-color:rgba(255,255,255,.85);box-shadow:0 0 0 1px rgba(0,0,0,.3)}
-.tbtn{width:26px;height:26px;border-radius:7px;border:1.5px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;padding:0;flex-shrink:0}
-.tbtn svg{width:13px;height:13px;color:rgba(255,255,255,.8)}
-.tbtn:hover{background:rgba(255,255,255,.15)}
-#pwa-install-btn:hover{background:rgba(99,102,241,.22);border-color:rgba(99,102,241,.55);color:#c7d2fe}
+.theme-swatch.active{border-color:var(--accent);box-shadow:0 0 0 1px rgba(0,0,0,.15)}
+.tbtn{width:26px;height:26px;border-radius:7px;border:1.5px solid var(--ssep);background:var(--shover);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;padding:0;flex-shrink:0}
+.tbtn svg{width:13px;height:13px;color:var(--smuted)}
+.tbtn:hover{background:rgba(99,102,241,.14)}
+#pwa-install-btn:hover{background:rgba(99,102,241,.22);border-color:rgba(99,102,241,.55);color:var(--accent)}
+.sidebar-collapse-btn{margin-left:auto;width:24px;height:24px;border-radius:7px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--smuted);transition:all .15s;flex-shrink:0;padding:0}
+.sidebar-collapse-btn svg{width:14px;height:14px}
+.sidebar-collapse-btn:hover{background:var(--shover);color:var(--stxt)}
+.sidebar-show-tab{position:fixed;top:50%;left:0;transform:translateY(-50%);z-index:201;width:18px;height:52px;border-radius:0 10px 10px 0;background:var(--accent);border:none;cursor:pointer;display:none;align-items:center;justify-content:center;color:#fff;transition:all .15s;padding:0;box-shadow:2px 0 8px rgba(99,102,241,.3)}
+.sidebar-show-tab svg{width:12px;height:12px}
+.sidebar-show-tab:hover{width:22px}
+.sidebar-show-tab.visible{display:flex}
 
 /* ── HAMBURGER ── */
-.hamburger{display:none;position:fixed;top:12px;left:12px;z-index:300;width:36px;height:36px;border-radius:9px;background:var(--hbg);border:none;cursor:pointer;align-items:center;justify-content:center}
-.hamburger svg{width:17px;height:17px;color:#fff}
+.hamburger{display:none;position:fixed;top:12px;left:12px;z-index:300;width:36px;height:36px;border-radius:9px;background:var(--sbg);border:1px solid var(--ssep);cursor:pointer;align-items:center;justify-content:center}
+.hamburger svg{width:17px;height:17px;color:var(--stxt)}
 .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:198;backdrop-filter:blur(2px)}
 
 /* ── MAIN ── */
-.main-wrap{margin-left:230px;min-height:100vh;min-width:0;flex:1}
+.main-wrap{margin-left:230px;min-height:100vh;min-width:0;flex:1;transition:margin-left .3s}
+.main-wrap.sidebar-hidden{margin-left:0}
 .page{display:none}.page.active{display:block}
 .container{max-width:960px;margin:0 auto;padding:2rem 2.5rem}
 
@@ -661,14 +672,18 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 
 <button class="hamburger" onclick="openSidebar()"><i data-lucide="menu"></i></button>
 
+<!-- SIDEBAR SHOW TAB (visible when sidebar is collapsed) -->
+<button class="sidebar-show-tab" id="sidebar-show-tab" onclick="toggleSidebar()" title="Show sidebar"><i data-lucide="chevron-right"></i></button>
+
 <!-- SIDEBAR -->
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-logo">
-    <svg width="30" height="30" viewBox="0 0 36 36"><rect width="36" height="36" rx="9" fill="rgba(255,255,255,0.1)"/><rect x="7" y="8" width="15" height="20" rx="2" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.5"/><line x1="11" y1="14" x2="19" y2="14" stroke="rgba(255,255,255,0.85)" stroke-width="1.2" stroke-linecap="round"/><line x1="11" y1="18" x2="19" y2="18" stroke="rgba(255,255,255,0.85)" stroke-width="1.2" stroke-linecap="round"/><line x1="11" y1="22" x2="15" y2="22" stroke="rgba(255,255,255,0.85)" stroke-width="1.2" stroke-linecap="round"/><circle cx="26" cy="25" r="8" fill="rgba(255,255,255,0.18)"/><line x1="26" y1="21" x2="26" y2="25" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="26" y1="25" x2="28.5" y2="27.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+    <svg width="30" height="30" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#ede9ff"/><path d="M32 12C25 12 11 14 11 14L11 51C11 51 23 49 32 49C41 49 53 51 53 51L53 14C53 14 39 12 32 12Z" fill="none" stroke="#6366f1" stroke-width="2.5" stroke-linejoin="round"/><line x1="32" y1="12" x2="32" y2="49" stroke="#6366f1" stroke-width="2.5" stroke-linecap="round"/><line x1="16" y1="24" x2="29" y2="23" stroke="#6366f1" stroke-width="1.8" stroke-linecap="round" stroke-opacity="0.45"/><line x1="16" y1="30" x2="29" y2="29" stroke="#6366f1" stroke-width="1.8" stroke-linecap="round" stroke-opacity="0.45"/><line x1="16" y1="36" x2="29" y2="35" stroke="#6366f1" stroke-width="1.8" stroke-linecap="round" stroke-opacity="0.45"/><path d="M47 12L47 31L43 27.5L39 31L39 12Z" fill="#818cf8"/></svg>
     <div>
       <div class="logo-wordmark">VCE <span>Planner</span></div>
       <div class="logo-user" id="page-logo-name">Welcome</div>
     </div>
+    <button class="sidebar-collapse-btn" onclick="toggleSidebar()" title="Hide sidebar"><i data-lucide="chevron-left"></i></button>
   </div>
   <nav class="sidebar-nav">
     <button class="nav-item active" data-page="home" onclick="nav('home',this)"><i data-lucide="home"></i>Home</button>
@@ -708,7 +723,7 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 </aside>
 
 <!-- MAIN -->
-<div class="main-wrap">
+<div class="main-wrap" id="main-wrap">
 
 <!-- HOME -->
 <div class="page active" id="page-home"><div class="container">
@@ -1527,6 +1542,15 @@ function closeSidebar(){
   document.getElementById('sidebar').classList.remove('open');
   document.getElementById('sidebar-overlay').classList.remove('show');
 }
+function toggleSidebar(){
+  const sb=document.getElementById('sidebar');
+  const mw=document.getElementById('main-wrap');
+  const tab=document.getElementById('sidebar-show-tab');
+  const collapsed=sb.classList.toggle('collapsed');
+  mw.classList.toggle('sidebar-hidden',collapsed);
+  tab.classList.toggle('visible',collapsed);
+  localStorage.setItem('vce-sidebar-collapsed',collapsed?'1':'');
+}
 
 // ── COLOUR SELECT ──
 function colourSel(s){
@@ -1633,6 +1657,11 @@ async function init(){
   renderXP();
   if(typeof lucide!=='undefined')lucide.createIcons();
   setPwaBtn(!!localStorage.getItem('vce-pwa-installed')||window.matchMedia('(display-mode: standalone)').matches);
+  if(localStorage.getItem('vce-sidebar-collapsed')==='1'){
+    document.getElementById('sidebar').classList.add('collapsed');
+    document.getElementById('main-wrap').classList.add('sidebar-hidden');
+    document.getElementById('sidebar-show-tab').classList.add('visible');
+  }
 }
 function toggleTask(id){
   const t=tasks.find(x=>x.id===id);if(!t)return;t.done=!t.done;
