@@ -104,6 +104,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .tbtn svg{width:13px;height:13px;color:var(--smuted)}
 .tbtn:hover{background:rgba(99,102,241,.14)}
 #pwa-install-btn:hover{background:#4f46e5;color:#ffffff}
+#sidebar-action-btns button:hover{filter:brightness(.9)}
 .sidebar-collapse-btn{margin-left:auto;width:24px;height:24px;border-radius:7px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--smuted);transition:all .15s;flex-shrink:0;padding:0}
 .sidebar-collapse-btn svg{width:14px;height:14px}
 .sidebar-collapse-btn:hover{background:var(--shover);color:var(--stxt)}
@@ -765,9 +766,12 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
     <button class="nav-item" data-page="study" onclick="nav('study',this)"><i data-lucide="brain"></i>Study Methods</button>
     <button class="nav-item" data-page="scores" onclick="nav('scores',this)"><i data-lucide="trophy"></i>Scores</button>
     <button class="nav-item" data-page="stats" onclick="nav('stats',this)"><i data-lucide="bar-chart-2"></i>Stats</button>
-    <div style="margin-top:auto;padding-top:.75rem">
-      <button id="pwa-install-btn" onclick="pwaInstall()" style="display:flex;align-items:center;gap:9px;width:100%;padding:9px 13px;border-radius:10px;border:none;background:#6366f1;color:#ffffff;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;text-align:left">
-        <i data-lucide="smartphone" style="width:15px;height:15px;flex-shrink:0"></i><span>Get the App</span>
+    <div id="sidebar-action-btns" style="margin-top:auto;padding-top:.75rem;display:grid;grid-template-columns:1fr 1fr;gap:5px">
+      <button id="pwa-install-btn" onclick="pwaInstall()" style="display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 8px;border-radius:10px;border:none;background:#6366f1;color:#ffffff;font-family:'Plus Jakarta Sans',sans-serif;font-size:12.5px;font-weight:600;cursor:pointer;transition:all .15s;text-align:center">
+        <i data-lucide="smartphone" style="width:14px;height:14px;flex-shrink:0"></i><span>Get the App</span>
+      </button>
+      <button onclick="replayTour()" style="display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 8px;border-radius:10px;border:none;background:#6366f1;color:#ffffff;font-family:'Plus Jakarta Sans',sans-serif;font-size:12.5px;font-weight:600;cursor:pointer;transition:all .15s;text-align:center">
+        <i data-lucide="play-circle" style="width:14px;height:14px;flex-shrink:0"></i>Tutorial
       </button>
     </div>
   </nav>
@@ -775,7 +779,6 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
     <div class="sbr-menu" id="sbr-menu">
       <button class="sidebar-link" onclick="openNotifModal();closeSbrMenu()"><i data-lucide="bell"></i>Notifications</button>
       <a class="sidebar-link" href="suggestions.html"><i data-lucide="message-circle"></i>Suggestions</a>
-      <button class="sidebar-link" onclick="replayTour();closeSbrMenu()"><i data-lucide="play-circle"></i>Replay tour</button>
       <div style="padding:.4rem .5rem .2rem;border-top:1px solid rgba(255,255,255,.08);margin-top:.2rem">
         <div style="font-size:10px;color:rgba(255,255,255,.3);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.4rem">Accent colour</div>
         <div class="theme-swatches" id="theme-swatches"></div>
@@ -3306,7 +3309,12 @@ function isStandalone(){return window.matchMedia('(display-mode: standalone)').m
 function setPwaBtn(installed){
   const btn=document.getElementById('pwa-install-btn');
   if(!btn)return;
-  if(isStandalone()){btn.style.display='none';return;}
+  if(isStandalone()){
+    btn.style.display='none';
+    const grid=document.getElementById('sidebar-action-btns');
+    if(grid)grid.style.gridTemplateColumns='1fr';
+    return;
+  }
   const lbl=btn.querySelector('span');
   if(lbl)lbl.textContent=installed?'Open the App':'Get the App';
 }
