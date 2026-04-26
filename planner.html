@@ -630,19 +630,19 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 .rs-item-drag{color:var(--muted);cursor:grab;font-size:14px;flex-shrink:0;user-select:none}
 /* day availability */
 .rs-days-grid{display:flex;flex-direction:column;gap:4px}
-.rs-day-row{display:flex;align-items:center;gap:.5rem;padding:.3rem .5rem;border-radius:8px;background:var(--bg)}
-.rs-day-label{font-size:12px;font-weight:600;color:var(--text);min-width:72px}
-.rs-day-modes{display:flex;gap:3px}
-.rs-day-mode{font-size:11px;font-weight:600;padding:3px 8px;border-radius:6px;border:1.5px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .15s}
-.rs-day-mode:hover{border-color:var(--accent);color:var(--accent)}
-.rs-day-mode.active-full{background:#dcfce7;border-color:#22c55e;color:#16a34a}
-.rs-day-mode.active-light{background:#fef9c3;border-color:#eab308;color:#a16207}
-.rs-day-mode.active-off{background:#fee2e2;border-color:#ef4444;color:#dc2626}
-[data-theme=dark] .rs-day-mode.active-full{background:#14532d;border-color:#22c55e;color:#4ade80}
-[data-theme=dark] .rs-day-mode.active-light{background:#422006;border-color:#eab308;color:#fde047}
-[data-theme=dark] .rs-day-mode.active-off{background:#450a0a;border-color:#ef4444;color:#f87171}
-.rs-day-hrs{width:52px;font-size:12px;padding:3px 6px;border:1.5px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;outline:none}
+.rs-day-row{display:flex;align-items:center;gap:.6rem;padding:.35rem .6rem;border-radius:8px;background:var(--bg)}
+.rs-day-label{font-size:12px;font-weight:600;color:var(--text);flex:1}
+.rs-day-hrs{width:60px;font-size:13px;padding:4px 8px;border:1.5px solid var(--border);border-radius:7px;background:var(--surface);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;outline:none;text-align:center}
 .rs-day-hrs:focus{border-color:var(--accent)}
+.rs-day-unit{font-size:11px;color:var(--muted);white-space:nowrap}
+/* batch add */
+.rs-batch-zone{border:2px dashed var(--border);border-radius:10px;padding:.9rem;text-align:center;cursor:pointer;transition:all .15s;background:var(--bg)}
+.rs-batch-zone:hover,.rs-batch-zone.drag-over{border-color:var(--accent);background:rgba(99,102,241,.05)}
+.rs-batch-zone-label{font-size:12.5px;color:var(--muted)}
+.rs-batch-zone-label strong{color:var(--accent)}
+.rs-paste-area{width:100%;min-height:70px;border:1.5px solid var(--border);border-radius:8px;padding:7px 10px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12.5px;background:var(--surface);color:var(--text);resize:vertical;outline:none;box-sizing:border-box}
+.rs-paste-area:focus{border-color:var(--accent)}
+.rs-batch-row{display:grid;grid-template-columns:1fr 72px auto;gap:.4rem;align-items:center}
 /* schedule output */
 .rs-schedule-empty{text-align:center;padding:2rem;color:var(--muted);font-size:13px}
 .rs-sched-day{margin-bottom:.9rem}
@@ -2890,14 +2890,13 @@ function rsLoad(evId){
 }
 function rsSave(evId,data){localStorage.setItem(rsKey(evId),JSON.stringify(data))}
 function rsDefault(ev){
-  // Build default availability: every day from today up to (not including) the SAC
   const avail={};
   const days=daysUntil(ev.date);
   for(let i=0;i<days;i++){
     const d=new Date(TODAY);d.setDate(d.getDate()+i);
     const ds=localStr(d);
-    const dow=d.getDay(); // 0=Sun
-    avail[ds]={mode:dow===0?'off':'full',hrs:2};
+    const dow=d.getDay();
+    avail[ds]={hrs:dow===0||dow===6?1:2}; // weekends default 1hr, weekdays 2hr
   }
   return{items:[],avail,defaultHrs:2};
 }
@@ -2934,7 +2933,7 @@ function rsSyncAvailDays(ev,data){
     const ds=localStr(d);
     if(!data.avail[ds]){
       const dow=d.getDay();
-      data.avail[ds]={mode:dow===0?'off':'full',hrs:data.defaultHrs||2};
+      data.avail[ds]={hrs:dow===0||dow===6?1:data.defaultHrs||2};
     }
   }
   return data;
@@ -2982,18 +2981,52 @@ function rsMissedAction(evId,itemId,action){
 }
 
 // ── availability ──
-function rsSetDayMode(evId,date,mode){
-  const data=rsLoad(evId);if(!data)return;
-  if(!data.avail[date])data.avail[date]={mode:'full',hrs:data.defaultHrs||2};
-  data.avail[date].mode=mode;
-  rsSave(evId,data);
-  rsRenderAvail(evId,data);
-}
 function rsSetDayHrs(evId,date,val){
   const data=rsLoad(evId);if(!data)return;
-  if(!data.avail[date])data.avail[date]={mode:'full',hrs:2};
+  if(!data.avail[date])data.avail[date]={hrs:2};
   data.avail[date].hrs=parseFloat(val)||0;
   rsSave(evId,data);
+}
+
+// ── file upload ──
+function rsDragOver(e){e.preventDefault();document.getElementById('rs-drop-zone').classList.add('drag-over')}
+function rsDragLeave(e){document.getElementById('rs-drop-zone').classList.remove('drag-over')}
+function rsDropFiles(e){e.preventDefault();rsDragLeave(e);rsHandleFiles(e.dataTransfer.files)}
+function rsHandleFiles(files){
+  if(!_rsEvId||!files||!files.length)return;
+  const data=rsLoad(_rsEvId)||rsDefault(events.find(e=>e.id==_rsEvId));
+  const dur=parseInt(document.getElementById('rs-file-dur')?.value)||60;
+  let added=0;
+  Array.from(files).forEach(f=>{
+    const raw=f.name.replace(/\.[^/.]+$/,''); // strip extension
+    const name=raw.replace(/[_\-]+/g,' ').replace(/\b\w/g,c=>c.toUpperCase()).trim();
+    data.items.push({id:Date.now()+Math.random(),name,type:'other',dur,done:false,missed:false,scheduledDate:null});
+    added++;
+  });
+  rsSave(_rsEvId,data);
+  document.getElementById('rs-file-input').value='';
+  rsRenderItems(_rsEvId,data);
+  rsRebuild();
+  showToast(`${added} item${added>1?'s':''} added from files`);
+}
+
+// ── paste list ──
+function rsPasteAdd(){
+  if(!_rsEvId)return;
+  const raw=document.getElementById('rs-paste-area')?.value||'';
+  const type=document.getElementById('rs-paste-type')?.value||'other';
+  const dur=parseInt(document.getElementById('rs-paste-dur')?.value)||60;
+  const lines=raw.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
+  if(!lines.length){showToast('Paste at least one topic');return}
+  const data=rsLoad(_rsEvId)||rsDefault(events.find(e=>e.id==_rsEvId));
+  lines.forEach(name=>{
+    data.items.push({id:Date.now()+Math.random(),name,type,dur,done:false,missed:false,scheduledDate:null});
+  });
+  rsSave(_rsEvId,data);
+  document.getElementById('rs-paste-area').value='';
+  rsRenderItems(_rsEvId,data);
+  rsRebuild();
+  showToast(`${lines.length} item${lines.length>1?'s':''} added`);
 }
 
 // ── scheduling algorithm ──
@@ -3013,11 +3046,8 @@ function rsBuildSchedule(ev,data){
   const queue=data.items.filter(i=>!i.done&&!i.missed).map(i=>({...i}));
   let qi=0;
   days.forEach(ds=>{
-    const avail=data.avail[ds]||{mode:'full',hrs:data.defaultHrs||2};
-    let totalMins=0;
-    if(avail.mode==='full')totalMins=(avail.hrs||2)*60;
-    else if(avail.mode==='light')totalMins=(avail.hrs||2)*30;
-    else totalMins=0;
+    const avail=data.avail[ds]||{hrs:data.defaultHrs||2};
+    const totalMins=(avail.hrs||0)*60;
     const hwMins=Math.min(taskLoad[ds]||0,totalMins*0.5); // never let hw eat >50%
     let remaining=Math.max(0,totalMins-hwMins);
     while(qi<queue.length&&remaining>0){
@@ -3082,13 +3112,9 @@ function rsRenderAvail(evId,data){
     const a=data.avail[ds]||{mode:'full',hrs:data.defaultHrs||2};
     const dayLabel=i===0?'Today':i===1?'Tomorrow':d.toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short'});
     rows.push(`<div class="rs-day-row">
-      <div class="rs-day-label" style="font-size:11px">${dayLabel}</div>
-      <div class="rs-day-modes">
-        <button class="rs-day-mode${a.mode==='full'?' active-full':''}" onclick="rsSetDayMode(${evId},'${ds}','full')">Full</button>
-        <button class="rs-day-mode${a.mode==='light'?' active-light':''}" onclick="rsSetDayMode(${evId},'${ds}','light')">Light</button>
-        <button class="rs-day-mode${a.mode==='off'?' active-off':''}" onclick="rsSetDayMode(${evId},'${ds}','off')">Off</button>
-      </div>
-      <input class="rs-day-hrs" type="number" min="0" max="12" step=".5" value="${a.hrs||2}" onchange="rsSetDayHrs(${evId},'${ds}',this.value)" title="Study hours for this day"/>
+      <div class="rs-day-label">${dayLabel}</div>
+      <input class="rs-day-hrs" type="number" min="0" max="16" step=".5" value="${a.hrs??2}" onchange="rsSetDayHrs(${evId},'${ds}',this.value)"/>
+      <span class="rs-day-unit">hrs</span>
     </div>`);
   }
   el.innerHTML=rows.length?rows.join(''):'<div style="font-size:12px;color:var(--muted)">No days remaining before this SAC.</div>';
@@ -3555,8 +3581,39 @@ init().then(()=>{
       <div class="rs-left">
         <div>
           <div class="rs-section-title">Revision Items</div>
-          <div class="rs-item-form">
-            <input type="text" id="rs-item-name" placeholder="e.g. 2019 Practice SAC, Chapter 3 questions…"/>
+
+          <!-- File upload drop zone -->
+          <div class="rs-batch-zone" id="rs-drop-zone" onclick="document.getElementById('rs-file-input').click()" ondragover="rsDragOver(event)" ondragleave="rsDragLeave(event)" ondrop="rsDropFiles(event)">
+            <div class="rs-batch-zone-label"><strong>Upload files</strong> or drag &amp; drop</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:3px">PDFs, docs, images — each file becomes a revision item</div>
+          </div>
+          <input type="file" id="rs-file-input" multiple accept=".pdf,.doc,.docx,.pptx,.txt,.png,.jpg,.jpeg" style="display:none" onchange="rsHandleFiles(this.files)"/>
+
+          <!-- Paste topic list -->
+          <details style="margin-top:.5rem">
+            <summary style="font-size:12px;font-weight:600;color:var(--accent);cursor:pointer;list-style:none;display:flex;align-items:center;gap:4px">
+              <i data-lucide="list" style="width:13px;height:13px"></i> Paste a list of topics
+            </summary>
+            <div style="margin-top:.5rem;display:flex;flex-direction:column;gap:.4rem">
+              <textarea class="rs-paste-area" id="rs-paste-area" placeholder="One topic per line, e.g.&#10;Chapter 3 — Osmosis&#10;2021 Practice SAC&#10;Enzyme kinetics questions"></textarea>
+              <div class="rs-batch-row">
+                <select id="rs-paste-type" style="border:1px solid var(--border);border-radius:7px;padding:5px 8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;background:var(--surface);color:var(--text);outline:none">
+                  <option value="other">Other</option>
+                  <option value="practice-sac">Practice SAC</option>
+                  <option value="past-exam">Past Exam</option>
+                  <option value="questions">Question Set</option>
+                  <option value="summary">Topic Summary</option>
+                  <option value="notes">Notes Review</option>
+                </select>
+                <input type="number" id="rs-paste-dur" placeholder="mins" min="5" max="600" step="5" value="60" style="border:1px solid var(--border);border-radius:7px;padding:5px 8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;background:var(--surface);color:var(--text);outline:none;width:100%"/>
+                <button class="rs-add-btn" onclick="rsPasteAdd()" style="white-space:nowrap;padding:5px 12px">Add all</button>
+              </div>
+            </div>
+          </details>
+
+          <!-- Single item form -->
+          <div class="rs-item-form" style="margin-top:.5rem">
+            <input type="text" id="rs-item-name" placeholder="Or add one item manually…"/>
             <div class="rs-item-form-row">
               <select id="rs-item-type">
                 <option value="practice-sac">Practice SAC</option>
@@ -3571,10 +3628,17 @@ init().then(()=>{
             </div>
             <button class="rs-add-btn" onclick="rsAddItem()">+ Add item</button>
           </div>
+
+          <!-- Default batch duration for file uploads -->
+          <div style="display:flex;align-items:center;gap:.5rem;margin-top:.4rem;font-size:12px;color:var(--muted)">
+            Default duration per file:
+            <input type="number" id="rs-file-dur" value="60" min="5" max="600" step="5" style="width:58px;border:1px solid var(--border);border-radius:7px;padding:3px 7px;font-size:12px;font-family:'Plus Jakarta Sans',sans-serif;background:var(--surface);color:var(--text);outline:none"/> mins
+          </div>
+
           <div class="rs-items-list" id="rs-items-list" style="margin-top:.6rem"></div>
         </div>
         <div>
-          <div class="rs-section-title" style="margin-bottom:.35rem">Day Availability <span style="font-weight:400;font-size:10px;color:var(--muted)">(hours available to study)</span></div>
+          <div class="rs-section-title" style="margin-bottom:.35rem">Hours available per day</div>
           <div class="rs-days-grid" id="rs-days-grid"></div>
         </div>
         <button class="rs-rebuild-btn" onclick="rsRebuild()" style="margin-top:.25rem;width:100%">↺ Rebuild Schedule</button>
