@@ -2962,7 +2962,16 @@ function rsDeleteItem(evId,itemId){
   data.items=data.items.filter(i=>i.id!=itemId);
   rsSave(evId,data);
   rsRenderItems(evId,data);
-  rsRenderSchedule(evId,data);
+  rsRebuild();
+}
+function rsMoveItem(evId,idx,dir){
+  const data=rsLoad(evId);if(!data)return;
+  const newIdx=idx+dir;
+  if(newIdx<0||newIdx>=data.items.length)return;
+  [data.items[idx],data.items[newIdx]]=[data.items[newIdx],data.items[idx]];
+  rsSave(evId,data);
+  rsRenderItems(evId,data);
+  rsRebuild();
 }
 function rsToggleDone(evId,itemId){
   const data=rsLoad(evId);if(!data)return;
@@ -3090,24 +3099,20 @@ function rsRebuild(){
 
 function rsSyncToPlanner(ev,data){
   const sacId=ev.id;
-  // Remove old revision entries for this SAC from calEvents and planData
-  calEvents=calEvents.filter(e=>e.revSacId!==sacId);
+  // Clear stale revision entries from planData only (calendar shows planData already)
+  calEvents=calEvents.filter(e=>e.revSacId!==sacId); // clean up any old calEvent entries
   Object.keys(planData).forEach(ds=>{
     planData[ds]=planData[ds].filter(b=>b.revSacId!==sacId);
     if(!planData[ds].length)delete planData[ds];
   });
-  // Add fresh entries for each scheduled, undone, non-missed item
+  // Add to planData only — calendar renders planData so no duplication
   data.items.forEach(item=>{
     if(!item.scheduledDate||item.done||item.missed)return;
     const ds=item.scheduledDate;
     const label=`📚 ${item.name} (${formatDur(item.dur)})`;
-    // Calendar event
-    calEvents.push({id:Date.now()+Math.random(),name:label,date:ds,time:'',colour:'purple',rn:0,ru:'weeks',revSacId:sacId,revItemId:item.id});
-    // Day planner block
     if(!planData[ds])planData[ds]=[];
     planData[ds].push({id:Date.now()+Math.random(),time:'',title:label,type:'study',subj:ev.subject,revSacId:sacId,revItemId:item.id});
   });
-  calEvents.sort((a,b)=>a.date.localeCompare(b.date));
   Object.keys(planData).forEach(ds=>planData[ds].sort((a,b)=>(a.time||'').localeCompare(b.time||'')));
   saveCE();saveP();
   if(document.getElementById('page-calendar').classList.contains('active'))renderCal();
@@ -3122,8 +3127,12 @@ function rsRenderItems(evId,data){
     'practice-sac':'Practice SAC','past-exam':'Past Exam','questions':'Questions',
     'summary':'Summary','flashcards':'Flashcards','notes':'Notes','other':'Other'
   };
-  el.innerHTML=data.items.map(item=>`
+  el.innerHTML=data.items.map((item,idx)=>`
     <div class="rs-item-row${item.done?' done':''}">
+      <div style="display:flex;flex-direction:column;gap:1px;flex-shrink:0">
+        <button onclick="rsMoveItem(${evId},${idx},-1)" style="background:transparent;border:none;cursor:pointer;color:var(--smuted);font-size:11px;line-height:1;padding:1px 3px;border-radius:3px" title="Move up" ${idx===0?'disabled':''}>▲</button>
+        <button onclick="rsMoveItem(${evId},${idx},1)" style="background:transparent;border:none;cursor:pointer;color:var(--smuted);font-size:11px;line-height:1;padding:1px 3px;border-radius:3px" title="Move down" ${idx===data.items.length-1?'disabled':''}>▼</button>
+      </div>
       <div class="rs-item-check${item.done?' checked':''}" onclick="rsToggleDone(${evId},${item.id})" title="${item.done?'Mark undone':'Mark done'}">
         ${item.done?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>':''}
       </div>
