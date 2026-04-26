@@ -1656,7 +1656,7 @@ async function init(){
   updatePomDisplay();
   renderXP();
   if(typeof lucide!=='undefined')lucide.createIcons();
-  setPwaBtn(!!localStorage.getItem('vce-pwa-installed')||window.matchMedia('(display-mode: standalone)').matches);
+  setPwaBtn(!!localStorage.getItem('vce-pwa-installed')||isStandalone());
   if(localStorage.getItem('vce-sidebar-collapsed')==='1'){
     document.getElementById('sidebar').classList.add('collapsed');
     document.getElementById('main-wrap').classList.add('sidebar-hidden');
@@ -2142,9 +2142,9 @@ const TOUR_STEPS=[
    target:null,pos:'center'},
 ];
 let _tourIdx=0,_tourBusy=false;
-function checkShowTour(){if(!localStorage.getItem('vce-tour-done'))setTimeout(()=>{document.getElementById('tour-welcome').style.display='flex'},900)}
-function skipTour(){localStorage.setItem('vce-tour-done','1');document.getElementById('tour-welcome').style.display='none'}
-function replayTour(){localStorage.removeItem('vce-tour-done');nav('home',document.querySelector('[data-page="home"]'));setTimeout(()=>{document.getElementById('tour-welcome').style.display='flex'},400)}
+function checkShowTour(){if(!localStorage.getItem(UID_PREFIX+'tour-done'))setTimeout(()=>{document.getElementById('tour-welcome').style.display='flex'},600)}
+function skipTour(){localStorage.setItem(UID_PREFIX+'tour-done','1');document.getElementById('tour-welcome').style.display='none'}
+function replayTour(){localStorage.removeItem(UID_PREFIX+'tour-done');nav('home',document.querySelector('[data-page="home"]'));setTimeout(()=>{document.getElementById('tour-welcome').style.display='flex'},400)}
 function startTour(){document.getElementById('tour-welcome').style.display='none';_tourIdx=0;_tourBusy=false;_showTourStep(0)}
 async function _showTourStep(idx){
   const step=TOUR_STEPS[idx];
@@ -2190,7 +2190,7 @@ async function tourNext(){
   await _showTourStep(_tourIdx);
 }
 function endTour(){
-  localStorage.setItem('vce-tour-done','1');
+  localStorage.setItem(UID_PREFIX+'tour-done','1');
   document.getElementById('tour-box').style.display='none';
   document.getElementById('tour-spotlight').style.display='none';
   document.getElementById('tour-overlay').style.display='none';
@@ -2921,10 +2921,11 @@ function pwaInstall(){
   if(p){p.prompt();p.userChoice.then(r=>{window._pwaPrompt=null;if(r.outcome==='accepted'){localStorage.setItem('vce-pwa-installed','1');setPwaBtn(true);showToast('App installed! 🎉');}});}
   else{showToast('Open VCE Planner from your home screen or app drawer');}
 }
+function isStandalone(){return window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true}
 function setPwaBtn(installed){
   const btn=document.getElementById('pwa-install-btn');
   if(!btn)return;
-  if(window.matchMedia('(display-mode: standalone)').matches){btn.style.display='none';return;}
+  if(isStandalone()){btn.style.display='none';return;}
   const lbl=btn.querySelector('span');
   if(lbl)lbl.textContent=installed?'Open the App':'Get the App';
 }
