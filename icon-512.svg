@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="110" fill="#0f0d14"/>
-  <path d="M256 96C204 96 88 112 88 112L88 408C88 408 184 392 256 392C328 392 424 408 424 408L424 112C424 112 308 96 256 96Z" fill="none" stroke="#ffffff" stroke-width="20" stroke-linejoin="round"/>
-  <line x1="256" y1="96" x2="256" y2="392" stroke="#ffffff" stroke-width="20" stroke-linecap="round"/>
-  <line x1="128" y1="192" x2="232" y2="184" stroke="#ffffff" stroke-width="15" stroke-linecap="round" stroke-opacity="0.45"/>
-  <line x1="128" y1="240" x2="232" y2="232" stroke="#ffffff" stroke-width="15" stroke-linecap="round" stroke-opacity="0.45"/>
-  <line x1="128" y1="288" x2="232" y2="280" stroke="#ffffff" stroke-width="15" stroke-linecap="round" stroke-opacity="0.45"/>
-  <path d="M376 96L376 248L344 216L312 248L312 96Z" fill="#f59e0b"/>
+  <rect width="512" height="512" rx="110" fill="#ede9ff"/>
+  <path d="M256 96C204 96 88 112 88 112L88 408C88 408 184 392 256 392C328 392 424 408 424 408L424 112C424 112 308 96 256 96Z" fill="none" stroke="#6366f1" stroke-width="20" stroke-linejoin="round"/>
+  <line x1="256" y1="96" x2="256" y2="392" stroke="#6366f1" stroke-width="20" stroke-linecap="round"/>
+  <line x1="128" y1="192" x2="232" y2="184" stroke="#6366f1" stroke-width="15" stroke-linecap="round" stroke-opacity="0.45"/>
+  <line x1="128" y1="240" x2="232" y2="232" stroke="#6366f1" stroke-width="15" stroke-linecap="round" stroke-opacity="0.45"/>
+  <line x1="128" y1="288" x2="232" y2="280" stroke="#6366f1" stroke-width="15" stroke-linecap="round" stroke-opacity="0.45"/>
+  <path d="M376 96L376 248L344 216L312 248L312 96Z" fill="#818cf8"/>
 </svg>
