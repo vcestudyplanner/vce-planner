@@ -720,12 +720,51 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 /* ── ATAR ESTIMATOR ── */
 .atar-result{font-family:'Fraunces',serif;font-size:3rem;font-weight:700;color:var(--accent);text-align:center;line-height:1;margin:.5rem 0}
 .atar-agg{font-size:13px;color:var(--muted);text-align:center;margin-bottom:.5rem}
-.atar-subj-row{display:flex;align-items:center;gap:.75rem;padding:.45rem 0;border-bottom:1px solid var(--border)}
+.atar-subj-row{display:flex;align-items:center;gap:.6rem;padding:.45rem 0;border-bottom:1px solid var(--border)}
 .atar-subj-row:last-child{border-bottom:none}
 .atar-subj-name{flex:1;font-size:13.5px;color:var(--text);font-weight:500}
-.atar-subj-inp{width:72px;padding:5px 8px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;text-align:center;outline:none;transition:border-color .15s}
+.atar-subj-inp{width:66px;padding:5px 8px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;text-align:center;outline:none;transition:border-color .15s}
 .atar-subj-inp:focus{border-color:var(--accent)}
-.atar-subj-scaled{font-size:12px;color:var(--muted);min-width:32px;text-align:right}
+.atar-goal-inp{border-color:rgba(99,102,241,.4)!important;background:rgba(99,102,241,.06)!important}
+.atar-goal-inp:focus{border-color:var(--accent)!important}
+.atar-subj-scaled{font-size:11.5px;min-width:46px;text-align:center;font-weight:600;padding:2px 5px;border-radius:6px}
+.atar-col-hdr{font-size:10.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;text-align:center;width:66px;flex-shrink:0}
+.atar-prev-section{margin-top:.9rem;padding-top:.85rem;border-top:1px solid var(--border)}
+.atar-prev-row{display:flex;align-items:center;gap:.5rem;padding:.3rem 0;border-bottom:1px solid var(--border)}
+.atar-prev-row:last-child{border-bottom:none}
+.atar-prev-name-inp{flex:1;padding:5px 9px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;outline:none;transition:border-color .15s}
+.atar-prev-name-inp:focus{border-color:var(--accent)}
+.atar-prev-del{width:24px;height:24px;border-radius:6px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s}
+.atar-prev-del:hover{background:var(--border);color:var(--high)}
+.atar-grade-ref{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.5rem}
+.atar-grade-chip{font-size:11px;font-weight:700;padding:2px 7px;border-radius:6px;letter-spacing:.02em}
+.atar-analysis-box{background:rgba(99,102,241,.07);border:1px solid rgba(99,102,241,.18);border-radius:10px;padding:.6rem .85rem;font-size:12.5px;color:var(--text);line-height:1.6;margin-top:.6rem}
+/* ── SUBJECT MANAGEMENT MODAL ── */
+#subj-modal{position:fixed;inset:0;z-index:9200;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center}
+#subj-modal.open{display:flex}
+.subj-modal-box{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:1.75rem 2rem;max-width:480px;width:90%;box-shadow:0 24px 60px rgba(0,0,0,.3);max-height:85vh;overflow-y:auto}
+.subj-manage-row{display:flex;align-items:center;gap:.5rem;padding:.4rem 0;border-bottom:1px solid var(--border)}
+.subj-manage-row:last-child{border-bottom:none}
+.subj-manage-inp{flex:1;padding:6px 10px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;outline:none;transition:border-color .15s}
+.subj-manage-inp:focus{border-color:var(--accent)}
+.subj-color-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;border:2px solid rgba(0,0,0,.1)}
+.subj-manage-del{width:26px;height:26px;border-radius:7px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s}
+.subj-manage-del:hover{background:rgba(220,38,38,.1);color:#dc2626}
+/* ── TODAY'S REVISION PANEL ── */
+.rev-today-item{display:flex;align-items:center;gap:.65rem;padding:.5rem .7rem;border-radius:10px;border:1.5px solid;margin-bottom:.4rem}
+.rev-today-item:last-child{margin-bottom:0}
+.rev-today-chk{width:20px;height:20px;border-radius:50%;border:2px solid;flex-shrink:0;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center}
+.rev-today-chk.done{background:var(--accent);border-color:var(--accent)}
+.rev-today-chk.done::after{content:'✓';color:#fff;font-size:11px;font-weight:700}
+.rev-today-body{flex:1;min-width:0}
+.rev-today-name{font-size:13px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rev-today-meta{font-size:11.5px;color:var(--muted);margin-top:.1rem}
+/* ── EDIT MODE BANNER ── */
+.edit-mode-banner{background:rgba(99,102,241,.08);border:1.5px solid rgba(99,102,241,.25);border-radius:10px;padding:.5rem .85rem;font-size:12.5px;color:var(--accent);font-weight:600;display:flex;align-items:center;gap:.6rem;margin-bottom:.75rem}
+.edit-cancel-btn{margin-left:auto;font-size:12px;padding:3px 10px;border:1.5px solid rgba(99,102,241,.4);border-radius:7px;background:transparent;color:var(--accent);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600}
+/* ── ATAR ENGLISH FLAG ── */
+.atar-eng-btn{font-size:9.5px;font-weight:700;padding:2px 5px;border-radius:5px;border:1.5px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;flex-shrink:0;transition:all .15s;letter-spacing:.03em;white-space:nowrap}
+.atar-eng-btn.active{background:#dcfce7;border-color:#16a34a;color:#15803d}
 /* ── SYNC DOT ── */
 .sync-dot{width:7px;height:7px;border-radius:50%;background:transparent;flex-shrink:0;transition:background .3s;margin:0 2px}
 .sync-dot.saving{background:var(--amber);animation:syncp .8s ease-in-out infinite}
@@ -777,6 +816,7 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
   </nav>
   <div class="sidebar-bottom">
     <div class="sbr-menu" id="sbr-menu">
+      <button class="sidebar-link" onclick="openSubjModal();closeSbrMenu()"><i data-lucide="book-open"></i>Manage Subjects</button>
       <button class="sidebar-link" onclick="openNotifModal();closeSbrMenu()"><i data-lucide="bell"></i>Notifications</button>
       <a class="sidebar-link" href="suggestions.html"><i data-lucide="message-circle"></i>Suggestions</a>
       <div style="padding:.4rem .5rem .2rem;border-top:1px solid rgba(255,255,255,.08);margin-top:.2rem">
@@ -852,14 +892,15 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
     <div class="stat-card"><div class="stat-label">Completed</div><div class="stat-num" id="s-done">0</div></div>
   </div>
   <div id="subj-ov-wrap"></div>
-  <div class="card">
-    <div class="sh">Add new task</div>
+  <div class="card" id="task-form-card">
+    <div id="task-edit-banner" class="edit-mode-banner" style="display:none">✏️ Editing task<button class="edit-cancel-btn" onclick="cancelTaskEdit()">Cancel</button></div>
+    <div class="sh" id="task-form-title">Add new task</div>
     <div class="frow" style="grid-template-columns:1fr auto auto auto auto;margin-bottom:9px">
       <div class="fg"><label>Task name</label><input type="text" id="task-input" placeholder="e.g. Comparative essay draft…"/></div>
       <div class="fg"><label>Subject</label><select id="subj-input" class="subj-sel" onchange="colourSel(this)"></select></div>
       <div class="fg"><label>Due date</label><input type="date" id="date-input"/></div>
       <div class="fg"><label>Link SAC/Exam</label><select id="task-ev-link"><option value="">None</option></select></div>
-      <div class="fg"><label>&nbsp;</label><button class="abtn" onclick="addTask()">+ Add</button></div>
+      <div class="fg"><label>&nbsp;</label><button class="abtn" id="task-submit-btn" onclick="addTask()">+ Add</button></div>
     </div>
     <div class="fg"><label>Notes (optional)</label><textarea id="note-input" placeholder="Page numbers, reminders…"></textarea></div>
   </div>
@@ -983,14 +1024,15 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 <div class="page" id="page-sacs"><div class="container">
   <div class="page-hdr"><div class="page-hdr-title">SACs &amp; Exams</div><div class="page-hdr-sub">Track and prepare for your assessment schedule</div></div>
   <div id="nub-wrap"></div>
-  <div class="card" style="margin-bottom:1.25rem">
-    <div class="sh">Add SAC or Exam</div>
+  <div class="card" style="margin-bottom:1.25rem" id="ev-form-card">
+    <div id="ev-edit-banner" class="edit-mode-banner" style="display:none">✏️ Editing SAC/Exam<button class="edit-cancel-btn" onclick="cancelEvEdit()">Cancel</button></div>
+    <div class="sh" id="ev-form-title">Add SAC or Exam</div>
     <div class="frow" style="grid-template-columns:1fr auto auto auto auto">
       <div class="fg"><label>Name</label><input type="text" id="ev-name" placeholder="e.g. Analytical essay SAC…"/></div>
       <div class="fg"><label>Subject</label><select id="ev-subj" class="subj-sel" onchange="colourSel(this)"></select></div>
       <div class="fg"><label>Type</label><select id="ev-type"><option value="sac">SAC</option><option value="exam">Exam</option></select></div>
       <div class="fg"><label>Date</label><input type="date" id="ev-date"/></div>
-      <div class="fg"><label>&nbsp;</label><button class="abtn" onclick="addEvent()">+ Add</button></div>
+      <div class="fg"><label>&nbsp;</label><button class="abtn" id="ev-submit-btn" onclick="addEvent()">+ Add</button></div>
     </div>
   </div>
 
@@ -1156,20 +1198,44 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
     <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.9rem;flex-wrap:wrap">
       <div>
         <div class="sh" style="margin-bottom:.1rem">ATAR Estimator</div>
-        <div style="font-size:12.5px;color:var(--muted)">Enter predicted study scores (out of 50) per subject. Best 5 are used.</div>
+        <div style="font-size:12.5px;color:var(--muted)">Predicted study scores (out of 50). Best 5 are used for aggregate.</div>
       </div>
       <div style="margin-left:auto;text-align:center">
         <div class="atar-result" id="atar-est-val">—</div>
         <div class="atar-agg" id="atar-est-agg"></div>
       </div>
     </div>
-    <div id="atar-subj-rows"></div>
-    <div style="display:flex;align-items:center;gap:.75rem;margin-top:.9rem;padding-top:.75rem;border-top:1px solid var(--border);flex-wrap:wrap">
-      <div style="font-size:12.5px;color:var(--muted)">ATAR target</div>
-      <input type="number" id="sc-atar-target" min="0" max="99.95" step=".05" placeholder="e.g. 90" style="width:90px;padding:6px 10px;border:1px solid var(--border);border-radius:9px;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;outline:none" oninput="saveAtarTarget();calcATAR()"/>
-      <div id="atar-target-diff" style="font-size:12.5px;color:var(--muted)"></div>
+    <!-- Column headers -->
+    <div style="display:flex;align-items:center;gap:.6rem;padding-bottom:.3rem;margin-bottom:.1rem;border-bottom:2px solid var(--border)">
+      <div style="flex:1;font-size:10.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em">Subject</div>
+      <div class="atar-col-hdr">Current</div>
+      <div class="atar-col-hdr" style="color:rgba(99,102,241,.8)">Goal</div>
+      <div style="width:36px;font-size:10px;color:#16a34a;font-weight:700;text-align:center;flex-shrink:0" title="Mark your English/EAL/Literature subject">ENG</div>
+      <div style="min-width:46px"></div>
     </div>
-    <div style="font-size:11px;color:var(--muted);margin-top:.6rem;opacity:.7">⚠️ Estimate only — actual ATAR depends on subject scaling and statewide cohort performance.</div>
+    <div id="atar-subj-rows"></div>
+    <!-- Previous / Year 11 subjects -->
+    <div class="atar-prev-section">
+      <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.55rem">
+        <div style="font-size:13px;font-weight:600;color:var(--text)">Year 11 / Previous Subjects</div>
+        <button onclick="atarAddPrev()" style="margin-left:auto;font-size:12px;padding:3px 11px;border:1.5px solid var(--accent);border-radius:7px;background:transparent;color:var(--accent);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600">+ Add</button>
+      </div>
+      <div id="atar-prev-rows"></div>
+      <div id="atar-prev-empty" style="font-size:12.5px;color:var(--muted);padding:.2rem 0">Subjects completed in Year 11 or earlier — included in the ATAR pool.</div>
+    </div>
+    <!-- Target ATAR -->
+    <div style="display:flex;align-items:center;gap:.75rem;margin-top:.9rem;padding-top:.75rem;border-top:1px solid var(--border);flex-wrap:wrap">
+      <div style="font-size:12.5px;color:var(--muted);font-weight:500">ATAR target</div>
+      <input type="number" id="sc-atar-target" min="0" max="99.95" step=".05" placeholder="e.g. 90" style="width:90px;padding:6px 10px;border:1px solid var(--border);border-radius:9px;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;outline:none" oninput="saveAtarTarget();calcATAR()"/>
+      <div id="atar-target-diff" style="font-size:12.5px;font-weight:600"></div>
+    </div>
+    <div id="atar-goal-analysis"></div>
+    <div style="font-size:11px;color:var(--muted);margin-top:.65rem;opacity:.7">⚠️ Estimate only — actual ATAR depends on subject scaling and statewide cohort performance.</div>
+    <!-- Grade scale reference -->
+    <div style="margin-top:.75rem;padding-top:.65rem;border-top:1px solid var(--border)">
+      <div style="font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem">Grade Scale (SAC %)</div>
+      <div class="atar-grade-ref" id="atar-grade-ref-static"></div>
+    </div>
   </div>
 
   <!-- per-subject cards -->
@@ -1185,6 +1251,14 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 <!-- REVISION PLANNER -->
 <div class="page" id="page-revision"><div class="container">
   <div class="page-hdr"><div class="page-hdr-title">Revision Planner</div><div class="page-hdr-sub">Spaced revision schedules generated from your upcoming SACs &amp; exams</div></div>
+  <!-- Today's revision tasks -->
+  <div id="rev-today-panel" class="card" style="margin-bottom:1.25rem;display:none">
+    <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.7rem">
+      <div class="sh" style="margin-bottom:0">Today's Study</div>
+      <div id="rev-today-count" style="font-size:11.5px;color:var(--muted);padding:2px 8px;background:var(--bg);border-radius:20px;border:1px solid var(--border)"></div>
+    </div>
+    <div id="rev-today-list"></div>
+  </div>
   <div id="rev-list"></div>
   <div id="rev-empty" style="display:none;text-align:center;padding:3rem 0;color:var(--muted);font-size:14px">No upcoming SACs or exams found.<br>Add them on the <button onclick="navTo('sacs')" style="background:transparent;border:none;color:var(--accent);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;text-decoration:underline;padding:0">SACs &amp; Exams</button> page first.</div>
 </div></div>
@@ -1471,6 +1545,182 @@ function closeSbrMenu(){
   const btn=document.getElementById('sbr-settings-btn');
   if(btn){btn.innerHTML='<i data-lucide="settings"></i>Settings';if(typeof lucide!=='undefined')lucide.createIcons();}
 }
+
+// ── SUBJECT MANAGEMENT ────────────────────────────────────────────────────────
+const COLOR_CSS_LIST=['#6366f1','#a855f7','#3b82f6','#f97316','#14b8a6','#ec4899','#f59e0b','#8b5cf6'];
+function openSubjModal(){
+  renderSubjManageList();
+  document.getElementById('subj-modal').classList.add('open');
+}
+function closeSubjModal(){document.getElementById('subj-modal').classList.remove('open');}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeSubjModal();}});
+
+function renderSubjManageList(){
+  const list=document.getElementById('subj-manage-list');
+  if(!list)return;
+  if(!userSubjects.length){list.innerHTML='<div style="font-size:13px;color:var(--muted);padding:.5rem 0">No subjects yet. Add one below.</div>';return;}
+  list.innerHTML=userSubjects.map(s=>{
+    const col=COLOR_CSS_LIST[((s.color-1)%8)];
+    return`<div class="subj-manage-row">
+      <div class="subj-color-dot" style="background:${col}"></div>
+      <input class="subj-manage-inp" type="text" value="${s.label.replace(/"/g,'&quot;')}"
+        onchange="renameSubject(${s.id},this.value)" onblur="renameSubject(${s.id},this.value)"/>
+      <button class="subj-manage-del" onclick="deleteSubject(${s.id})" title="Delete subject">×</button>
+    </div>`;
+  }).join('');
+}
+
+async function renameSubject(id,newLabel){
+  newLabel=newLabel.trim();
+  if(!newLabel)return;
+  const s=userSubjects.find(s=>s.id===id);
+  if(!s||s.label===newLabel)return;
+  s.label=newLabel;
+  buildSubjMaps();
+  populateSubjectDropdowns();
+  renderATARRows();
+  if(typeof renderScores==='function')renderScores();
+  if(typeof renderSubjOv==='function')renderSubjOv();
+  await sb.from('subjects').update({label:newLabel}).eq('id',id);
+  showToast('Subject renamed');
+}
+
+async function deleteSubject(id){
+  const s=userSubjects.find(s=>s.id===id);
+  if(!s)return;
+  if(!confirm(`Delete "${s.label}"? All tasks and SACs linked to this subject will lose their subject tag.`))return;
+  userSubjects=userSubjects.filter(x=>x.id!==id);
+  buildSubjMaps();
+  populateSubjectDropdowns();
+  renderSubjManageList();
+  renderATARRows();
+  if(typeof renderScores==='function')renderScores();
+  if(typeof renderSubjOv==='function')renderSubjOv();
+  if(typeof renderTasks==='function')renderTasks();
+  await sb.from('subjects').delete().eq('id',id);
+  showToast('Subject deleted');
+}
+
+async function addNewSubject(){
+  const inp=document.getElementById('subj-new-name');
+  const errEl=document.getElementById('subj-modal-err');
+  const label=inp.value.trim();
+  if(!label){errEl.textContent='Enter a subject name.';errEl.style.display='block';return;}
+  errEl.style.display='none';
+  const colorNum=(userSubjects.length%8)+1;
+  const order=userSubjects.length;
+  const {data,error}=await sb.from('subjects').insert({user_id:currentUser.id,label,color:colorNum,display_order:order}).select().single();
+  if(error){errEl.textContent=error.message;errEl.style.display='block';return;}
+  userSubjects.push(data);
+  buildSubjMaps();
+  populateSubjectDropdowns();
+  renderSubjManageList();
+  renderATARRows();
+  if(typeof renderScores==='function')renderScores();
+  if(typeof renderSubjOv==='function')renderSubjOv();
+  inp.value='';
+  showToast('Subject added!');
+}
+
+// ── EDIT TASKS ────────────────────────────────────────────────────────────────
+let _editTaskId=null;
+function startTaskEdit(id){
+  const t=tasks.find(x=>x.id===id);if(!t)return;
+  _editTaskId=id;
+  document.getElementById('task-input').value=t.title;
+  document.getElementById('note-input').value=t.note||'';
+  document.getElementById('subj-input').value=t.subject;colourSel(document.getElementById('subj-input'));
+  document.getElementById('date-input').value=t.due||'';
+  document.getElementById('task-ev-link').value=t.evLink||'';
+  document.getElementById('task-edit-banner').style.display='flex';
+  document.getElementById('task-form-title').textContent='Edit task';
+  document.getElementById('task-submit-btn').textContent='Update Task';
+  document.getElementById('task-form-card').scrollIntoView({behavior:'smooth',block:'start'});
+  document.getElementById('task-input').focus();
+}
+function cancelTaskEdit(){
+  _editTaskId=null;
+  document.getElementById('task-input').value='';document.getElementById('note-input').value='';
+  document.getElementById('date-input').value='';document.getElementById('task-ev-link').value='';
+  document.getElementById('task-edit-banner').style.display='none';
+  document.getElementById('task-form-title').textContent='Add new task';
+  document.getElementById('task-submit-btn').textContent='+ Add';
+}
+
+// ── EDIT SACs/EVENTS ──────────────────────────────────────────────────────────
+let _editEvId=null;
+function startEvEdit(id){
+  const ev=events.find(x=>x.id===id);if(!ev)return;
+  _editEvId=id;
+  document.getElementById('ev-name').value=ev.name;
+  document.getElementById('ev-subj').value=ev.subject;colourSel(document.getElementById('ev-subj'));
+  document.getElementById('ev-type').value=ev.type;
+  document.getElementById('ev-date').value=ev.date;
+  document.getElementById('ev-edit-banner').style.display='flex';
+  document.getElementById('ev-form-title').textContent='Edit SAC / Exam';
+  document.getElementById('ev-submit-btn').textContent='Update';
+  document.getElementById('ev-form-card').scrollIntoView({behavior:'smooth',block:'start'});
+  document.getElementById('ev-name').focus();
+}
+function cancelEvEdit(){
+  _editEvId=null;
+  document.getElementById('ev-name').value='';document.getElementById('ev-date').value=todayStr();
+  document.getElementById('ev-edit-banner').style.display='none';
+  document.getElementById('ev-form-title').textContent='Add SAC or Exam';
+  document.getElementById('ev-submit-btn').textContent='+ Add';
+}
+
+// ── TODAY'S REVISION PANEL ────────────────────────────────────────────────────
+function renderTodayRevPanel(){
+  const panel=document.getElementById('rev-today-panel');
+  const list=document.getElementById('rev-today-list');
+  const countEl=document.getElementById('rev-today-count');
+  if(!panel||!list)return;
+  const today=todayStr();
+  const items=[];
+  events.forEach(ev=>{
+    const raw=localStorage.getItem(UID_PREFIX+'rs-'+ev.id);if(!raw)return;
+    try{
+      const data=JSON.parse(raw);
+      (data.items||[]).forEach(item=>{
+        if(item.scheduledDate===today)items.push({...item,evId:ev.id,evName:ev.name,evSubject:ev.subject});
+      });
+    }catch(e){}
+  });
+  if(!items.length){panel.style.display='none';return;}
+  panel.style.display='';
+  const pending=items.filter(i=>!i.done&&!i.missed);
+  const done=items.filter(i=>i.done).length;
+  if(countEl)countEl.textContent=`${done}/${items.length} done`;
+  list.innerHTML=items.map(item=>{
+    const bg=BG[item.evSubject]||'var(--bg)';
+    const br=BR[item.evSubject]||'var(--border)';
+    const fg=NC[item.evSubject]||'var(--accent)';
+    const missed=item.missed;
+    return`<div class="rev-today-item" style="background:${bg};border-color:${br};${item.done?'opacity:.65':''}${missed?'opacity:.5;text-decoration:line-through':''}">
+      <div class="rev-today-chk${item.done?' done':''}" onclick="revTodayToggle(${item.evId},'${item.id}')" style="border-color:${fg};color:${fg}"></div>
+      <div class="rev-today-body">
+        <div class="rev-today-name">${item.name}</div>
+        <div class="rev-today-meta">${userSubjects.find(s=>s.id===item.evSubject)?.label||''} · ${item.evName} · ${formatDur(item.dur)}</div>
+      </div>
+      ${missed?`<span style="font-size:10.5px;color:var(--muted);font-weight:600;flex-shrink:0">missed</span>`:''}
+    </div>`;
+  }).join('');
+}
+
+function revTodayToggle(evId,itemId){
+  const raw=localStorage.getItem(UID_PREFIX+'rs-'+evId);if(!raw)return;
+  try{
+    const data=JSON.parse(raw);
+    const item=data.items.find(i=>i.id==itemId);if(!item)return;
+    item.done=!item.done;
+    if(item.done)item.missed=false;
+    localStorage.setItem(UID_PREFIX+'rs-'+evId,JSON.stringify(data));
+    renderTodayRevPanel();
+    if(document.getElementById('page-revision').classList.contains('active'))renderRevision();
+  }catch(e){}
+}
+
 function toggleDark(){
   const dark=document.documentElement.getAttribute('data-theme')==='dark';
   const next=dark?'light':'dark';
@@ -1599,7 +1849,7 @@ function nav(p,btn){
   if(p==='planner'){renderPlanner();renderSchedPanel();}
   if(p==='study')renderStudy();
   if(p==='scores')renderScores();
-  if(p==='revision')renderRevision();
+  if(p==='revision'){renderRevision();renderTodayRevPanel();}
 }
 function navTo(p){
   const btn=document.querySelector(`.nav-item[data-page="${p}"]`);
@@ -1672,6 +1922,13 @@ function addTask(){
   const subj=document.getElementById('subj-input').value;
   const due=document.getElementById('date-input').value;
   const evLink=document.getElementById('task-ev-link').value;
+  if(_editTaskId){
+    const t=tasks.find(x=>x.id===_editTaskId);
+    if(t){t.title=title;t.note=note;t.subject=subj;t.due=due;t.evLink=evLink;}
+    cancelTaskEdit();
+    saveT();renderTasks();updateEvLink();showToast('Task updated! ✏️');
+    return;
+  }
   tasks.unshift({id:Date.now(),title,note,subject:subj,due,done:false,urgent:false,evLink});
   document.getElementById('task-input').value='';document.getElementById('note-input').value='';
   saveT();renderTasks();updateEvLink();showToast('Task added! 📝');
@@ -1753,7 +2010,7 @@ function renderTasks(){
   if(!vis.length){list.innerHTML=`<div class="empty"><div class="eb">${tfilter==='done'?'No completed tasks yet':tfilter==='urgent'?'No urgent tasks 🎉':'No tasks here'}</div><div class="es">${tfilter==='all'||tfilter==='todo'?'Add a task above.':'Switch filter.'}</div></div>`}
   else list.innerHTML=vis.map(t=>{
     const s=SUBJ[t.subject]||{label:t.subject,cls:'eng'};const ds=dueStatus(t.due);const ev=t.evLink?events.find(e=>e.id==t.evLink):null;
-    return`<div class="tc ${t.done?'done':''} ${t.urgent&&!t.done?'urgent':''}" style="background:${BG[t.subject]||''};border-color:${BR[t.subject]||''}"><div class="cw ${t.done?'ck':''}" onclick="toggleTask(${t.id})"></div><div class="tb"><div class="ttitle">${t.title}</div>${t.note?`<div class="tnote">${t.note}</div>`:''}<div class="ttags"><span class="badge" style="background:${BG[t.subject]};color:${NC[t.subject]}">${s.label}</span>${t.urgent&&!t.done?'<span class="badge b-urgent">! Urgent</span>':''}${ev?`<span class="badge b-sac">${ev.type.toUpperCase()}: ${ev.name}</span>`:''}</div></div><div class="dinfo"><div class="${ds.cls}">${ds.label}</div></div><button class="urgbtn ${t.urgent?'on':''}" onclick="toggleUrgent(${t.id})">${t.urgent?'! Urgent':'! Urgent'}</button><button class="dbtn" onclick="removeTask(${t.id})">×</button></div>`;
+    return`<div class="tc ${t.done?'done':''} ${t.urgent&&!t.done?'urgent':''}" style="background:${BG[t.subject]||''};border-color:${BR[t.subject]||''}"><div class="cw ${t.done?'ck':''}" onclick="toggleTask(${t.id})"></div><div class="tb"><div class="ttitle">${t.title}</div>${t.note?`<div class="tnote">${t.note}</div>`:''}<div class="ttags"><span class="badge" style="background:${BG[t.subject]};color:${NC[t.subject]}">${s.label}</span>${t.urgent&&!t.done?'<span class="badge b-urgent">! Urgent</span>':''}${ev?`<span class="badge b-sac">${ev.type.toUpperCase()}: ${ev.name}</span>`:''}</div></div><div class="dinfo"><div class="${ds.cls}">${ds.label}</div></div><button class="urgbtn ${t.urgent?'on':''}" onclick="toggleUrgent(${t.id})">${t.urgent?'! Urgent':'! Urgent'}</button><button class="dbtn" style="font-size:13px;padding:0 8px" onclick="startTaskEdit(${t.id})" title="Edit task">✏️</button><button class="dbtn" onclick="removeTask(${t.id})">×</button></div>`;
   }).join('');
   const rem=tasks.filter(t=>!t.done);
   document.getElementById('s-total').textContent=rem.length;
@@ -1792,7 +2049,17 @@ function renderPlanner(){
 function addEvent(){
   const name=document.getElementById('ev-name').value.trim();if(!name)return;
   const date=document.getElementById('ev-date').value;if(!date)return;
-  events.push({id:Date.now(),name,subject:document.getElementById('ev-subj').value,type:document.getElementById('ev-type').value,date,checklist:[]});
+  const subject=document.getElementById('ev-subj').value;
+  const type=document.getElementById('ev-type').value;
+  if(_editEvId){
+    const ev=events.find(x=>x.id===_editEvId);
+    if(ev){ev.name=name;ev.subject=subject;ev.type=type;ev.date=date;}
+    events.sort((a,b)=>a.date.localeCompare(b.date));
+    cancelEvEdit();
+    saveE();renderEvents();updateEvLink();renderRevision();showToast('Updated! ✏️');
+    return;
+  }
+  events.push({id:Date.now(),name,subject,type,date,checklist:[]});
   events.sort((a,b)=>a.date.localeCompare(b.date));
   document.getElementById('ev-name').value='';saveE();renderEvents();updateEvLink();showToast('Added! 🎯');
 }
@@ -1805,7 +2072,7 @@ function renderEvents(){
   const upcoming=events.filter(e=>daysUntil(e.date)>=0);const past=events.filter(e=>daysUntil(e.date)<0);
   const nub=document.getElementById('nub-wrap');const next=upcoming[0];
   if(next){const d=daysUntil(next.date);const ds=new Date(next.date+'T00:00:00').toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long'});nub.innerHTML=`<div class="nub"><div class="nub-l"><div class="nub-tag">${next.type==='sac'?'Next SAC':'Next Exam'}</div><div class="nub-title">${next.name}</div><div class="nub-meta">${SUBJ[next.subject].label} · ${ds}</div></div><div class="nub-r"><div class="nub-count">${d===0?'TODAY':d}</div><div class="nub-clabel">${d===0?'':d===1?'day to go':'days to go'}</div></div></div>`}else nub.innerHTML='';
-  function ecard(e){const d=daysUntil(e.date);const ip=d<0;const dl=ip?`${Math.abs(d)} days ago`:d===0?'Today':d===1?'Tomorrow':`${d} days to go`;const ds=new Date(e.date+'T00:00:00').toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short',year:'numeric'});const cl=e.checklist||[];const cld=cl.filter(x=>x.done).length;const clH=cl.map((item,i)=>`<label class="cl-item"><input type="checkbox" ${item.done?'checked':''} onchange="toggleCL(${e.id},${i})"/><span ${item.done?'class="dt"':''}>${item.text}</span></label>`).join('');const se=e.type==='sac'?`<button class="ev-cl-toggle" onclick="toggleCLPanel(${e.id})">Revision checklist ${cl.length?`(${cld}/${cl.length})`:'— add topics'}</button><div class="ev-checklist" id="cl-${e.id}">${clH}<div class="cl-add-row"><input type="text" id="cl-inp-${e.id}" placeholder="Add revision topic…"/><button class="abtn sm" onclick="addCLItem(${e.id})">+</button></div></div>`:'';return`<div class="ecard${ip?' past':''}" style="background:${BG[e.subject]};border-color:${BR[e.subject]}"><button class="evdel" onclick="removeEvent(${e.id})">×</button><div class="ev-type" style="color:${NC[e.subject]}">${e.type==='sac'?'SAC':'EXAM'}</div><div class="ev-title">${e.name}</div><div class="ev-subj">${SUBJ[e.subject].label}</div><div class="ev-num" style="color:${NC[e.subject]}">${ip?'✓':d===0?'0':d}</div><div class="ev-dl">${dl}</div><div class="ev-date">${ds}</div>${se}</div>`}
+  function ecard(e){const d=daysUntil(e.date);const ip=d<0;const dl=ip?`${Math.abs(d)} days ago`:d===0?'Today':d===1?'Tomorrow':`${d} days to go`;const ds=new Date(e.date+'T00:00:00').toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short',year:'numeric'});const cl=e.checklist||[];const cld=cl.filter(x=>x.done).length;const clH=cl.map((item,i)=>`<label class="cl-item"><input type="checkbox" ${item.done?'checked':''} onchange="toggleCL(${e.id},${i})"/><span ${item.done?'class="dt"':''}>${item.text}</span></label>`).join('');const se=e.type==='sac'?`<button class="ev-cl-toggle" onclick="toggleCLPanel(${e.id})">Revision checklist ${cl.length?`(${cld}/${cl.length})`:'— add topics'}</button><div class="ev-checklist" id="cl-${e.id}">${clH}<div class="cl-add-row"><input type="text" id="cl-inp-${e.id}" placeholder="Add revision topic…"/><button class="abtn sm" onclick="addCLItem(${e.id})">+</button></div></div>`:'';return`<div class="ecard${ip?' past':''}" style="background:${BG[e.subject]};border-color:${BR[e.subject]}"><button class="evdel" onclick="removeEvent(${e.id})">×</button><button class="evdel" onclick="startEvEdit(${e.id})" style="right:2.2rem;font-size:13px" title="Edit">✏️</button><div class="ev-type" style="color:${NC[e.subject]}">${e.type==='sac'?'SAC':'EXAM'}</div><div class="ev-title">${e.name}</div><div class="ev-subj">${SUBJ[e.subject].label}</div><div class="ev-num" style="color:${NC[e.subject]}">${ip?'✓':d===0?'0':d}</div><div class="ev-dl">${dl}</div><div class="ev-date">${ds}</div>${se}</div>`}
   document.getElementById('ev-upcoming').innerHTML=upcoming.length?upcoming.map(ecard).join(''):`<p style="color:var(--muted);font-size:13px">No upcoming events yet.</p>`;
   document.getElementById('ev-past').innerHTML=past.length?[...past].reverse().map(ecard).join(''):`<p style="color:var(--muted);font-size:13px">None yet.</p>`;
 }
@@ -2763,11 +3030,14 @@ function deleteScore(id){
 }
 
 function gradeLabel(pct){
-  if(pct>=90)return{text:'A+',bg:'#dcfce7',col:'#16a34a'};
+  if(pct>=90)return{text:'A+',bg:'#dcfce7',col:'#15803d'};
   if(pct>=80)return{text:'A', bg:'#dcfce7',col:'#16a34a'};
-  if(pct>=70)return{text:'B', bg:'#dbeafe',col:'#1d4ed8'};
-  if(pct>=60)return{text:'C', bg:'#fef9c3',col:'#a16207'};
-  if(pct>=50)return{text:'D', bg:'#ffedd5',col:'#c2410c'};
+  if(pct>=75)return{text:'B+',bg:'#dbeafe',col:'#1d4ed8'};
+  if(pct>=70)return{text:'B', bg:'#dbeafe',col:'#2563eb'};
+  if(pct>=65)return{text:'C+',bg:'#fef9c3',col:'#a16207'};
+  if(pct>=60)return{text:'C', bg:'#fef9c3',col:'#b45309'};
+  if(pct>=55)return{text:'D+',bg:'#ffedd5',col:'#c2410c'};
+  if(pct>=50)return{text:'D', bg:'#ffedd5',col:'#ea580c'};
   return{text:'E',bg:'#fee2e2',col:'#dc2626'};
 }
 
@@ -3439,60 +3709,203 @@ function smAwardWithTracking(){
 }
 
 // ── ATAR ESTIMATOR ───────────────────────────────────────────────────────────
-// Aggregate → ATAR lookup table (approximate, based on historical VCE data)
+// Aggregate → ATAR lookup table — calibrated to 2024 VTAC data
+// Formula: English + 3 best others (full) + 10% of 5th + 10% of 6th
+// Max aggregate ≈ 211.6 (2024 VTAC 99.95 threshold)
 const ATAR_TABLE=[
-  [210,99.95],[205,99.9],[200,99.7],[195,99.3],[190,98.5],[185,97.0],
-  [180,95.0],[175,92.5],[170,89.5],[165,86.0],[160,82.0],[155,77.5],
-  [150,72.5],[145,67.0],[140,61.0],[135,54.5],[130,48.0],[125,41.5],
-  [120,35.5],[115,29.5],[110,24.0],[105,19.0],[100,14.5],[95,11.0],
-  [90,8.0],[85,5.5],[80,3.5],[75,2.0],[70,1.0],[65,0.5],[0,0],
+  [211.6,99.95],[208.2,99.90],[205.0,99.80],[202.0,99.70],[199.0,99.50],
+  [196.5,99.30],[194.0,99.10],[191.5,98.80],[188.0,98.50],[183.9,98.00],
+  [180.3,97.50],[177.5,97.00],[174.0,96.50],[171.5,96.00],[169.0,95.50],
+  [166.5,95.00],[163.0,94.00],[159.5,93.00],[157.5,92.00],[156.0,91.00],
+  [154.9,90.00],[151.0,89.00],[147.5,88.00],[145.0,87.00],[143.0,86.00],
+  [141.5,85.50],[140.5,85.00],[138.0,84.00],[136.0,80.00],[129.0,75.00],
+  [122.0,70.00],[115.0,65.00],[108.0,60.00],[101.0,55.00],
+  [93.5,50.00],[86.5,45.00],[79.5,40.00],[71.0,35.00],
+  [63.0,28.00],[54.0,20.00],[45.0,12.00],[35.0,5.00],[0,0],
 ];
 function aggToATAR(agg){
   for(let i=0;i<ATAR_TABLE.length-1;i++){
     const[a1,r1]=ATAR_TABLE[i],[a2,r2]=ATAR_TABLE[i+1];
-    if(agg>=a2){const t=(agg-a2)/(a1-a2);return Math.round((r2+t*(r1-r2))*10)/10;}
+    if(agg>=a2){const t=(agg-a2)/(a1-a2);return Math.round((r2+t*(r1-r2))*100)/100;}
   }return 0;
+}
+
+function setAtarEnglish(subjId){
+  const current=localStorage.getItem(UID_PREFIX+'atar-english');
+  // toggle off if clicking same subject
+  if(current==subjId){localStorage.removeItem(UID_PREFIX+'atar-english');}
+  else{localStorage.setItem(UID_PREFIX+'atar-english',subjId);}
+  // update button states
+  document.querySelectorAll('[id^="atar-eng-"]').forEach(btn=>{btn.classList.remove('active');});
+  const newId=localStorage.getItem(UID_PREFIX+'atar-english');
+  if(newId){const b=document.getElementById('atar-eng-'+newId);if(b)b.classList.add('active');}
+  calcATAR();
+}
+
+function atarToAgg(atar){
+  for(let i=0;i<ATAR_TABLE.length-1;i++){
+    const[a1,r1]=ATAR_TABLE[i],[a2,r2]=ATAR_TABLE[i+1];
+    if(atar>=r2&&atar<=r1){const t=(atar-r2)/(r1-r2);return a2+t*(a1-a2);}
+  }
+  return atar>=99.95?210:0;
+}
+
+function atarLoadPrev(){
+  try{return JSON.parse(localStorage.getItem(UID_PREFIX+'atar-prev')||'[]');}catch{return[];}
+}
+function atarSavePrev(arr){localStorage.setItem(UID_PREFIX+'atar-prev',JSON.stringify(arr));}
+
+function atarAddPrev(){
+  const arr=atarLoadPrev();
+  arr.push({id:Date.now(),name:'',score:''});
+  atarSavePrev(arr);
+  renderAtarPrevRows();
+  calcATAR();
+}
+function atarRemovePrev(id){
+  atarSavePrev(atarLoadPrev().filter(r=>r.id!==id));
+  renderAtarPrevRows();
+  calcATAR();
+}
+function atarPrevChange(id,field,val){
+  const arr=atarLoadPrev();
+  const r=arr.find(r=>r.id===id);
+  if(r){r[field]=field==='score'?(val===''?'':Math.min(50,Math.max(0,parseFloat(val)||0))):val;}
+  atarSavePrev(arr);
+  calcATAR();
+}
+
+function renderAtarPrevRows(){
+  const wrap=document.getElementById('atar-prev-rows');
+  const empty=document.getElementById('atar-prev-empty');
+  if(!wrap)return;
+  const arr=atarLoadPrev();
+  if(empty)empty.style.display=arr.length?'none':'block';
+  wrap.innerHTML=arr.map(r=>`
+    <div class="atar-prev-row">
+      <input class="atar-prev-name-inp" type="text" placeholder="Subject name (e.g. Year 11 Methods)"
+        value="${r.name.replace(/"/g,'&quot;')}"
+        oninput="atarPrevChange(${r.id},'name',this.value)"/>
+      <input class="atar-subj-inp" type="number" min="0" max="50" step="1" placeholder="0–50"
+        value="${r.score}"
+        oninput="atarPrevChange(${r.id},'score',this.value)"/>
+      <button class="atar-prev-del" onclick="atarRemovePrev(${r.id})" title="Remove">×</button>
+    </div>`).join('');
 }
 
 function renderATARRows(){
   const wrap=document.getElementById('atar-subj-rows');
-  if(!wrap||!userSubjects.length){if(wrap)wrap.innerHTML='<div style="font-size:13px;color:var(--muted)">Add subjects first.</div>';return;}
+  if(!wrap||!userSubjects.length){if(wrap)wrap.innerHTML='<div style="font-size:13px;color:var(--muted);padding:.3rem 0">Add subjects in settings first.</div>';renderAtarPrevRows();calcATAR();return;}
+  const engId=localStorage.getItem(UID_PREFIX+'atar-english')||'';
   wrap.innerHTML=userSubjects.map(s=>`
     <div class="atar-subj-row">
       <div class="atar-subj-name">${s.label}</div>
       <input class="atar-subj-inp" type="number" min="0" max="50" step="1" placeholder="0–50"
         id="atar-inp-${s.id}" oninput="calcATAR()" value="${localStorage.getItem(UID_PREFIX+'atar-ss-'+s.id)||''}"/>
+      <input class="atar-subj-inp atar-goal-inp" type="number" min="0" max="50" step="1" placeholder="goal"
+        id="atar-goal-${s.id}" oninput="calcATAR()" value="${localStorage.getItem(UID_PREFIX+'atar-goal-'+s.id)||''}"/>
+      <button class="atar-eng-btn${s.id==engId?' active':''}" id="atar-eng-${s.id}" onclick="setAtarEnglish(${s.id})" title="Mark as English/EAL/Literature subject">ENG</button>
       <div class="atar-subj-scaled" id="atar-sc-${s.id}"></div>
     </div>`).join('');
+  renderAtarPrevRows();
+  // render static grade scale chips
+  const ref=document.getElementById('atar-grade-ref-static');
+  if(ref&&!ref.children.length){
+    const GRADES=[['A+','≥90%','#dcfce7','#15803d'],['A','≥80%','#dcfce7','#16a34a'],['B+','≥75%','#dbeafe','#1d4ed8'],['B','≥70%','#dbeafe','#2563eb'],['C+','≥65%','#fef9c3','#a16207'],['C','≥60%','#fef9c3','#b45309'],['D+','≥55%','#ffedd5','#c2410c'],['D','≥50%','#ffedd5','#ea580c'],['E','<50%','#fee2e2','#dc2626']];
+    ref.innerHTML=GRADES.map(([g,r,bg,col])=>`<span class="atar-grade-chip" style="background:${bg};color:${col}">${g} ${r}</span>`).join('');
+  }
   calcATAR();
 }
 
 function calcATAR(){
-  const scores_ss=userSubjects.map(s=>{
+  // collect current subject scores + goal scores
+  const englishId=localStorage.getItem(UID_PREFIX+'atar-english');
+  const currentScores=userSubjects.map(s=>{
     const v=parseFloat(document.getElementById('atar-inp-'+s.id)?.value)||0;
-    localStorage.setItem(UID_PREFIX+'atar-ss-'+s.id,v||'');
-    return{label:s.label,score:Math.min(50,Math.max(0,v))};
+    const goal=parseFloat(document.getElementById('atar-goal-'+s.id)?.value)||0;
+    localStorage.setItem(UID_PREFIX+'atar-ss-'+s.id,document.getElementById('atar-inp-'+s.id)?.value||'');
+    localStorage.setItem(UID_PREFIX+'atar-goal-'+s.id,document.getElementById('atar-goal-'+s.id)?.value||'');
+    return{id:s.id,label:s.label,score:Math.min(50,Math.max(0,v)),goal,entered:v>0,isEnglish:String(s.id)===String(englishId)};
   });
-  // best 5 (simplified — no English requirement enforcement)
-  const top5=scores_ss.map(s=>s.score).sort((a,b)=>b-a).slice(0,5);
-  const agg=top5.reduce((a,v)=>a+v,0)*4; // multiply by 4 (max study score 50 → scaled ≈ 50, aggregate = sum × 4 simplified)
-  // actually VCE aggregate = sum of scaled study scores (max ~42 each, 5 subjects = ~210 max)
-  // simpler: use raw study scores directly as aggregate (they're already out of 50, sum of best 5 ≈ 0–250 but VCAA cap ~210)
-  const aggRaw=top5.reduce((a,v)=>a+v,0)*4.2; // approximate scaling factor
-  const cappedAgg=Math.min(210,aggRaw);
+  // collect previous subject scores
+  const prevScores=atarLoadPrev().filter(r=>r.score!=='').map(r=>({label:r.name||'Previous subject',score:Math.min(50,Math.max(0,parseFloat(r.score)||0)),goal:0,entered:true,isPrev:true,isEnglish:false}));
+  const allEnteredScores=[...currentScores,...prevScores].filter(s=>s.entered);
+
+  // ── VTAC Formula: English + 3 best others + 10% of 5th + 10% of 6th ──
+  const englishEntry=allEnteredScores.find(s=>s.isEnglish);
+  let cappedAgg=0;
+  let formulaNote='';
+  if(englishEntry){
+    const others=allEnteredScores.filter(s=>!s.isEnglish).sort((a,b)=>b.score-a.score);
+    const primary4=englishEntry.score+others.slice(0,3).reduce((a,v)=>a+v.score,0);
+    const fifth=others[3]?.score||0;const sixth=others[4]?.score||0;
+    cappedAgg=Math.min(211.6,primary4+0.1*fifth+0.1*sixth);
+    formulaNote=`English: ${englishEntry.score} + ${others.slice(0,3).map(s=>s.score).join('+')||'—'}${fifth?` + ${(fifth*.1).toFixed(1)}`:''}${sixth?`+${(sixth*.1).toFixed(1)}`:''}`;
+  }else{
+    // no English flagged — use top 4 full + 10% of 5th + 10% of 6th (with warning)
+    const sorted=[...allEnteredScores].sort((a,b)=>b.score-a.score);
+    const primary4=sorted.slice(0,4).reduce((a,v)=>a+v.score,0);
+    const fifth=sorted[4]?.score||0;const sixth=sorted[5]?.score||0;
+    cappedAgg=Math.min(211.6,primary4+0.1*fifth+0.1*sixth);
+    formulaNote='Mark your English subject with the ENG button for a more accurate estimate';
+  }
   const atar=aggToATAR(cappedAgg);
+  const allScoreVals=allEnteredScores.map(s=>s.score).sort((a,b)=>b-a);
+  const top5vals=allScoreVals.slice(0,5);
+  const hasAny=allEnteredScores.some(s=>s.score>0);
   const valEl=document.getElementById('atar-est-val');
   const aggEl=document.getElementById('atar-est-agg');
-  if(valEl)valEl.textContent=top5[0]>0?atar.toFixed(1)+'':'—';
-  if(aggEl)aggEl.textContent=top5[0]>0?`Aggregate ≈ ${Math.round(cappedAgg)}  (best 5 used)`:'Enter predicted study scores above';
-  // target diff
+  if(valEl)valEl.textContent=hasAny?atar.toFixed(2):'—';
+  if(aggEl){
+    if(hasAny){aggEl.innerHTML=`Aggregate ≈ ${cappedAgg.toFixed(1)}<br><span style="font-size:11px;opacity:.75">${formulaNote}</span>`;}
+    else{aggEl.textContent='Enter predicted study scores above';}
+  }
+  // update gap badges per current subject
+  currentScores.forEach(s=>{
+    const el=document.getElementById('atar-sc-'+s.id);
+    if(!el)return;
+    if(s.score>0&&s.goal>0){
+      const gap=s.goal-s.score;
+      if(gap<=0){el.textContent='✓';el.style.background='#dcfce7';el.style.color='#15803d';}
+      else{el.textContent='▲'+gap;el.style.background='#fff3cd';el.style.color='#a16207';}
+    }else{el.textContent='';el.style.background='transparent';}
+  });
+  // target ATAR diff
   const target=parseFloat(document.getElementById('sc-atar-target')?.value);
   const diffEl=document.getElementById('atar-target-diff');
-  if(diffEl&&target&&top5[0]>0){
+  if(diffEl&&target>0&&hasAny){
     const diff=atar-target;
     diffEl.textContent=diff>=0?`✓ ${diff.toFixed(1)} above target`:`${Math.abs(diff).toFixed(1)} below target`;
     diffEl.style.color=diff>=0?'var(--green)':'var(--high)';
   }else if(diffEl){diffEl.textContent='';}
+  // goal analysis box
+  const analysisEl=document.getElementById('atar-goal-analysis');
+  if(analysisEl){
+    if(target>0){
+      const reqAgg=atarToAgg(target);
+      const enteredCount=allEnteredScores.length;
+      const hasEnglish=!!englishEntry;
+      const currentAgg=cappedAgg;
+      const diff=atar-target;
+      if(diff>=0){
+        analysisEl.innerHTML=`<div class="atar-analysis-box">🎯 Your predicted scores put you <strong style="color:var(--green)">on track</strong> for ATAR <strong>${target}</strong> — currently projecting <strong>${atar.toFixed(2)}</strong>.</div>`;
+      }else if(enteredCount>=4&&hasEnglish){
+        // have enough to calculate deficit
+        const aggGap=reqAgg-currentAgg;
+        const remainingSubjects=Math.max(0,6-enteredCount);
+        if(remainingSubjects>0){
+          const neededScore=Math.min(50,aggGap/remainingSubjects).toFixed(1);
+          analysisEl.innerHTML=`<div class="atar-analysis-box">🎯 To reach ATAR <strong>${target}</strong> (agg ≈ ${reqAgg.toFixed(1)}), your remaining ${remainingSubjects} subject${remainingSubjects>1?'s':''} need an average study score of <strong>${neededScore}/50</strong>. You're currently ${Math.abs(diff).toFixed(2)} ATAR points short.</div>`;
+        }else{
+          analysisEl.innerHTML=`<div class="atar-analysis-box">🎯 To reach ATAR <strong>${target}</strong>, you need to improve your study scores by an average of <strong>${(aggGap/4).toFixed(1)}</strong> points.</div>`;
+        }
+      }else{
+        const neededAvg=(reqAgg/4).toFixed(1);
+        const warnEng=!hasEnglish?' <em style="opacity:.75">(mark your ENG subject for a more precise estimate)</em>':'';
+        analysisEl.innerHTML=`<div class="atar-analysis-box">🎯 For ATAR <strong>${target}</strong> (aggregate ≈ ${reqAgg.toFixed(1)}), aim for a primary-4 average of <strong>${neededAvg}</strong> study score.${warnEng}</div>`;
+      }
+    }else{analysisEl.innerHTML='';}
+  }
 }
 
 // ── NOTIFICATIONS ─────────────────────────────────────────────────────────────
@@ -3583,6 +3996,26 @@ init().then(()=>{
 }).catch(e=>console.error('init failed:',e));
 </script>
 <!-- NOTIFICATIONS MODAL -->
+<!-- SUBJECT MANAGEMENT MODAL -->
+<div id="subj-modal">
+  <div class="subj-modal-box">
+    <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:1rem">
+      <div style="font-family:'Fraunces',serif;font-size:1.2rem;font-weight:700;color:var(--text)">Manage Subjects</div>
+      <button onclick="closeSubjModal()" style="margin-left:auto;background:transparent;border:none;font-size:20px;color:var(--muted);cursor:pointer;line-height:1">×</button>
+    </div>
+    <div style="font-size:12.5px;color:var(--muted);margin-bottom:1rem">Rename or delete your subjects. Changes sync to your account.</div>
+    <div id="subj-manage-list"></div>
+    <div style="margin-top:1rem;padding-top:.85rem;border-top:1px solid var(--border)">
+      <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:.5rem">Add new subject</div>
+      <div style="display:flex;gap:.5rem">
+        <input type="text" id="subj-new-name" class="subj-manage-inp" placeholder="e.g. Chemistry" style="flex:1"/>
+        <button class="abtn" onclick="addNewSubject()" style="white-space:nowrap;flex-shrink:0">+ Add</button>
+      </div>
+      <div id="subj-modal-err" style="font-size:12px;color:var(--high);margin-top:.4rem;display:none"></div>
+    </div>
+  </div>
+</div>
+
 <div id="notif-modal">
   <div class="notif-modal-box">
     <div class="notif-modal-title">🔔 Notifications</div>
