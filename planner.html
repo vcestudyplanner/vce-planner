@@ -720,7 +720,7 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 /* ── ATAR ESTIMATOR ── */
 .atar-result{font-family:'Fraunces',serif;font-size:3rem;font-weight:700;color:var(--accent);text-align:center;line-height:1;margin:.5rem 0}
 .atar-agg{font-size:13px;color:var(--muted);text-align:center;margin-bottom:.5rem}
-.atar-subj-row{display:flex;align-items:center;gap:.6rem;padding:.45rem 0;border-bottom:1px solid var(--border)}
+.atar-subj-row{display:flex;align-items:center;gap:.6rem;padding:.5rem 0;border-bottom:1px solid var(--border);flex-wrap:wrap}
 .atar-subj-row:last-child{border-bottom:none}
 .atar-subj-name{flex:1;font-size:13.5px;color:var(--text);font-weight:500}
 .atar-subj-inp{width:66px;padding:5px 8px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;text-align:center;outline:none;transition:border-color .15s}
@@ -1203,6 +1203,7 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
       <div style="margin-left:auto;text-align:center">
         <div class="atar-result" id="atar-est-val">—</div>
         <div class="atar-agg" id="atar-est-agg"></div>
+        <button onclick="atarAutoFill()" style="margin-top:.5rem;font-size:11px;padding:4px 10px;border:1.5px solid var(--accent);border-radius:7px;background:transparent;color:var(--accent);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;white-space:nowrap">↓ Load from Results</button>
       </div>
     </div>
     <!-- Column headers -->
@@ -1230,6 +1231,7 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
       <div id="atar-target-diff" style="font-size:12.5px;font-weight:600"></div>
     </div>
     <div id="atar-goal-analysis"></div>
+    <div id="atar-goal-atar-row" style="display:none;margin-top:.5rem;padding:.55rem .85rem;background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.18);border-radius:10px;font-size:12.5px;color:var(--text)"></div>
     <div style="font-size:11px;color:var(--muted);margin-top:.65rem;opacity:.7">⚠️ Estimate only — actual ATAR depends on subject scaling and statewide cohort performance.</div>
     <!-- Grade scale reference -->
     <div style="margin-top:.75rem;padding-top:.65rem;border-top:1px solid var(--border)">
@@ -3730,6 +3732,58 @@ function aggToATAR(agg){
   }return 0;
 }
 
+// ── STUDY SCORE ESTIMATION FROM SAC RESULTS ──────────────────────────────────
+// Converts a SAC average % to an estimated VCE study score (0–50).
+// Based on historical VCE cohort data: top students (95%+ SAC) typically
+// receive study scores in the 42–48 range; linear decay below that.
+function estimateStudyScore(avgPct){
+  // Piecewise to roughly match real VCE distributions
+  if(avgPct>=97)return 47;
+  if(avgPct>=94)return 45;
+  if(avgPct>=91)return 43;
+  if(avgPct>=88)return 41;
+  if(avgPct>=85)return 39;
+  if(avgPct>=82)return 37;
+  if(avgPct>=79)return 35;
+  if(avgPct>=76)return 33;
+  if(avgPct>=73)return 31;
+  if(avgPct>=70)return 29;
+  if(avgPct>=67)return 27;
+  if(avgPct>=64)return 25;
+  if(avgPct>=60)return 23;
+  if(avgPct>=55)return 21;
+  if(avgPct>=50)return 18;
+  return Math.max(0,Math.round(avgPct*0.3));
+}
+
+function sacAvgForSubject(subjId){
+  loadScores();
+  const sub=scores.filter(r=>r.subj===subjId);
+  if(!sub.length)return null;
+  return Math.round(sub.reduce((a,r)=>a+(r.score/r.max*100),0)/sub.length);
+}
+
+function atarUseEst(subjId,est){
+  const inp=document.getElementById('atar-inp-'+subjId);
+  if(inp){inp.value=est;calcATAR();}
+}
+
+function atarAutoFill(){
+  // Fill empty study score fields with estimates from logged SAC results
+  let filled=0;
+  userSubjects.forEach(s=>{
+    const inp=document.getElementById('atar-inp-'+s.id);
+    if(!inp)return;
+    const avg=sacAvgForSubject(s.id);
+    if(avg===null)return;
+    const est=estimateStudyScore(avg);
+    inp.value=est;
+    filled++;
+  });
+  if(filled)calcATAR();
+  showToast(filled?`Loaded estimates for ${filled} subject${filled>1?'s':''}!`:'No SAC results found — log results on the Scores page first.');
+}
+
 function setAtarEnglish(subjId){
   const current=localStorage.getItem(UID_PREFIX+'atar-english');
   // toggle off if clicking same subject
@@ -3797,16 +3851,27 @@ function renderATARRows(){
   const wrap=document.getElementById('atar-subj-rows');
   if(!wrap||!userSubjects.length){if(wrap)wrap.innerHTML='<div style="font-size:13px;color:var(--muted);padding:.3rem 0">Add subjects in settings first.</div>';renderAtarPrevRows();calcATAR();return;}
   const engId=localStorage.getItem(UID_PREFIX+'atar-english')||'';
-  wrap.innerHTML=userSubjects.map(s=>`
-    <div class="atar-subj-row">
-      <div class="atar-subj-name">${s.label}</div>
+  wrap.innerHTML=userSubjects.map(s=>{
+    const avg=sacAvgForSubject(s.id);
+    const est=avg!==null?estimateStudyScore(avg):null;
+    const g=avg!==null?gradeLabel(avg):null;
+    const hintHtml=est!==null
+      ?`<div style="font-size:10.5px;color:var(--muted);margin-top:.15rem;display:flex;align-items:center;gap:.3rem">
+          <span style="background:${g.bg};color:${g.col};padding:0px 4px;border-radius:4px;font-weight:700;font-size:9.5px">${g.text}</span>
+          SAC avg ${avg}% → est. ~${est}
+          <button onclick="atarUseEst(${s.id},${est})" style="font-size:9.5px;padding:1px 5px;border:1px solid var(--accent);border-radius:4px;background:transparent;color:var(--accent);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;flex-shrink:0">Use</button>
+        </div>`
+      :'';
+    return`<div class="atar-subj-row" style="flex-wrap:wrap">
+      <div class="atar-subj-name" style="flex-basis:100%">${s.label}${hintHtml}</div>
       <input class="atar-subj-inp" type="number" min="0" max="50" step="1" placeholder="0–50"
         id="atar-inp-${s.id}" oninput="calcATAR()" value="${localStorage.getItem(UID_PREFIX+'atar-ss-'+s.id)||''}"/>
       <input class="atar-subj-inp atar-goal-inp" type="number" min="0" max="50" step="1" placeholder="goal"
         id="atar-goal-${s.id}" oninput="calcATAR()" value="${localStorage.getItem(UID_PREFIX+'atar-goal-'+s.id)||''}"/>
       <button class="atar-eng-btn${s.id==engId?' active':''}" id="atar-eng-${s.id}" onclick="setAtarEnglish(${s.id})" title="Mark as English/EAL/Literature subject">ENG</button>
       <div class="atar-subj-scaled" id="atar-sc-${s.id}"></div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
   renderAtarPrevRows();
   // render static grade scale chips
   const ref=document.getElementById('atar-grade-ref-static');
@@ -3870,6 +3935,29 @@ function calcATAR(){
       else{el.textContent='▲'+gap;el.style.background='#fff3cd';el.style.color='#a16207';}
     }else{el.textContent='';el.style.background='transparent';}
   });
+  // compute goal ATAR from goal study scores
+  const goalRowEl=document.getElementById('atar-goal-atar-row');
+  if(goalRowEl){
+    const goalScores=[...currentScores.filter(s=>s.goal>0).map(s=>({...s,score:s.goal})),...prevScores];
+    const hasGoals=currentScores.some(s=>s.goal>0);
+    if(hasGoals){
+      const goalEnglish=goalScores.find(s=>s.isEnglish&&s.score>0);
+      let goalAgg=0;
+      if(goalEnglish){
+        const gOthers=goalScores.filter(s=>!s.isEnglish&&s.score>0).sort((a,b)=>b.score-a.score);
+        goalAgg=goalEnglish.score+gOthers.slice(0,3).reduce((a,v)=>a+v.score,0)+0.1*(gOthers[3]?.score||0)+0.1*(gOthers[4]?.score||0);
+      }else{
+        const gAll=[...goalScores].filter(s=>s.score>0).sort((a,b)=>b.score-a.score);
+        goalAgg=gAll.slice(0,4).reduce((a,v)=>a+v.score,0)+0.1*(gAll[4]?.score||0)+0.1*(gAll[5]?.score||0);
+      }
+      goalAgg=Math.min(211.6,goalAgg);
+      const goalATAR=aggToATAR(goalAgg);
+      const gDiff=goalATAR-atar;
+      const gDiffStr=gDiff>0?`<span style="color:var(--green);font-weight:700">+${gDiff.toFixed(2)}</span>`:`<span style="color:var(--muted)">${gDiff.toFixed(2)}</span>`;
+      goalRowEl.style.display='block';
+      goalRowEl.innerHTML=`🎯 <strong>Goal ATAR: ${goalATAR.toFixed(2)}</strong> (agg ≈ ${goalAgg.toFixed(1)}) — ${gDiff>0?`${gDiffStr} above current trajectory`:`${gDiffStr} vs current trajectory`}`;
+    }else{goalRowEl.style.display='none';}
+  }
   // target ATAR diff
   const target=parseFloat(document.getElementById('sc-atar-target')?.value);
   const diffEl=document.getElementById('atar-target-diff');
