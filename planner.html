@@ -732,8 +732,18 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 .atar-prev-section{margin-top:.9rem;padding-top:.85rem;border-top:1px solid var(--border)}
 .atar-prev-row{display:flex;align-items:center;gap:.5rem;padding:.3rem 0;border-bottom:1px solid var(--border)}
 .atar-prev-row:last-child{border-bottom:none}
-.atar-prev-name-inp{flex:1;padding:5px 9px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;outline:none;transition:border-color .15s}
+.atar-prev-name-inp{flex:1;min-width:0;padding:5px 9px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;outline:none;transition:border-color .15s}
 .atar-prev-name-inp:focus{border-color:var(--accent)}
+.prev-subj-dropdown{position:absolute;top:calc(100% - 2px);left:0;width:calc(100% - 110px);background:var(--surface);border:1.5px solid var(--border);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.18);z-index:9999;max-height:220px;overflow-y:auto;display:none}
+.prev-subj-dropdown.open{display:block}
+.prev-subj-opt{padding:7px 11px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:.5rem;font-size:13px;color:var(--text)}
+.prev-subj-opt:hover,.prev-subj-opt.sel{background:rgba(99,102,241,.1)}
+.prev-subj-cat{padding:5px 11px 2px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);pointer-events:none;border-top:1px solid var(--border)}
+.prev-subj-cat:first-child{border-top:none}
+.prev-subj-scale{font-size:10px;font-weight:700;padding:1px 5px;border-radius:4px;flex-shrink:0}
+.prev-subj-scale.up{background:rgba(22,163,74,.12);color:#16a34a}
+.prev-subj-scale.down{background:rgba(239,68,68,.1);color:#dc2626}
+.prev-subj-scale.neutral{background:rgba(99,102,241,.1);color:var(--accent)}
 .atar-prev-del{width:24px;height:24px;border-radius:6px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s}
 .atar-prev-del:hover{background:var(--border);color:var(--high)}
 .atar-grade-ref{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.5rem}
@@ -3877,9 +3887,113 @@ function atarRemovePrev(id){
 function atarPrevChange(id,field,val){
   const arr=atarLoadPrev();
   const r=arr.find(r=>r.id===id);
-  if(r){r[field]=field==='score'?(val===''?'':Math.min(50,Math.max(0,parseFloat(val)||0))):val;}
+  if(r){
+    if(field==='score'){r[field]=val===''?'':Math.min(100,Math.max(0,parseFloat(val)||0));}
+    else{r[field]=val;}
+  }
   atarSavePrev(arr);
+  updatePrevHint(id);
   calcATAR();
+}
+
+function updatePrevHint(id){
+  const arr=atarLoadPrev();
+  const r=arr.find(r=>r.id===id);if(!r)return;
+  const hintEl=document.getElementById('atar-prev-hint-'+r.id);if(!hintEl)return;
+  const scoreVal=parseFloat(r.score)||0;
+  const factor=getScalingFactor(r.name||'');
+  const rawSS=scoreVal>50?estimateStudyScore(scoreVal):scoreVal;
+  const scaledSS=rawSS>0?applyScaling(rawSS,factor):0;
+  const scalingPct=Math.abs(factor-1)>0.003?(factor>1?`↑${((factor-1)*100).toFixed(1)}%`:`↓${((1-factor)*100).toFixed(1)}%`):'no scaling';
+  if(r.score!==''&&scoreVal>0){
+    hintEl.innerHTML=scoreVal>50
+      ?`${scoreVal}% → est. study score ~${rawSS} → scaled <strong style="color:var(--accent)">${scaledSS.toFixed(1)}</strong> (${scalingPct})`
+      :`Study score ${rawSS} → scaled <strong style="color:var(--accent)">${scaledSS.toFixed(1)}</strong> (${scalingPct})`;
+    hintEl.style.display='block';
+  }else{hintEl.style.display='none';}
+}
+
+const VCE_SUBJECT_OPTS=[
+  {cat:'Mathematics',name:'Specialist Mathematics',key:'specialist mathematics'},
+  {cat:'Mathematics',name:'Mathematical Methods',key:'mathematical methods'},
+  {cat:'Mathematics',name:'Further Mathematics',key:'further mathematics'},
+  {cat:'Sciences',name:'Physics',key:'physics'},
+  {cat:'Sciences',name:'Chemistry',key:'chemistry'},
+  {cat:'Sciences',name:'Biology',key:'biology'},
+  {cat:'Sciences',name:'Psychology',key:'psychology'},
+  {cat:'Sciences',name:'Environmental Science',key:'environmental science'},
+  {cat:'Humanities',name:'Economics',key:'economics'},
+  {cat:'Humanities',name:'History',key:'history'},
+  {cat:'Humanities',name:'Geography',key:'geography'},
+  {cat:'Humanities',name:'Politics',key:'politics'},
+  {cat:'Humanities',name:'Philosophy',key:'philosophy'},
+  {cat:'Humanities',name:'Sociology',key:'sociology'},
+  {cat:'Humanities',name:'Accounting',key:'accounting'},
+  {cat:'Humanities',name:'Business Management',key:'business management'},
+  {cat:'Humanities',name:'Legal Studies',key:'legal studies'},
+  {cat:'English',name:'English',key:'english'},
+  {cat:'English',name:'English Language',key:'english language'},
+  {cat:'English',name:'Literature',key:'literature'},
+  {cat:'English',name:'EAL (English as an Additional Language)',key:'english as an additional language'},
+  {cat:'Languages',name:'Chinese Second Language Advanced',key:'chinese second language advanced'},
+  {cat:'Languages',name:'Japanese Second Language Advanced',key:'japanese second language advanced'},
+  {cat:'Languages',name:'French',key:'french'},
+  {cat:'Languages',name:'German',key:'german'},
+  {cat:'Languages',name:'Italian',key:'italian'},
+  {cat:'Languages',name:'Spanish',key:'spanish'},
+  {cat:'Languages',name:'Latin',key:'latin'},
+  {cat:'Languages',name:'Arabic',key:'arabic'},
+  {cat:'Arts & Performance',name:'Music Performance',key:'music performance'},
+  {cat:'Arts & Performance',name:'Music Investigation',key:'music investigation'},
+  {cat:'Arts & Performance',name:'Visual Communication Design',key:'visual communication design'},
+  {cat:'Arts & Performance',name:'Studio Arts',key:'studio arts'},
+  {cat:'Arts & Performance',name:'Media',key:'media'},
+  {cat:'Arts & Performance',name:'Drama',key:'drama'},
+  {cat:'Arts & Performance',name:'Dance',key:'dance'},
+  {cat:'Arts & Performance',name:'Theatre Studies',key:'theatre studies'},
+  {cat:'Health & PE',name:'Physical Education',key:'physical education'},
+  {cat:'Health & PE',name:'Health and Human Development',key:'health and human development'},
+  {cat:'Computing',name:'Software Development',key:'software development'},
+  {cat:'Computing',name:'Informatics',key:'informatics'},
+  {cat:'Computing',name:'Systems Engineering',key:'systems engineering'},
+  {cat:'VET',name:'VET',key:'vet'},
+];
+
+function openPrevDrop(id){
+  const inp=document.getElementById('prev-inp-'+id);
+  filterPrevDrop(id,inp?inp.value:'');
+}
+function filterPrevDrop(id,q){
+  const drop=document.getElementById('prev-drop-'+id);if(!drop)return;
+  const query=q.toLowerCase().trim();
+  const list=query?VCE_SUBJECT_OPTS.filter(o=>o.name.toLowerCase().includes(query)||o.cat.toLowerCase().includes(query)):VCE_SUBJECT_OPTS;
+  if(!list.length){drop.innerHTML='<div style="padding:8px 11px;font-size:12.5px;color:var(--muted)">No subjects found</div>';drop.classList.add('open');return;}
+  let html='';let lastCat='';
+  list.forEach(o=>{
+    if(!query&&o.cat!==lastCat){html+=`<div class="prev-subj-cat">${o.cat}</div>`;lastCat=o.cat;}
+    const f=getScalingFactor(o.key);
+    const cls=f>1.005?'up':f<0.995?'down':'neutral';
+    const lbl=f>1.005?`↑${((f-1)*100).toFixed(1)}%`:f<0.995?`↓${((1-f)*100).toFixed(1)}%`:'no scaling';
+    html+=`<div class="prev-subj-opt" onmousedown="selectPrevSubjOpt(${id},'${o.name.replace(/'/g,"\\'")}')"><span>${o.name}</span><span class="prev-subj-scale ${cls}">${lbl}</span></div>`;
+  });
+  drop.innerHTML=html;drop.classList.add('open');
+}
+function selectPrevSubjOpt(id,name){
+  const arr=atarLoadPrev();const r=arr.find(r=>r.id===id);if(r)r.name=name;
+  atarSavePrev(arr);
+  const drop=document.getElementById('prev-drop-'+id);if(drop)drop.classList.remove('open');
+  const inp=document.getElementById('prev-inp-'+id);if(inp)inp.value=name;
+  updatePrevHint(id);calcATAR();
+}
+function closePrevDrop(id){const d=document.getElementById('prev-drop-'+id);if(d)d.classList.remove('open');}
+function prevDropKey(id,e){
+  const drop=document.getElementById('prev-drop-'+id);if(!drop||!drop.classList.contains('open'))return;
+  const opts=[...drop.querySelectorAll('.prev-subj-opt')];
+  const idx=opts.findIndex(o=>o.classList.contains('sel'));
+  if(e.key==='ArrowDown'){e.preventDefault();const ni=Math.min(idx+1,opts.length-1);opts.forEach((o,i)=>o.classList.toggle('sel',i===ni));opts[ni]?.scrollIntoView({block:'nearest'});}
+  else if(e.key==='ArrowUp'){e.preventDefault();const ni=Math.max(idx-1,0);opts.forEach((o,i)=>o.classList.toggle('sel',i===ni));opts[ni]?.scrollIntoView({block:'nearest'});}
+  else if(e.key==='Enter'&&idx>=0){e.preventDefault();opts[idx].dispatchEvent(new MouseEvent('mousedown'));}
+  else if(e.key==='Escape'){closePrevDrop(id);}
 }
 
 function renderAtarPrevRows(){
@@ -3889,15 +4003,21 @@ function renderAtarPrevRows(){
   const arr=atarLoadPrev();
   if(empty)empty.style.display=arr.length?'none':'block';
   wrap.innerHTML=arr.map(r=>`
-    <div class="atar-prev-row">
-      <input class="atar-prev-name-inp" type="text" placeholder="Subject name (e.g. Year 11 Methods)"
+    <div class="atar-prev-row" style="flex-wrap:wrap;position:relative">
+      <input class="atar-prev-name-inp" id="prev-inp-${r.id}" type="text" placeholder="Search VCE subject..."
         value="${r.name.replace(/"/g,'&quot;')}"
-        oninput="atarPrevChange(${r.id},'name',this.value)"/>
-      <input class="atar-subj-inp" type="number" min="0" max="50" step="1" placeholder="0–50"
-        value="${r.score}"
-        oninput="atarPrevChange(${r.id},'score',this.value)"/>
+        oninput="atarPrevChange(${r.id},'name',this.value);filterPrevDrop(${r.id},this.value)"
+        onfocus="openPrevDrop(${r.id})"
+        onblur="setTimeout(()=>closePrevDrop(${r.id}),160)"
+        onkeydown="prevDropKey(${r.id},event)"/>
+      <input class="atar-subj-inp" type="number" min="0" max="100" step="1" placeholder="Score or %"
+        value="${r.score!==''?r.score:''}"
+        oninput="atarPrevChange(${r.id},'score',this.value)" style="width:80px;flex-shrink:0;flex-grow:0"/>
       <button class="atar-prev-del" onclick="atarRemovePrev(${r.id})" title="Remove">×</button>
+      <div class="prev-subj-dropdown" id="prev-drop-${r.id}"></div>
+      <div id="atar-prev-hint-${r.id}" style="flex-basis:100%;font-size:10.5px;color:var(--muted);padding:.2rem 0 .1rem .2rem;display:none"></div>
     </div>`).join('');
+  arr.forEach(r=>updatePrevHint(r.id));
 }
 
 function renderATARRows(){
@@ -3963,10 +4083,13 @@ function calcATAR(){
       badge.style.display='inline-block';
     }else{badge.style.display='none';}
   });
-  // collect previous subject scores (no subject-specific scaling — name unknown)
+  // collect previous subject scores — auto-detect % vs study score, apply name-based scaling
   const prevScores=atarLoadPrev().filter(r=>r.score!=='').map(r=>{
-    const raw=Math.min(50,Math.max(0,parseFloat(r.score)||0));
-    return{label:r.name||'Previous subject',score:raw,scaledScore:raw,factor:1,goal:0,entered:true,isPrev:true,isEnglish:false};
+    const scoreVal=parseFloat(r.score)||0;
+    const rawSS=scoreVal>50?estimateStudyScore(scoreVal):Math.min(50,Math.max(0,scoreVal));
+    const factor=getScalingFactor(r.name||'');
+    const scaledScore=rawSS>0?applyScaling(rawSS,factor):0;
+    return{label:r.name||'Previous subject',score:rawSS,scaledScore,factor,goal:0,entered:rawSS>0,isPrev:true,isEnglish:false};
   });
   const allEnteredScores=[...currentScores,...prevScores].filter(s=>s.entered);
 
