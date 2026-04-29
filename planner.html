@@ -250,7 +250,7 @@ select.subj-sel{font-weight:600;border-width:2px}
 
 /* ── TASK CARDS ── */
 .tlist{display:flex;flex-direction:column;gap:7px}
-.tc{border:1px solid var(--border);border-radius:13px;padding:.9rem 1.1rem;display:grid;grid-template-columns:auto 1fr auto auto auto;gap:10px;align-items:center;background:var(--surface);transition:opacity .2s,transform .15s,box-shadow .15s;animation:si .25s cubic-bezier(.34,1.56,.64,1);box-shadow:0 1px 2px rgba(0,0,0,.03)}
+.tc{border:1px solid var(--border);border-radius:13px;padding:.9rem 1.1rem;display:grid;grid-template-columns:auto 1fr auto auto auto;gap:10px;align-items:start;background:var(--surface);transition:opacity .2s,transform .15s,box-shadow .15s;animation:si .25s cubic-bezier(.34,1.56,.64,1);box-shadow:0 1px 2px rgba(0,0,0,.03)}
 @keyframes si{from{opacity:0;transform:translateY(-8px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
 .tc:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,0,0,.07)}
@@ -261,6 +261,20 @@ select.subj-sel{font-weight:600;border-width:2px}
 .ttitle{font-size:14px;font-weight:500;color:var(--text);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tnote{font-size:11px;color:var(--muted);margin-bottom:4px;font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ttags{display:flex;gap:5px;flex-wrap:wrap}
+.sub-toggle{font-size:11.5px;color:var(--muted);background:none;border:none;cursor:pointer;padding:0;margin-top:.35rem;display:inline-flex;align-items:center;gap:4px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;transition:color .15s}
+.sub-toggle:hover{color:var(--accent)}
+.sub-panel{margin-top:.4rem;display:flex;flex-direction:column;gap:.1rem}
+.sub-item{display:flex;align-items:center;gap:.45rem;padding:.18rem 0}
+.sub-chk{width:15px;height:15px;border-radius:4px;border:1.5px solid var(--border);background:var(--bg);cursor:pointer;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;font-size:9px;color:transparent;transition:all .15s}
+.sub-chk.done{background:var(--accent);border-color:var(--accent);color:#fff}
+.sub-label{flex:1;font-size:13px;color:var(--text)}
+.sub-label.done{text-decoration:line-through;color:var(--muted)}
+.sub-del{width:16px;height:16px;border-radius:4px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-size:14px;line-height:1;opacity:0;transition:opacity .15s;padding:0;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sub-item:hover .sub-del{opacity:.7}
+.sub-add{display:flex;align-items:center;gap:.35rem;margin-top:.35rem}
+.sub-add-inp{flex:1;padding:4px 8px;border:1.5px solid var(--border);border-radius:7px;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;outline:none;transition:border-color .15s}
+.sub-add-inp:focus{border-color:var(--accent)}
+.sub-prog{font-size:10px;font-weight:700;padding:1px 5px;border-radius:4px;background:rgba(99,102,241,.1);color:var(--accent)}
 .badge{display:inline-block;padding:2px 8px;border-radius:7px;font-size:10px;font-weight:600}
 .b-eng{background:var(--eng-bg);color:var(--eng)}.b-rel{background:var(--rel-bg);color:var(--rel)}
 .b-mth{background:var(--mth-bg);color:var(--mth)}.b-gmth{background:var(--gmth-bg);color:var(--gmth)}
@@ -2025,6 +2039,20 @@ function toggleTask(id){
 function homeToggleTask(id){const t=tasks.find(x=>x.id===id);if(!t)return;t.done=!t.done;if(t.done){const cd=JSON.parse(localStorage.getItem(UID_PREFIX+'cd')||'[]');if(!cd.includes(todayStr()))cd.push(todayStr());localStorage.setItem(UID_PREFIX+'cd',JSON.stringify(cd));addXP(XPL);playSound('complete');showToast('+10 XP! 🚀')}saveT();renderHome();renderTasks()}
 function toggleUrgent(id){const t=tasks.find(x=>x.id===id);if(t){t.urgent=!t.urgent;saveT();renderTasks()}}
 function removeTask(id){if(confirm('Remove this task?')){tasks=tasks.filter(x=>x.id!==id);saveT();renderTasks()}}
+
+const _openSubPanels=new Set();
+function toggleSubPanel(id){if(_openSubPanels.has(id))_openSubPanels.delete(id);else _openSubPanels.add(id);renderTasks();}
+function toggleSubtask(taskId,subId){const t=tasks.find(x=>x.id===taskId);if(!t)return;if(!t.subtasks)t.subtasks=[];const s=t.subtasks.find(x=>x.id===subId);if(s)s.done=!s.done;saveT();renderTasks();}
+function addSubtask(taskId){const inp=document.getElementById('sub-inp-'+taskId);if(!inp)return;const title=inp.value.trim();if(!title)return;const t=tasks.find(x=>x.id===taskId);if(!t)return;if(!t.subtasks)t.subtasks=[];t.subtasks.push({id:Date.now(),title,done:false});_openSubPanels.add(taskId);saveT();renderTasks();}
+function removeSubtask(taskId,subId){const t=tasks.find(x=>x.id===taskId);if(!t||!t.subtasks)return;t.subtasks=t.subtasks.filter(x=>x.id!==subId);_openSubPanels.add(taskId);saveT();renderTasks();}
+function renderSubHtml(t){
+  const subs=t.subtasks||[];const open=_openSubPanels.has(t.id);
+  const done=subs.filter(s=>s.done).length;
+  const prog=subs.length?`<span class="sub-prog">${done}/${subs.length}</span>`:'';
+  const panel=open?`<div class="sub-panel">${subs.map(s=>`<div class="sub-item"><div class="sub-chk ${s.done?'done':''}" onclick="toggleSubtask(${t.id},${s.id})">${s.done?'✓':''}</div><span class="sub-label ${s.done?'done':''}">${s.title.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</span><button class="sub-del" onclick="removeSubtask(${t.id},${s.id})">×</button></div>`).join('')}<div class="sub-add"><input class="sub-add-inp" id="sub-inp-${t.id}" type="text" placeholder="Add subtask…" onkeydown="if(event.key==='Enter')addSubtask(${t.id})"/><button onclick="addSubtask(${t.id})" style="font-size:11px;padding:3px 9px;border:1.5px solid var(--accent);border-radius:6px;background:transparent;color:var(--accent);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;white-space:nowrap;flex-shrink:0">+ Add</button></div></div>`:'';
+  return`<button class="sub-toggle" onclick="toggleSubPanel(${t.id})">${open?'▾':'▸'} Subtasks ${prog}</button>${panel}`;
+}
+
 function renderTasks(){
   const sortEl=document.getElementById('sort-select');
   const sortBy=sortEl?sortEl.value:'due';
@@ -2035,7 +2063,7 @@ function renderTasks(){
   if(!vis.length){list.innerHTML=`<div class="empty"><div class="eb">${tfilter==='done'?'No completed tasks yet':tfilter==='urgent'?'No urgent tasks 🎉':'No tasks here'}</div><div class="es">${tfilter==='all'||tfilter==='todo'?'Add a task above.':'Switch filter.'}</div></div>`}
   else list.innerHTML=vis.map(t=>{
     const s=SUBJ[t.subject]||{label:t.subject,cls:'eng'};const ds=dueStatus(t.due);const ev=t.evLink?events.find(e=>e.id==t.evLink):null;
-    return`<div class="tc ${t.done?'done':''} ${t.urgent&&!t.done?'urgent':''}" style="background:${BG[t.subject]||''};border-color:${BR[t.subject]||''}"><div class="cw ${t.done?'ck':''}" onclick="toggleTask(${t.id})"></div><div class="tb"><div class="ttitle">${t.title}</div>${t.note?`<div class="tnote">${t.note}</div>`:''}<div class="ttags"><span class="badge" style="background:${BG[t.subject]};color:${NC[t.subject]}">${s.label}</span>${t.urgent&&!t.done?'<span class="badge b-urgent">! Urgent</span>':''}${ev?`<span class="badge b-sac">${ev.type.toUpperCase()}: ${ev.name}</span>`:''}</div></div><div class="dinfo"><div class="${ds.cls}">${ds.label}</div></div><button class="urgbtn ${t.urgent?'on':''}" onclick="toggleUrgent(${t.id})">${t.urgent?'! Urgent':'! Urgent'}</button><button class="dbtn" style="font-size:13px;padding:0 8px" onclick="startTaskEdit(${t.id})" title="Edit task">✏️</button><button class="dbtn" onclick="removeTask(${t.id})">×</button></div>`;
+    return`<div class="tc ${t.done?'done':''} ${t.urgent&&!t.done?'urgent':''}" style="background:${BG[t.subject]||''};border-color:${BR[t.subject]||''}"><div class="cw ${t.done?'ck':''}" onclick="toggleTask(${t.id})" style="margin-top:2px"></div><div class="tb"><div class="ttitle">${t.title}</div>${t.note?`<div class="tnote">${t.note}</div>`:''}<div class="ttags"><span class="badge" style="background:${BG[t.subject]};color:${NC[t.subject]}">${s.label}</span>${t.urgent&&!t.done?'<span class="badge b-urgent">! Urgent</span>':''}${ev?`<span class="badge b-sac">${ev.type.toUpperCase()}: ${ev.name}</span>`:''}</div>${renderSubHtml(t)}</div><div class="dinfo" style="padding-top:2px"><div class="${ds.cls}">${ds.label}</div></div><button class="urgbtn ${t.urgent?'on':''}" onclick="toggleUrgent(${t.id})" style="margin-top:1px">${t.urgent?'! Urgent':'! Urgent'}</button><button class="dbtn" style="font-size:13px;padding:0 8px;margin-top:1px" onclick="startTaskEdit(${t.id})" title="Edit task">✏️</button><button class="dbtn" onclick="removeTask(${t.id})" style="margin-top:1px">×</button></div>`;
   }).join('');
   const rem=tasks.filter(t=>!t.done);
   document.getElementById('s-total').textContent=rem.length;
