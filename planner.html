@@ -781,11 +781,24 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 .subj-modal-box{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:1.75rem 2rem;max-width:480px;width:90%;box-shadow:0 24px 60px rgba(0,0,0,.3);max-height:85vh;overflow-y:auto}
 .subj-manage-row{display:flex;align-items:center;gap:.5rem;padding:.4rem 0;border-bottom:1px solid var(--border)}
 .subj-manage-row:last-child{border-bottom:none}
-.subj-manage-inp{flex:1;padding:6px 10px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;outline:none;transition:border-color .15s}
+.subj-manage-inp{flex:1;padding:6px 10px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;outline:none;transition:border-color .15s;min-width:0}
 .subj-manage-inp:focus{border-color:var(--accent)}
-.subj-color-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;border:2px solid rgba(0,0,0,.1)}
+.subj-color-btn{width:20px;height:20px;border-radius:50%;flex-shrink:0;border:2px solid rgba(0,0,0,.15);cursor:pointer;padding:0;transition:transform .15s}
+.subj-color-btn:hover{transform:scale(1.2)}
+.subj-color-picker{position:absolute;left:0;top:calc(100% + 5px);background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:.5rem .55rem;z-index:500;box-shadow:0 8px 24px rgba(0,0,0,.2);display:none;flex-wrap:wrap;gap:6px;width:168px}
+.subj-color-picker.open{display:flex}
+.subj-color-swatch{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2.5px solid transparent;transition:transform .1s,border-color .1s;flex-shrink:0}
+.subj-color-swatch:hover{transform:scale(1.18)}
+.subj-color-swatch.sel{border-color:var(--text);transform:scale(1.12)}
 .subj-manage-del{width:26px;height:26px;border-radius:7px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s}
 .subj-manage-del:hover{background:rgba(220,38,38,.1);color:#dc2626}
+.subj-new-wrap{position:relative;flex:1;min-width:0}
+.subj-new-dropdown{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.18);z-index:9999;max-height:210px;overflow-y:auto;display:none}
+.subj-new-dropdown.open{display:block}
+.subj-new-opt{padding:7px 12px;cursor:pointer;font-size:13px;color:var(--text)}
+.subj-new-opt:hover,.subj-new-opt.sel{background:rgba(99,102,241,.1)}
+.subj-new-cat{padding:5px 12px 2px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);pointer-events:none;border-top:1px solid var(--border)}
+.subj-new-cat:first-child{border-top:none}
 /* ── TODAY'S REVISION PANEL ── */
 .rev-today-item{display:flex;align-items:center;gap:.65rem;padding:.5rem .7rem;border-radius:10px;border:1.5px solid;margin-bottom:.4rem}
 .rev-today-item:last-child{margin-bottom:0}
@@ -1599,7 +1612,7 @@ function closeSbrMenu(){
 }
 
 // ── SUBJECT MANAGEMENT ────────────────────────────────────────────────────────
-const COLOR_CSS_LIST=['#6366f1','#a855f7','#3b82f6','#f97316','#14b8a6','#ec4899','#f59e0b','#8b5cf6'];
+const COLOR_CSS_LIST=['#6366f1','#8b5cf6','#a855f7','#ec4899','#f43f5e','#ef4444','#f97316','#f59e0b','#22c55e','#14b8a6','#06b6d4','#3b82f6','#64748b','#78716c','#84cc16','#e879f9'];
 function openSubjModal(){
   renderSubjManageList();
   document.getElementById('subj-modal').classList.add('open');
@@ -1611,13 +1624,19 @@ function renderSubjManageList(){
   const list=document.getElementById('subj-manage-list');
   if(!list)return;
   if(!userSubjects.length){list.innerHTML='<div style="font-size:13px;color:var(--muted);padding:.5rem 0">No subjects yet. Add one below.</div>';return;}
+  const n=COLOR_CSS_LIST.length;
   list.innerHTML=userSubjects.map(s=>{
-    const col=COLOR_CSS_LIST[((s.color-1)%8)];
-    return`<div class="subj-manage-row">
-      <div class="subj-color-dot" style="background:${col}"></div>
+    const ci=(s.color-1+n)%n;
+    const col=COLOR_CSS_LIST[ci];
+    const swatches=COLOR_CSS_LIST.map((c,i)=>`<div class="subj-color-swatch${i===ci?' sel':''}" style="background:${c}" onmousedown="changeSubjectColor('${s.id}',${i+1})"></div>`).join('');
+    return`<div class="subj-manage-row" style="position:relative">
+      <div style="position:relative;flex-shrink:0">
+        <button class="subj-color-btn" style="background:${col}" onclick="toggleColorPicker('${s.id}')" title="Change colour"></button>
+        <div class="subj-color-picker" id="subj-cpick-${s.id}">${swatches}</div>
+      </div>
       <input class="subj-manage-inp" type="text" value="${s.label.replace(/"/g,'&quot;')}"
-        onchange="renameSubject(${s.id},this.value)" onblur="renameSubject(${s.id},this.value)"/>
-      <button class="subj-manage-del" onclick="deleteSubject(${s.id})" title="Delete subject">×</button>
+        onchange="renameSubject('${s.id}',this.value)" onblur="renameSubject('${s.id}',this.value)"/>
+      <button class="subj-manage-del" onclick="deleteSubject('${s.id}')" title="Delete subject">×</button>
     </div>`;
   }).join('');
 }
@@ -1625,7 +1644,7 @@ function renderSubjManageList(){
 async function renameSubject(id,newLabel){
   newLabel=newLabel.trim();
   if(!newLabel)return;
-  const s=userSubjects.find(s=>s.id===id);
+  const s=userSubjects.find(s=>String(s.id)===String(id));
   if(!s||s.label===newLabel)return;
   s.label=newLabel;
   buildSubjMaps();
@@ -1638,10 +1657,10 @@ async function renameSubject(id,newLabel){
 }
 
 async function deleteSubject(id){
-  const s=userSubjects.find(s=>s.id===id);
+  const s=userSubjects.find(s=>String(s.id)===String(id));
   if(!s)return;
   if(!confirm(`Delete "${s.label}"? All tasks and SACs linked to this subject will lose their subject tag.`))return;
-  userSubjects=userSubjects.filter(x=>x.id!==id);
+  userSubjects=userSubjects.filter(x=>String(x.id)!==String(id));
   buildSubjMaps();
   populateSubjectDropdowns();
   renderSubjManageList();
@@ -1672,6 +1691,52 @@ async function addNewSubject(){
   if(typeof renderSubjOv==='function')renderSubjOv();
   inp.value='';
   showToast('Subject added!');
+}
+
+function toggleColorPicker(id){
+  document.querySelectorAll('.subj-color-picker.open').forEach(el=>{if(el.id!=='subj-cpick-'+id)el.classList.remove('open');});
+  const p=document.getElementById('subj-cpick-'+id);if(p)p.classList.toggle('open');
+}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.subj-color-btn')&&!e.target.closest('.subj-color-picker'))
+    document.querySelectorAll('.subj-color-picker.open').forEach(el=>el.classList.remove('open'));
+});
+async function changeSubjectColor(id,colorNum){
+  const s=userSubjects.find(x=>String(x.id)===String(id));if(!s)return;
+  s.color=colorNum;
+  buildSubjMaps();
+  renderSubjManageList();
+  renderATARRows();
+  if(typeof renderScores==='function')renderScores();
+  if(typeof renderSubjOv==='function')renderSubjOv();
+  if(typeof renderTasks==='function')renderTasks();
+  await sb.from('subjects').update({color:colorNum}).eq('id',id);
+  showToast('Colour updated!');
+}
+
+function openSubjNewDrop(){filterSubjNewDrop(document.getElementById('subj-new-name')?.value||'');}
+function filterSubjNewDrop(q){
+  const drop=document.getElementById('subj-new-drop');if(!drop)return;
+  const query=q.toLowerCase().trim();
+  const list=query?VCE_SUBJECT_OPTS.filter(o=>o.name.toLowerCase().includes(query)||o.cat.toLowerCase().includes(query)):VCE_SUBJECT_OPTS;
+  if(!list.length){drop.innerHTML='<div style="padding:8px 12px;font-size:12.5px;color:var(--muted)">No subjects found</div>';drop.classList.add('open');return;}
+  let html='';let lastCat='';
+  list.forEach(o=>{
+    if(!query&&o.cat!==lastCat){html+=`<div class="subj-new-cat">${o.cat}</div>`;lastCat=o.cat;}
+    html+=`<div class="subj-new-opt" onmousedown="selectSubjNewOpt('${o.name.replace(/'/g,"\\'")}')"> ${o.name}</div>`;
+  });
+  drop.innerHTML=html;drop.classList.add('open');
+}
+function selectSubjNewOpt(name){const inp=document.getElementById('subj-new-name');if(inp)inp.value=name;closeSubjNewDrop();}
+function closeSubjNewDrop(){const d=document.getElementById('subj-new-drop');if(d)d.classList.remove('open');}
+function subjNewDropKey(e){
+  const drop=document.getElementById('subj-new-drop');if(!drop||!drop.classList.contains('open'))return;
+  const opts=[...drop.querySelectorAll('.subj-new-opt')];
+  const idx=opts.findIndex(o=>o.classList.contains('sel'));
+  if(e.key==='ArrowDown'){e.preventDefault();const ni=Math.min(idx+1,opts.length-1);opts.forEach((o,i)=>o.classList.toggle('sel',i===ni));opts[ni]?.scrollIntoView({block:'nearest'});}
+  else if(e.key==='ArrowUp'){e.preventDefault();const ni=Math.max(idx-1,0);opts.forEach((o,i)=>o.classList.toggle('sel',i===ni));opts[ni]?.scrollIntoView({block:'nearest'});}
+  else if(e.key==='Enter'){if(idx>=0){e.preventDefault();opts[idx].dispatchEvent(new MouseEvent('mousedown'));}else{closeSubjNewDrop();addNewSubject();}}
+  else if(e.key==='Escape'){closeSubjNewDrop();}
 }
 
 // ── EDIT TASKS ────────────────────────────────────────────────────────────────
@@ -4459,12 +4524,19 @@ init().then(()=>{
       <div style="font-family:'Fraunces',serif;font-size:1.2rem;font-weight:700;color:var(--text)">Manage Subjects</div>
       <button onclick="closeSubjModal()" style="margin-left:auto;background:transparent;border:none;font-size:20px;color:var(--muted);cursor:pointer;line-height:1">×</button>
     </div>
-    <div style="font-size:12.5px;color:var(--muted);margin-bottom:1rem">Rename or delete your subjects. Changes sync to your account.</div>
+    <div style="font-size:12.5px;color:var(--muted);margin-bottom:1rem">Click the colour dot to change it. Rename or delete subjects below.</div>
     <div id="subj-manage-list"></div>
     <div style="margin-top:1rem;padding-top:.85rem;border-top:1px solid var(--border)">
       <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:.5rem">Add new subject</div>
       <div style="display:flex;gap:.5rem">
-        <input type="text" id="subj-new-name" class="subj-manage-inp" placeholder="e.g. Chemistry" style="flex:1"/>
+        <div class="subj-new-wrap">
+          <input type="text" id="subj-new-name" class="subj-manage-inp" placeholder="Search VCE subjects…" style="width:100%;box-sizing:border-box"
+            oninput="filterSubjNewDrop(this.value)"
+            onfocus="openSubjNewDrop()"
+            onblur="setTimeout(closeSubjNewDrop,160)"
+            onkeydown="subjNewDropKey(event)"/>
+          <div class="subj-new-dropdown" id="subj-new-drop"></div>
+        </div>
         <button class="abtn" onclick="addNewSubject()" style="white-space:nowrap;flex-shrink:0">+ Add</button>
       </div>
       <div id="subj-modal-err" style="font-size:12px;color:var(--high);margin-top:.4rem;display:none"></div>
