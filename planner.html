@@ -718,6 +718,18 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 /* ── NOTIF SETTINGS MODAL ── */
 #notif-modal{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9100;display:none;align-items:center;justify-content:center}
 #notif-modal.open{display:flex}
+#sac-remind-modal{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);z-index:9300;display:none;align-items:center;justify-content:center}
+#sac-remind-modal.open{display:flex}
+#sac-celebrate-modal{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);z-index:9400;display:none;align-items:center;justify-content:center}
+#sac-celebrate-modal.open{display:flex}
+.sac-modal-box{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:2rem 2.25rem;max-width:420px;width:90%;box-shadow:0 24px 60px rgba(0,0,0,.3);text-align:center}
+.sac-modal-emoji{font-size:3rem;margin-bottom:.75rem}
+.sac-modal-title{font-family:'Fraunces',serif;font-size:1.4rem;font-weight:700;color:var(--text);margin-bottom:.4rem}
+.sac-modal-sub{font-size:13.5px;color:var(--muted);margin-bottom:1.4rem;line-height:1.6}
+.sac-modal-subj{display:inline-block;font-size:13px;font-weight:700;padding:4px 14px;border-radius:20px;background:rgba(99,102,241,.1);color:var(--accent);margin-bottom:1rem}
+.sac-modal-btn{padding:.65rem 1.8rem;border-radius:12px;border:none;background:var(--accent);color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:opacity .15s}
+.sac-modal-btn:hover{opacity:.87}
+.sac-modal-btn.outline{background:transparent;border:1.5px solid var(--border);color:var(--muted);margin-right:.6rem}
 .notif-modal-box{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:1.75rem 2rem;max-width:420px;width:90%;box-shadow:0 24px 60px rgba(0,0,0,.3)}
 .notif-modal-title{font-family:'Fraunces',serif;font-size:1.2rem;font-weight:700;color:var(--text);margin-bottom:.3rem}
 .notif-modal-sub{font-size:13px;color:var(--muted);margin-bottom:1.25rem;line-height:1.5}
@@ -2031,6 +2043,7 @@ async function init(){
     document.getElementById('sidebar-show-tab').classList.add('visible');
   }
   checkShowTour();
+  setTimeout(checkSACNotifications, 800);
 }
 function toggleTask(id){
   const t=tasks.find(x=>x.id===id);if(!t)return;t.done=!t.done;
@@ -4301,6 +4314,57 @@ function calcATAR(){
 }
 
 // ── NOTIFICATIONS ─────────────────────────────────────────────────────────────
+// ── SAC REMINDER & CELEBRATION ──────────────────────────────────────────────
+const SAC_CEL_MSGS=[
+  'You put in the work — now it\'s done. Take a breath, you\'ve earned it! 🌟',
+  'Another one ticked off. You\'re building momentum — keep it up! 🔥',
+  'Hard work pays off. Celebrate the small wins, they add up. ✨',
+  'One SAC down. You\'re making it happen — proud of you! 💪',
+  'That one\'s behind you now. Onwards and upwards! 🚀',
+];
+const SAC_PREP_MSGS=[
+  'Make sure you\'ve reviewed your notes and got a good night\'s sleep. You\'ve got this! 💪',
+  'Trust your preparation. Go in confident — you know this material! 🌟',
+  'Rest up tonight, eat a good breakfast tomorrow, and show up ready! 🔥',
+  'You\'ve been putting in the work. Time to show what you know! ✨',
+];
+function checkSACNotifications(){
+  if(!events||!events.length)return;
+  const today=todayStr();
+  const tmrw=localStr(new Date(new Date().setDate(new Date().getDate()+1)));
+  // day-before reminders (SACs tomorrow, once per SAC per day)
+  const tmrwSACs=events.filter(e=>e.date===tmrw);
+  const remKey=UID_PREFIX+'sac-reminded-'+today;
+  const reminded=JSON.parse(localStorage.getItem(remKey)||'[]');
+  const toRemind=tmrwSACs.filter(e=>!reminded.includes(e.id));
+  if(toRemind.length){
+    const e=toRemind[0]; // show first, queue rest if multiple
+    const s=SUBJ[e.subject]||{label:e.subject};
+    const ds=new Date(e.date+'T00:00:00').toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long'});
+    document.getElementById('sac-remind-subj').textContent=s.label;
+    document.getElementById('sac-remind-body').innerHTML=`<strong>${e.name}</strong> is on <strong>${ds}</strong>.<br>${SAC_PREP_MSGS[Math.floor(Math.random()*SAC_PREP_MSGS.length)]}`;
+    document.getElementById('sac-remind-modal').classList.add('open');
+    localStorage.setItem(remKey,JSON.stringify([...reminded,...toRemind.map(x=>x.id)]));
+    return; // show reminder first; celebration will appear next visit if needed
+  }
+  // celebration (SACs in the past, not yet celebrated)
+  const pastSACs=events.filter(e=>e.date<today).sort((a,b)=>b.date.localeCompare(a.date));
+  for(const e of pastSACs){
+    const celKey=UID_PREFIX+'sac-celebrated-'+e.id;
+    if(!localStorage.getItem(celKey)){
+      const s=SUBJ[e.subject]||{label:e.subject};
+      document.getElementById('sac-cel-subj').textContent=s.label+' — '+e.name;
+      document.getElementById('sac-cel-body').textContent=SAC_CEL_MSGS[Math.floor(Math.random()*SAC_CEL_MSGS.length)];
+      document.getElementById('sac-celebrate-modal').classList.add('open');
+      localStorage.setItem(celKey,'1');
+      setTimeout(launchConfetti,300);
+      break;
+    }
+  }
+}
+function dismissSACRemind(){document.getElementById('sac-remind-modal').classList.remove('open');}
+function closeSACCelebrate(){document.getElementById('sac-celebrate-modal').classList.remove('open');}
+
 function openNotifModal(){
   loadNotifSettings();
   document.getElementById('notif-modal').classList.add('open');
@@ -4550,6 +4614,31 @@ init().then(()=>{
       <button class="tour-skip-sm" onclick="endTour()">Skip tour</button>
       <button class="abtn sm" id="tour-next-btn" onclick="tourNext()">Next →</button>
     </div>
+  </div>
+</div>
+
+<!-- SAC day-before reminder modal -->
+<div id="sac-remind-modal">
+  <div class="sac-modal-box">
+    <div class="sac-modal-emoji">📚</div>
+    <div class="sac-modal-title">SAC Tomorrow!</div>
+    <div id="sac-remind-subj" class="sac-modal-subj"></div>
+    <div class="sac-modal-sub" id="sac-remind-body"></div>
+    <div style="display:flex;justify-content:center;gap:.6rem;flex-wrap:wrap">
+      <button class="sac-modal-btn outline" onclick="dismissSACRemind()">Dismiss</button>
+      <button class="sac-modal-btn" onclick="dismissSACRemind()">I'm ready! 💪</button>
+    </div>
+  </div>
+</div>
+
+<!-- SAC celebration modal -->
+<div id="sac-celebrate-modal">
+  <div class="sac-modal-box">
+    <div class="sac-modal-emoji">🎉</div>
+    <div class="sac-modal-title">SAC Complete!</div>
+    <div id="sac-cel-subj" class="sac-modal-subj"></div>
+    <div class="sac-modal-sub" id="sac-cel-body"></div>
+    <button class="sac-modal-btn" onclick="closeSACCelebrate()">Let's keep going! 🚀</button>
   </div>
 </div>
 </body>
