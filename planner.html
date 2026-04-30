@@ -1269,6 +1269,7 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
     <div id="atar-goal-analysis"></div>
     <div id="atar-goal-atar-row" style="display:none;margin-top:.5rem;padding:.55rem .85rem;background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.18);border-radius:10px;font-size:12.5px;color:var(--text)"></div>
     <div id="atar-breakdown-wrap" style="display:none"></div>
+    <div id="atar-goal-breakdown-wrap" style="display:none;margin-top:.65rem"></div>
     <div style="font-size:11px;color:var(--muted);margin-top:.65rem;opacity:.7">⚠️ Estimate only — actual ATAR depends on subject scaling and statewide cohort performance.</div>
     <!-- Grade scale reference -->
     <div style="margin-top:.75rem;padding-top:.65rem;border-top:1px solid var(--border)">
@@ -3807,6 +3808,15 @@ function estimateStudyScore(avgPct){
   return Math.max(0,Math.round(avgPct*0.3));
 }
 
+function studyScoreToSACPct(ss){
+  if(ss>=47)return 97;if(ss>=45)return 94;if(ss>=43)return 91;
+  if(ss>=41)return 88;if(ss>=39)return 85;if(ss>=37)return 82;
+  if(ss>=35)return 79;if(ss>=33)return 76;if(ss>=31)return 73;
+  if(ss>=29)return 70;if(ss>=27)return 67;if(ss>=25)return 64;
+  if(ss>=23)return 60;if(ss>=21)return 55;if(ss>=18)return 50;
+  return Math.max(0,Math.round(ss/0.3));
+}
+
 function sacAvgForSubject(subjId){
   loadScores();
   const sub=scores.filter(r=>r.subj===subjId);
@@ -4073,8 +4083,11 @@ function renderATARRows(){
           id="atar-inp-${s.id}" oninput="calcATAR()" value="${localStorage.getItem(UID_PREFIX+'atar-ss-'+s.id)||''}"/>
         <span class="atar-scaled-badge" id="atar-scaled-${s.id}" style="display:none"></span>
       </div>
-      <input class="atar-subj-inp atar-goal-inp" type="number" min="0" max="50" step="1" placeholder="goal"
-        id="atar-goal-${s.id}" oninput="calcATAR()" value="${localStorage.getItem(UID_PREFIX+'atar-goal-'+s.id)||''}"/>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:1px">
+        <input class="atar-subj-inp atar-goal-inp" type="number" min="0" max="50" step="1" placeholder="goal"
+          id="atar-goal-${s.id}" oninput="calcATAR()" value="${localStorage.getItem(UID_PREFIX+'atar-goal-'+s.id)||''}"/>
+        <div id="atar-goal-hint-${s.id}" style="font-size:9.5px;color:var(--accent);font-weight:600;text-align:center;min-height:12px;opacity:.85"></div>
+      </div>
       <button class="atar-eng-btn${String(s.id)===String(engId)?' active':''}" id="atar-eng-${s.id}" onclick="setAtarEnglish('${s.id}')" title="Mark as English/EAL/Literature subject">ENG</button>
       <div class="atar-subj-scaled" id="atar-sc-${s.id}"></div>
     </div>`;
@@ -4166,28 +4179,64 @@ function calcATAR(){
       else{el.textContent='▲'+gap;el.style.background='#fff3cd';el.style.color='#a16207';}
     }else{el.textContent='';el.style.background='transparent';}
   });
-  // compute goal ATAR from goal study scores
+  // update per-subject goal hints (required SAC %)
+  currentScores.forEach(s=>{
+    const hintEl=document.getElementById('atar-goal-hint-'+s.id);
+    if(!hintEl)return;
+    if(s.goal>0){const req=studyScoreToSACPct(s.goal);hintEl.textContent=`need ~${req}%`;}
+    else{hintEl.textContent='';}
+  });
+
+  // compute goal ATAR — use goal score if set, else fall back to current predicted score
   const goalRowEl=document.getElementById('atar-goal-atar-row');
-  if(goalRowEl){
-    const goalScores=[...currentScores.filter(s=>s.goal>0).map(s=>{const gs=applyScaling(s.goal,s.factor);return{...s,score:s.goal,scaledScore:gs}}),...prevScores];
-    const hasGoals=currentScores.some(s=>s.goal>0);
-    if(hasGoals){
-      const goalEnglish=goalScores.find(s=>s.isEnglish&&s.score>0);
-      let goalAgg=0;
-      if(goalEnglish){
-        const gOthers=goalScores.filter(s=>!s.isEnglish&&s.score>0).sort((a,b)=>b.scaledScore-a.scaledScore);
-        goalAgg=goalEnglish.scaledScore+gOthers.slice(0,3).reduce((a,v)=>a+v.scaledScore,0)+0.1*(gOthers[3]?.scaledScore||0)+0.1*(gOthers[4]?.scaledScore||0);
-      }else{
-        const gAll=[...goalScores].filter(s=>s.score>0).sort((a,b)=>b.scaledScore-a.scaledScore);
-        goalAgg=gAll.slice(0,4).reduce((a,v)=>a+v.scaledScore,0)+0.1*(gAll[4]?.scaledScore||0)+0.1*(gAll[5]?.scaledScore||0);
-      }
-      goalAgg=Math.min(211.6,goalAgg);
-      const goalATAR=aggToATAR(goalAgg);
-      const gDiff=goalATAR-atar;
-      const gDiffStr=gDiff>0?`<span style="color:var(--green);font-weight:700">+${gDiff.toFixed(2)}</span>`:`<span style="color:var(--muted)">${gDiff.toFixed(2)}</span>`;
-      goalRowEl.style.display='block';
-      goalRowEl.innerHTML=`🎯 <strong>Goal ATAR: ${goalATAR.toFixed(2)}</strong> (agg ≈ ${goalAgg.toFixed(1)}) — ${gDiff>0?`${gDiffStr} above current trajectory`:`${gDiffStr} vs current trajectory`}`;
-    }else{goalRowEl.style.display='none';}
+  const goalBdWrap=document.getElementById('atar-goal-breakdown-wrap');
+  const hasGoals=currentScores.some(s=>s.goal>0);
+  if(hasGoals){
+    const goalScores=[...currentScores.map(s=>{
+      if(s.goal>0){const gs=applyScaling(s.goal,s.factor);return{...s,score:s.goal,scaledScore:gs,usingGoal:true};}
+      return{...s,usingGoal:false};
+    }),...prevScores].filter(s=>s.score>0||s.entered);
+    const goalEnglish=goalScores.find(s=>s.isEnglish&&s.scaledScore>0);
+    let goalAgg=0;let goalBdSubjects=[];
+    if(goalEnglish){
+      const gOthers=goalScores.filter(s=>!s.isEnglish&&s.scaledScore>0).sort((a,b)=>b.scaledScore-a.scaledScore);
+      goalAgg=goalEnglish.scaledScore+gOthers.slice(0,3).reduce((a,v)=>a+v.scaledScore,0)+0.1*(gOthers[3]?.scaledScore||0)+0.1*(gOthers[4]?.scaledScore||0);
+      goalBdSubjects=[{...goalEnglish,contrib:goalEnglish.scaledScore,role:'primary',isEngRole:true},...gOthers.slice(0,3).map(s=>({...s,contrib:s.scaledScore,role:'primary',isEngRole:false})),...gOthers.slice(3,5).map(s=>({...s,contrib:s.scaledScore*0.1,role:'increment',isEngRole:false}))];
+    }else{
+      const gAll=goalScores.filter(s=>s.scaledScore>0).sort((a,b)=>b.scaledScore-a.scaledScore);
+      goalAgg=gAll.slice(0,4).reduce((a,v)=>a+v.scaledScore,0)+0.1*(gAll[4]?.scaledScore||0)+0.1*(gAll[5]?.scaledScore||0);
+      goalBdSubjects=[...gAll.slice(0,4).map(s=>({...s,contrib:s.scaledScore,role:'primary',isEngRole:false})),...gAll.slice(4,6).map(s=>({...s,contrib:s.scaledScore*0.1,role:'increment',isEngRole:false}))];
+    }
+    goalAgg=Math.min(211.6,goalAgg);
+    const goalATAR=aggToATAR(goalAgg);
+    const gDiff=goalATAR-atar;
+    const gDiffStr=gDiff>0?`<span style="color:var(--green);font-weight:700">+${gDiff.toFixed(2)}</span>`:`<span style="color:var(--muted)">${gDiff.toFixed(2)}</span>`;
+    if(goalRowEl){goalRowEl.style.display='block';goalRowEl.innerHTML=`🎯 <strong>Goal ATAR: ${goalATAR.toFixed(2)}</strong> (agg ≈ ${goalAgg.toFixed(1)}) — ${gDiff>0?`${gDiffStr} above current trajectory`:`${gDiffStr} vs current trajectory`}`;}
+    // goal breakdown panel
+    if(goalBdWrap&&goalBdSubjects.length){
+      const goalBdRows=goalBdSubjects.map(s=>{
+        const isGoal=s.usingGoal;
+        const scaledTxt=s.factor&&Math.abs(s.factor-1)>0.003?`→ <strong>${s.scaledScore.toFixed(1)}</strong>`:s.scaledScore.toFixed(1);
+        const contribTxt=s.role==='increment'?`×10% = ${s.contrib.toFixed(2)}`:`= ${s.contrib.toFixed(2)}`;
+        const engTag=s.isEngRole?`<span class="atar-bd-eng-tag">ENGLISH</span>`:'';
+        const goalTag=isGoal?`<span style="font-size:9px;font-weight:700;padding:1px 4px;border-radius:3px;background:rgba(99,102,241,.12);color:var(--accent);margin-left:3px">GOAL</span>`:`<span style="font-size:9px;color:var(--muted);margin-left:3px;opacity:.7">current</span>`;
+        const rawTxt=s.factor&&Math.abs(s.factor-1)>0.003?`<span class="atar-bd-raw">${s.score}</span> <span class="atar-bd-arrow">→</span> `:'';
+        return`<div class="atar-bd-row"><div class="atar-bd-subj">${s.label}${engTag}${goalTag}</div><div style="font-size:11.5px;color:var(--muted)">${rawTxt}<span class="atar-bd-scaled">${scaledTxt}</span></div><div class="atar-bd-contrib">${contribTxt}</div></div>`;
+      });
+      const totalRow=`<div class="atar-bd-total"><span>Goal Aggregate</span><span style="font-family:'Fraunces',serif;font-size:1.05rem;color:var(--accent)">${goalAgg.toFixed(2)}</span><span style="color:var(--muted);font-size:12px">→ ATAR ${goalATAR.toFixed(2)}</span></div>`;
+      const reqRows=currentScores.filter(s=>s.goal>0).map(s=>{
+        const req=studyScoreToSACPct(s.goal);
+        const cur=sacAvgForSubject(s.id);
+        const diff=cur!==null?cur-req:null;
+        const diffStr=diff===null?'':(diff>=0?`<span style="color:var(--green);font-weight:700">✓ currently ${cur}%</span>`:`<span style="color:var(--high);font-weight:700">${Math.abs(diff)}% short (currently ${cur}%)</span>`);
+        return`<div style="display:flex;justify-content:space-between;align-items:center;padding:.2rem 0;font-size:12px;border-top:1px solid var(--border)"><span style="color:var(--text)">${s.label} <span style="color:var(--muted);font-size:11px">→ goal ${s.goal}</span></span><span>need <strong>~${req}%</strong> SAC avg ${diffStr?'· ':''} ${diffStr}</span></div>`;
+      }).join('');
+      goalBdWrap.style.display='block';
+      goalBdWrap.innerHTML=`<div class="atar-breakdown"><div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem">Goal Calculation Breakdown</div>${goalBdRows.join('')}${totalRow}${reqRows?`<div style="margin-top:.6rem;padding-top:.2rem"><div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.3rem">Marks Required for Goals</div>${reqRows}</div>`:''}</div>`;
+    }else if(goalBdWrap){goalBdWrap.style.display='none';}
+  }else{
+    if(goalRowEl)goalRowEl.style.display='none';
+    if(goalBdWrap)goalBdWrap.style.display='none';
   }
   // breakdown panel
   const bdWrap=document.getElementById('atar-breakdown-wrap');
