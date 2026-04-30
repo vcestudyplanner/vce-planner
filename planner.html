@@ -1998,9 +1998,12 @@ function toggleSidebar(){
 
 // ── COLOUR SELECT ──
 function colourSel(s){
-  const subj=userSubjects.find(u=>u.id===s.value);
-  if(subj){const c=COLOR_CSS[((subj.color-1)%8)];s.style.background=c.bg;s.style.borderColor=c.br;s.style.color=c.fg}
-  else{s.style.background='';s.style.borderColor='';s.style.color=''}
+  const subj=userSubjects.find(u=>String(u.id)===String(s.value));
+  if(subj){
+    const stored=localStorage.getItem(UID_PREFIX+'subj-hex-'+subj.id);
+    if(stored){s.style.background=hexToRgba(stored,.15);s.style.borderColor=hexToRgba(stored,.35);s.style.color=stored;}
+    else{const c=COLOR_CSS[((subj.color-1)%8)];s.style.background=c.bg;s.style.borderColor=c.br;s.style.color=c.fg;}
+  }else{s.style.background='';s.style.borderColor='';s.style.color='';}
 }
 
 // ── SAVE ──
