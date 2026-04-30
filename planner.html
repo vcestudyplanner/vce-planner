@@ -4348,7 +4348,7 @@ function checkSACNotifications(){
     return; // show reminder first; celebration will appear next visit if needed
   }
   // celebration (SACs in the past, not yet celebrated)
-  const pastSACs=events.filter(e=>e.date<today).sort((a,b)=>b.date.localeCompare(a.date));
+  const pastSACs=events.filter(e=>e.date<=today).sort((a,b)=>b.date.localeCompare(a.date));
   for(const e of pastSACs){
     const celKey=UID_PREFIX+'sac-celebrated-'+e.id;
     if(!localStorage.getItem(celKey)){
