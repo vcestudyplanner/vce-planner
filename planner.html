@@ -727,6 +727,25 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 #sac-remind-modal.open{display:flex}
 #sac-celebrate-modal{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);z-index:9400;display:none;align-items:center;justify-content:center}
 #sac-celebrate-modal.open{display:flex}
+/* ── TASK TIME MODAL ── */
+#task-time-modal{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);z-index:9350;display:none;align-items:center;justify-content:center}
+#task-time-modal.open{display:flex}
+.ttm-box{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:1.75rem 2rem;max-width:400px;width:90%;box-shadow:0 24px 60px rgba(0,0,0,.3);text-align:center}
+.ttm-emoji{font-size:2.4rem;margin-bottom:.5rem}
+.ttm-title{font-family:'Fraunces',serif;font-size:1.25rem;font-weight:700;color:var(--text);margin-bottom:.25rem}
+.ttm-task{font-size:12.5px;color:var(--muted);margin-bottom:1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ttm-qrow{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center;margin-bottom:1rem}
+.ttm-q{padding:.4rem .85rem;border-radius:20px;border:1.5px solid var(--border);background:transparent;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s}
+.ttm-q:hover{border-color:var(--accent);color:var(--accent);background:rgba(99,102,241,.07)}
+.ttm-q.sel{border-color:var(--accent);background:rgba(99,102,241,.12);color:var(--accent)}
+.ttm-custom{display:flex;align-items:center;justify-content:center;gap:.5rem;margin-bottom:1.25rem}
+.ttm-custom input{width:60px;padding:.4rem .5rem;border:1.5px solid var(--border);border-radius:9px;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:600;text-align:center}
+.ttm-custom label{font-size:12px;color:var(--muted)}
+.ttm-btns{display:flex;justify-content:center;gap:.6rem}
+.ttm-log-btn{padding:.6rem 1.6rem;border-radius:12px;border:none;background:var(--accent);color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:opacity .15s}
+.ttm-log-btn:hover{opacity:.87}
+.ttm-skip-btn{padding:.6rem 1.2rem;border-radius:12px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .15s}
+.ttm-skip-btn:hover{border-color:var(--muted);color:var(--text)}
 .sac-modal-box{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:2rem 2.25rem;max-width:420px;width:90%;box-shadow:0 24px 60px rgba(0,0,0,.3);text-align:center}
 .sac-modal-emoji{font-size:3rem;margin-bottom:.75rem}
 .sac-modal-title{font-family:'Fraunces',serif;font-size:1.4rem;font-weight:700;color:var(--text);margin-bottom:.4rem}
@@ -1493,6 +1512,8 @@ function buildSubjMaps(){
       BG[s.id]=c.bg;BR[s.id]=c.br;NC[s.id]=c.fg;
     }
   });
+  SUBJ['__other__']={label:'Other',cls:'other'};
+  BG['__other__']='rgba(99,102,241,.08)';BR['__other__']='rgba(99,102,241,.2)';NC['__other__']='var(--muted)';
 }
 
 function renderSubjOv(){
@@ -1512,6 +1533,7 @@ function renderFilterBtns(){
     <button class="fp" data-filter="todo">To do</button>
     <button class="fp" data-filter="urgent"><i data-lucide="flame" style="width:12px;height:12px;vertical-align:-1px"></i> Urgent</button>
     ${userSubjects.map(s=>`<button class="fp" data-filter="${s.id}">${s.label}</button>`).join('')}
+    <button class="fp" data-filter="__other__">Other</button>
     <button class="fp" data-filter="done">Done</button>
     <select class="ssort" id="sort-select" onchange="renderTasks()">
       <option value="due">Sort by due date</option>
@@ -1528,9 +1550,10 @@ function renderFilterBtns(){
 
 function populateSubjectDropdowns(){
   const opts=userSubjects.map(s=>`<option value="${s.id}">${s.label}</option>`).join('');
+  const otherOpt='<option value="__other__">Other</option>';
   document.querySelectorAll('select.subj-sel').forEach(el=>{
-    if(el.id==='plan-subj'){el.innerHTML='<option value="">None</option>'+opts;}
-    else{el.innerHTML=opts;}
+    if(el.id==='plan-subj'){el.innerHTML='<option value="">None</option>'+opts+otherOpt;}
+    else{el.innerHTML=opts+otherOpt;}
     if(el.options[0])colourSel(el);
   });
 }
@@ -1998,6 +2021,7 @@ function toggleSidebar(){
 
 // ── COLOUR SELECT ──
 function colourSel(s){
+  if(s.value==='__other__'){s.style.background='rgba(99,102,241,.08)';s.style.borderColor='rgba(99,102,241,.2)';s.style.color='var(--muted)';return;}
   const subj=userSubjects.find(u=>String(u.id)===String(s.value));
   if(subj){
     const stored=localStorage.getItem(UID_PREFIX+'subj-hex-'+subj.id);
@@ -2119,12 +2143,46 @@ async function init(){
   checkShowTour();
   setTimeout(checkSACNotifications, 800);
 }
+// ── TASK TIME MODAL ──
+let _ttmTaskId=null,_ttmSubjId=null;
+function showTaskTimeModal(taskId,subjId,taskTitle){
+  _ttmTaskId=taskId;_ttmSubjId=subjId;
+  document.getElementById('ttm-task-name').textContent=taskTitle||'Task';
+  document.getElementById('ttm-h').value='';
+  document.getElementById('ttm-m').value='';
+  document.querySelectorAll('.ttm-q').forEach(b=>b.classList.remove('sel'));
+  document.getElementById('task-time-modal').classList.add('open');
+}
+function ttmQuickPick(hours,btn){
+  const h=Math.floor(hours),m=Math.round((hours-h)*60);
+  document.getElementById('ttm-h').value=h||'';
+  document.getElementById('ttm-m').value=m||'';
+  document.querySelectorAll('.ttm-q').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+function logTaskTime(){
+  const h=parseInt(document.getElementById('ttm-h').value)||0;
+  const m=parseInt(document.getElementById('ttm-m').value)||0;
+  const total=h+(m/60);
+  if(total>0&&_ttmSubjId&&_ttmSubjId!=='__other__'){
+    const disp=h>0&&m>0?`${h}h ${m}m`:h>0?`${h}h`:`${m}m`;
+    studyLog.unshift({id:Date.now(),subject:_ttmSubjId,hours:total,date:todayStr(),note:`Task (${disp})`});
+    saveL();renderHoursBar();showToast(`${disp} logged! 📊`);
+  }
+  document.getElementById('task-time-modal').classList.remove('open');
+  _ttmTaskId=null;_ttmSubjId=null;
+}
+function skipTaskTime(){
+  document.getElementById('task-time-modal').classList.remove('open');
+  _ttmTaskId=null;_ttmSubjId=null;
+}
+
 function toggleTask(id){
   const t=tasks.find(x=>x.id===id);if(!t)return;t.done=!t.done;
-  if(t.done){const cd=JSON.parse(localStorage.getItem(UID_PREFIX+'cd')||'[]');if(!cd.includes(todayStr()))cd.push(todayStr());localStorage.setItem(UID_PREFIX+'cd',JSON.stringify(cd));addXP(XPL);playSound('complete');const allDone=tasks.filter(x=>!x.done&&x.due===todayStr()).length===0&&tasks.filter(x=>x.due===todayStr()).length>0;if(allDone){launchConfetti();showToast("🎉 All today's tasks done!")}else showToast('+10 XP! 🚀')}
+  if(t.done){const cd=JSON.parse(localStorage.getItem(UID_PREFIX+'cd')||'[]');if(!cd.includes(todayStr()))cd.push(todayStr());localStorage.setItem(UID_PREFIX+'cd',JSON.stringify(cd));addXP(XPL);playSound('complete');const allDone=tasks.filter(x=>!x.done&&x.due===todayStr()).length===0&&tasks.filter(x=>x.due===todayStr()).length>0;if(allDone){launchConfetti();showToast("🎉 All today's tasks done!")}else showToast('+10 XP! 🚀');if(t.subject&&t.subject!=='__other__')showTaskTimeModal(t.id,t.subject,t.title);}
   saveT();renderTasks();if(document.getElementById('page-home').classList.contains('active'))renderHome();
 }
-function homeToggleTask(id){const t=tasks.find(x=>x.id===id);if(!t)return;t.done=!t.done;if(t.done){const cd=JSON.parse(localStorage.getItem(UID_PREFIX+'cd')||'[]');if(!cd.includes(todayStr()))cd.push(todayStr());localStorage.setItem(UID_PREFIX+'cd',JSON.stringify(cd));addXP(XPL);playSound('complete');showToast('+10 XP! 🚀')}saveT();renderHome();renderTasks()}
+function homeToggleTask(id){const t=tasks.find(x=>x.id===id);if(!t)return;t.done=!t.done;if(t.done){const cd=JSON.parse(localStorage.getItem(UID_PREFIX+'cd')||'[]');if(!cd.includes(todayStr()))cd.push(todayStr());localStorage.setItem(UID_PREFIX+'cd',JSON.stringify(cd));addXP(XPL);playSound('complete');showToast('+10 XP! 🚀');if(t.subject&&t.subject!=='__other__')showTaskTimeModal(t.id,t.subject,t.title);}saveT();renderHome();renderTasks()}
 function toggleUrgent(id){const t=tasks.find(x=>x.id===id);if(t){t.urgent=!t.urgent;saveT();renderTasks()}}
 function removeTask(id){if(confirm('Remove this task?')){tasks=tasks.filter(x=>x.id!==id);saveT();renderTasks()}}
 
@@ -2145,7 +2203,7 @@ function renderTasks(){
   const sortEl=document.getElementById('sort-select');
   const sortBy=sortEl?sortEl.value:'due';
   const subjKeys=SUBJ_KEYS_FOR_FILTER();
-  let vis=tasks.filter(t=>{if(tfilter==='done')return t.done;if(tfilter==='todo')return !t.done;if(tfilter==='urgent')return !t.done&&t.urgent;if(subjKeys.includes(tfilter))return t.subject===tfilter&&!t.done;return !t.done});
+  let vis=tasks.filter(t=>{if(tfilter==='done')return t.done;if(tfilter==='todo')return !t.done;if(tfilter==='urgent')return !t.done&&t.urgent;if(tfilter==='__other__')return t.subject==='__other__'&&!t.done;if(subjKeys.includes(tfilter))return t.subject===tfilter&&!t.done;return !t.done});
   vis.sort((a,b)=>{if(a.urgent&&!b.urgent)return -1;if(!a.urgent&&b.urgent)return 1;if(sortBy==='due'){if(!a.due&&!b.due)return 0;if(!a.due)return 1;if(!b.due)return -1;return a.due.localeCompare(b.due)}if(sortBy==='subj')return a.subject.localeCompare(b.subject);return 0});
   const list=document.getElementById('task-list');
   if(!vis.length){list.innerHTML=`<div class="empty"><div class="eb">${tfilter==='done'?'No completed tasks yet':tfilter==='urgent'?'No urgent tasks 🎉':'No tasks here'}</div><div class="es">${tfilter==='all'||tfilter==='todo'?'Add a task above.':'Switch filter.'}</div></div>`}
@@ -2363,19 +2421,22 @@ function addLog(){
   saveL();renderHoursBar();showToast(`${disp} logged! 📊`);
 }
 function renderHoursBar(){
-  const totals={eng:0,rel:0,mth:0,gmth:0};
-  studyLog.forEach(l=>totals[l.subject]=(totals[l.subject]||0)+l.hours);
-  const max=Math.max(...Object.values(totals),1);
-  document.getElementById('hours-bar').innerHTML=Object.entries(totals).map(([s,h])=>`
-    <div class="hb-row"><div class="hb-label"><span class="badge b-${s}">${SUBJ[s].label}</span></div>
-    <div class="hb-track"><div class="hb-fill" style="width:${Math.round(h/max*100)}%;background:${NC[s]}"></div></div>
-    <div class="hb-val">${Math.round(h*10)/10}h</div></div>`).join('');
+  const totals={};
+  userSubjects.forEach(s=>{totals[s.id]=0});
+  studyLog.forEach(l=>{if(l.subject&&l.subject!=='__other__'&&totals[l.subject]!==undefined)totals[l.subject]+=l.hours;});
+  const subjsWithHours=userSubjects.filter(s=>totals[s.id]>0);
+  const max=Math.max(...subjsWithHours.map(s=>totals[s.id]),1);
+  const barEl=document.getElementById('hours-bar');
+  if(!subjsWithHours.length){barEl.innerHTML='<div style="color:var(--muted);font-size:13px;padding:.5rem 0">No hours logged yet.</div>';}
+  else{barEl.innerHTML=subjsWithHours.map(s=>`<div class="hb-row"><div class="hb-label"><span class="badge" style="background:${BG[s.id]};color:${NC[s.id]}">${s.label}</span></div><div class="hb-track"><div class="hb-fill" style="width:${Math.round(totals[s.id]/max*100)}%;background:${NC[s.id]}"></div></div><div class="hb-val">${Math.round(totals[s.id]*10)/10}h</div></div>`).join('');}
   const logEl=document.getElementById('study-log');
   if(!studyLog.length){logEl.innerHTML='<div style="color:var(--muted);font-size:13px;padding:.5rem 0">No sessions yet.</div>';return}
-  logEl.innerHTML=studyLog.slice(0,20).map(l=>`<div class="sl-item">
-    <div class="sl-left"><div><span class="badge b-${l.subject}">${SUBJ[l.subject].label}</span></div><div class="sl-meta">${l.date} · ${l.note}</div></div>
-    <div style="display:flex;align-items:center;gap:8px"><div class="sl-dur">${Math.round(l.hours*10)/10}h</div><button class="sl-del" onclick="removeLog(${l.id})">×</button></div>
-  </div>`).join('');
+  logEl.innerHTML=studyLog.slice(0,20).map(l=>{
+    const subj=l.subject==='__other__'?{label:'Other'}:(userSubjects.find(s=>s.id===l.subject)||{label:l.subject});
+    const bg=l.subject==='__other__'?'rgba(99,102,241,.1)':(BG[l.subject]||'rgba(99,102,241,.1)');
+    const fg=l.subject==='__other__'?'var(--muted)':(NC[l.subject]||'var(--muted)');
+    return`<div class="sl-item"><div class="sl-left"><div><span class="badge" style="background:${bg};color:${fg}">${subj.label}</span></div><div class="sl-meta">${l.date} · ${l.note}</div></div><div style="display:flex;align-items:center;gap:8px"><div class="sl-dur">${Math.round(l.hours*10)/10}h</div><button class="sl-del" onclick="removeLog(${l.id})">×</button></div></div>`;
+  }).join('');
 }
 function removeLog(id){studyLog=studyLog.filter(x=>x.id!==id);saveL();renderHoursBar()}
 function toggleSessionLog(){const el=document.getElementById('study-log');const btn=document.getElementById('session-log-btn');if(!el||!btn)return;const open=el.style.display!=='none';el.style.display=open?'none':'flex';btn.textContent=open?'Show':'Hide'}
@@ -4695,6 +4756,32 @@ init().then(()=>{
     <div class="tour-btns">
       <button class="tour-skip-sm" onclick="endTour()">Skip tour</button>
       <button class="abtn sm" id="tour-next-btn" onclick="tourNext()">Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Task time logging modal -->
+<div id="task-time-modal">
+  <div class="ttm-box">
+    <div class="ttm-emoji">⏱️</div>
+    <div class="ttm-title">How long did you study?</div>
+    <div class="ttm-task" id="ttm-task-name"></div>
+    <div class="ttm-qrow">
+      <button class="ttm-q" onclick="ttmQuickPick(0.25,this)">15m</button>
+      <button class="ttm-q" onclick="ttmQuickPick(0.5,this)">30m</button>
+      <button class="ttm-q" onclick="ttmQuickPick(0.75,this)">45m</button>
+      <button class="ttm-q" onclick="ttmQuickPick(1,this)">1h</button>
+      <button class="ttm-q" onclick="ttmQuickPick(1.5,this)">1.5h</button>
+      <button class="ttm-q" onclick="ttmQuickPick(2,this)">2h</button>
+      <button class="ttm-q" onclick="ttmQuickPick(3,this)">3h</button>
+    </div>
+    <div class="ttm-custom">
+      <input type="number" id="ttm-h" min="0" max="12" placeholder="0"/><label>h</label>
+      <input type="number" id="ttm-m" min="0" max="59" placeholder="0"/><label>min</label>
+    </div>
+    <div class="ttm-btns">
+      <button class="ttm-skip-btn" onclick="skipTaskTime()">Skip</button>
+      <button class="ttm-log-btn" onclick="logTaskTime()">Log it 📊</button>
     </div>
   </div>
 </div>
