@@ -145,6 +145,20 @@ textarea{height:54px;padding:9px 11px;resize:none;line-height:1.5}
 .abtn{height:38px;padding:0 16px;background:var(--accent);color:#fff;border:none;border-radius:9px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;transition:background .15s,transform .1s,box-shadow .15s}
 .abtn:hover{filter:brightness(1.08);box-shadow:0 3px 10px rgba(0,0,0,.15)}.abtn:active{transform:scale(.97)}
 .abtn.blue{background:var(--mth)}.abtn.green{background:var(--green)}.abtn.sm{height:32px;font-size:12px;padding:0 12px}
+.abtn.outline{background:transparent;border:1.5px solid var(--border);color:var(--muted)}
+.abtn.outline:hover{border-color:var(--muted);color:var(--text);filter:none;box-shadow:none}
+/* ── TASK FORM EXPAND ── */
+.tf-bar{display:flex;align-items:center;gap:.5rem;padding:.85rem 1.25rem;transition:padding .2s}
+#task-form-card.open .tf-bar{padding-bottom:.65rem}
+.tf-inp{flex:1;height:42px;font-size:15px;font-weight:500;border:none;background:transparent;outline:none;color:var(--text);padding:0;font-family:'Plus Jakarta Sans',sans-serif}
+.tf-inp::placeholder{color:var(--muted);font-weight:400}
+.tf-inp:focus{border:none;background:transparent}
+.tf-add-inline{height:36px;padding:0 14px;background:var(--accent);color:#fff;border:none;border-radius:9px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;display:none;transition:opacity .15s}
+.tf-add-inline:hover{filter:brightness(1.08)}
+#task-form-card.open .tf-add-inline{display:none}
+#task-form-expand{max-height:0;overflow:hidden;transition:max-height .25s cubic-bezier(.4,0,.2,1)}
+#task-form-card.open #task-form-expand{max-height:300px}
+#task-form-card.open .tf-bar{border-bottom:1px solid var(--border)}
 select.subj-sel{font-weight:600;border-width:2px}
 
 /* ── HOME HERO ── */
@@ -977,17 +991,26 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
     <div class="stat-card"><div class="stat-label">Completed</div><div class="stat-num" id="s-done">0</div></div>
   </div>
   <div id="subj-ov-wrap"></div>
-  <div class="card" id="task-form-card">
-    <div id="task-edit-banner" class="edit-mode-banner" style="display:none">✏️ Editing task<button class="edit-cancel-btn" onclick="cancelTaskEdit()">Cancel</button></div>
-    <div class="sh" id="task-form-title">Add new task</div>
-    <div class="frow" style="grid-template-columns:1fr auto auto auto auto;margin-bottom:9px">
-      <div class="fg"><label>Task name</label><input type="text" id="task-input" placeholder="e.g. Comparative essay draft…"/></div>
-      <div class="fg"><label>Subject</label><select id="subj-input" class="subj-sel" onchange="colourSel(this)"></select></div>
-      <div class="fg"><label>Due date</label><input type="date" id="date-input"/></div>
-      <div class="fg"><label>Link SAC/Exam</label><select id="task-ev-link"><option value="">None</option></select></div>
-      <div class="fg"><label>&nbsp;</label><button class="abtn" id="task-submit-btn" onclick="addTask()">+ Add</button></div>
+  <div class="card" id="task-form-card" style="padding:0;overflow:hidden">
+    <div id="task-edit-banner" class="edit-mode-banner" style="display:none;border-radius:0;border-bottom:1px solid var(--border)">✏️ Editing task<button class="edit-cancel-btn" onclick="cancelTaskEdit()">Cancel</button></div>
+    <div class="tf-bar">
+      <input type="text" id="task-input" class="tf-inp" placeholder="Add a task…" onfocus="taskFormOpen()" autocomplete="off"/>
+      <button class="tf-add-inline" id="tf-add-inline-btn" onclick="addTask()">+ Add</button>
     </div>
-    <div class="fg"><label>Notes (optional)</label><textarea id="note-input" placeholder="Page numbers, reminders…"></textarea></div>
+    <div id="task-form-expand">
+      <div style="padding:0 1.25rem 1.25rem">
+        <div class="frow" style="grid-template-columns:1fr 1fr 1fr;margin-bottom:.75rem">
+          <div class="fg"><label>Subject</label><select id="subj-input" class="subj-sel" onchange="colourSel(this)"></select></div>
+          <div class="fg"><label>Due date</label><input type="date" id="date-input"/></div>
+          <div class="fg"><label>Link SAC/Exam</label><select id="task-ev-link"><option value="">None</option></select></div>
+        </div>
+        <div class="fg" style="margin-bottom:.85rem"><label>Notes (optional)</label><textarea id="note-input" placeholder="Page numbers, reminders…"></textarea></div>
+        <div style="display:flex;justify-content:flex-end;gap:.5rem">
+          <button class="abtn outline sm" onclick="taskFormClose()" id="task-cancel-btn">Cancel</button>
+          <button class="abtn" id="task-submit-btn" onclick="addTask()">+ Add task</button>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="toolbar" id="filter-btns-wrap"></div>
   <div class="tlist" id="task-list"></div>
@@ -1779,8 +1802,8 @@ function startTaskEdit(id){
   document.getElementById('date-input').value=t.due||'';
   document.getElementById('task-ev-link').value=t.evLink||'';
   document.getElementById('task-edit-banner').style.display='flex';
-  document.getElementById('task-form-title').textContent='Edit task';
-  document.getElementById('task-submit-btn').textContent='Update Task';
+  document.getElementById('task-submit-btn').textContent='Update task';
+  taskFormOpen();
   document.getElementById('task-form-card').scrollIntoView({behavior:'smooth',block:'start'});
   document.getElementById('task-input').focus();
 }
@@ -1789,8 +1812,14 @@ function cancelTaskEdit(){
   document.getElementById('task-input').value='';document.getElementById('note-input').value='';
   document.getElementById('date-input').value='';document.getElementById('task-ev-link').value='';
   document.getElementById('task-edit-banner').style.display='none';
-  document.getElementById('task-form-title').textContent='Add new task';
-  document.getElementById('task-submit-btn').textContent='+ Add';
+  document.getElementById('task-submit-btn').textContent='+ Add task';
+  taskFormClose();
+}
+function taskFormOpen(){document.getElementById('task-form-card').classList.add('open');}
+function taskFormClose(){
+  if(_editTaskId)return;
+  document.getElementById('task-form-card').classList.remove('open');
+  document.getElementById('task-input').blur();
 }
 
 // ── EDIT SACs/EVENTS ──────────────────────────────────────────────────────────
@@ -2081,6 +2110,8 @@ function addTask(){
   }
   tasks.unshift({id:Date.now(),title,note,subject:subj,due,done:false,urgent:false,evLink});
   document.getElementById('task-input').value='';document.getElementById('note-input').value='';
+  document.getElementById('date-input').value='';
+  taskFormClose();
   saveT();renderTasks();updateEvLink();showToast('Task added! 📝');
 }
 // ── INIT ──
@@ -2118,7 +2149,11 @@ async function init(){
   setAccentColor(savedAccent);
   ['date-input','ev-date','log-date','ce-date'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=todayStr()});
   const gi=document.getElementById('goal-input');if(gi)gi.value=weekGoal;
-  document.getElementById('task-input').addEventListener('keydown',e=>{if(e.key==='Enter')addTask()});
+  document.getElementById('task-input').addEventListener('keydown',e=>{if(e.key==='Enter')addTask();if(e.key==='Escape')taskFormClose();});
+  document.addEventListener('click',e=>{
+    const card=document.getElementById('task-form-card');
+    if(card&&card.classList.contains('open')&&!_editTaskId&&!card.contains(e.target)&&!document.getElementById('task-input').value.trim()){taskFormClose();}
+  });
   document.getElementById('plan-title').addEventListener('keydown',e=>{if(e.key==='Enter')addPlanBlock()});
   document.getElementById('ce-name').addEventListener('keydown',e=>{if(e.key==='Enter')addCalEvent()});
   document.getElementById('ce-repeat-n').addEventListener('change',updateRepeatPreview);
