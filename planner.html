@@ -125,9 +125,13 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .container{max-width:960px;margin:0 auto;padding:2rem 2.5rem}
 
 /* ── PAGE HEADER ── */
-.page-hdr{margin-bottom:2rem}
+.page-hdr{margin-bottom:1.25rem}
 .page-hdr-title{font-family:'Fraunces',serif;font-size:1.75rem;font-weight:700;color:var(--text);line-height:1.2}
 .page-hdr-sub{font-size:13px;color:var(--muted);margin-top:.3rem}
+.pg-tabs{display:flex;gap:4px;margin-bottom:1.5rem;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:4px;width:fit-content}
+.pg-tab{padding:6px 18px;border-radius:9px;border:none;background:transparent;color:var(--muted);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s}
+.pg-tab:hover{color:var(--text)}
+.pg-tab.active{background:var(--accent);color:#fff}
 
 /* ── CARDS ── */
 .card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:1.5rem;margin-bottom:1.25rem;box-shadow:0 1px 3px rgba(0,0,0,.04)}
@@ -156,9 +160,9 @@ textarea{height:54px;padding:9px 11px;resize:none;line-height:1.5}
 .tf-add-inline{height:36px;padding:0 14px;background:var(--accent);color:#fff;border:none;border-radius:9px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;display:none;transition:opacity .15s}
 .tf-add-inline:hover{filter:brightness(1.08)}
 #task-form-card.open .tf-add-inline{display:none}
-#task-form-expand{max-height:0;overflow:hidden;transition:max-height .25s cubic-bezier(.4,0,.2,1)}
-#task-form-card.open #task-form-expand{max-height:300px}
-#task-form-card.open .tf-bar{border-bottom:1px solid var(--border)}
+#task-form-expand,#ev-form-expand{max-height:0;overflow:hidden;transition:max-height .25s cubic-bezier(.4,0,.2,1)}
+#task-form-card.open #task-form-expand,#ev-form-card.open #ev-form-expand{max-height:300px}
+#task-form-card.open .tf-bar,#ev-form-card.open .tf-bar{border-bottom:1px solid var(--border)}
 select.subj-sel{font-weight:600;border-width:2px}
 
 /* ── HOME HERO ── */
@@ -181,9 +185,9 @@ select.subj-sel{font-weight:600;border-width:2px}
 /* ── HOME STATS ── */
 .home-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.25rem}
 .hstat{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.25rem;transition:transform .15s,box-shadow .15s;box-shadow:0 1px 3px rgba(0,0,0,.04)}
-.hstat:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.07)}
-.hstat-num{font-family:'Fraunces',serif;font-size:2.1rem;font-weight:700;color:var(--text);line-height:1;margin-bottom:3px}
-.hstat-label{font-size:11px;color:var(--muted);font-weight:500}
+.hstat:hover{transform:translateY(-3px);box-shadow:0 6px 18px rgba(0,0,0,.09)}
+.hstat-num{font-family:'Fraunces',serif;font-size:2.4rem;font-weight:700;color:var(--accent);line-height:1;margin-bottom:3px}
+.hstat-label{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
 
 /* ── HOME GRID ── */
 .home-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
@@ -220,11 +224,12 @@ select.subj-sel{font-weight:600;border-width:2px}
 .hc-flag{position:absolute;top:8px;right:8px;font-size:10px;font-weight:700;padding:2px 6px;border-radius:5px}
 
 /* ── XP BAR ── */
-.xp-bar-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:.7rem 1.1rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:12px}
-.xp-level{font-family:'Fraunces',serif;font-weight:700;font-size:1rem;color:var(--accent);white-space:nowrap}
-.xp-track{flex:1;height:10px;background:var(--border);border-radius:5px;overflow:hidden}
-.xp-fill{height:100%;border-radius:5px;background:var(--accent);transition:width .5s cubic-bezier(.34,1.56,.64,1)}
-.xp-label{font-size:11px;color:var(--muted);white-space:nowrap}
+.xp-bar-wrap{background:linear-gradient(135deg,rgba(99,102,241,.06),rgba(129,140,248,.03));border:1px solid rgba(99,102,241,.2);border-radius:14px;padding:.75rem 1.25rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:14px}
+[data-theme=dark] .xp-bar-wrap{background:linear-gradient(135deg,rgba(129,140,248,.1),rgba(129,140,248,.04));border-color:rgba(129,140,248,.25)}
+.xp-level{font-family:'Fraunces',serif;font-weight:700;font-size:1.05rem;color:var(--accent);white-space:nowrap;min-width:fit-content}
+.xp-track{flex:1;height:8px;background:rgba(99,102,241,.15);border-radius:4px;overflow:hidden}
+.xp-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--accent),var(--accent-light));transition:width .6s cubic-bezier(.34,1.56,.64,1);box-shadow:0 0 8px rgba(99,102,241,.35)}
+.xp-label{font-size:12px;color:var(--accent);font-weight:600;white-space:nowrap;opacity:.75}
 
 /* ── VCE COUNTDOWN ── */
 .vce-cd{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.25rem 1.75rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:1.5rem;overflow:hidden;position:relative;box-shadow:0 1px 3px rgba(0,0,0,.04)}
@@ -257,9 +262,14 @@ select.subj-sel{font-weight:600;border-width:2px}
 .sc-count{font-size:11px;color:var(--muted)}
 
 /* ── TOOLBAR ── */
-.toolbar{display:flex;align-items:center;gap:7px;margin-bottom:1.1rem;flex-wrap:wrap}
-.fp{padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:var(--surface);font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap}
+.toolbar-wrap{position:relative;margin-bottom:1.1rem}
+.toolbar-wrap::after{content:'';position:absolute;right:0;top:0;bottom:0;width:48px;background:linear-gradient(to right,transparent,var(--bg));pointer-events:none;border-radius:0 20px 20px 0}
+.toolbar{display:flex;align-items:center;gap:7px;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none;padding-bottom:2px}
+.toolbar::-webkit-scrollbar{display:none}
+.fp{padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:var(--surface);font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap;flex-shrink:0;display:flex;align-items:center;gap:5px}
 .fp:hover{border-color:var(--accent);color:var(--accent)}.fp.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.fp-count{font-size:10px;font-weight:700;padding:1px 5px;border-radius:8px;background:rgba(0,0,0,.1);min-width:16px;text-align:center;line-height:1.4}
+.fp.active .fp-count{background:rgba(255,255,255,.25)}
 .ssort{margin-left:auto;height:32px;padding:0 9px;font-size:12px;border-radius:8px;min-width:120px}
 
 /* ── TASK CARDS ── */
@@ -728,7 +738,11 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 .badges-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:.75rem}
 .badge-card{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:1rem .9rem;text-align:center;transition:all .2s;position:relative}
 .badge-card.earned{border-color:var(--accent);background:linear-gradient(135deg,var(--surface),color-mix(in srgb,var(--accent) 6%,var(--surface)))}
-.badge-card.locked{opacity:.45;filter:grayscale(.6)}
+.badge-card.locked{opacity:.6;filter:grayscale(.4)}
+.badge-prog-wrap{margin-top:.5rem}
+.badge-prog-bar{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:3px}
+.badge-prog-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .4s}
+.badge-prog-label{font-size:9.5px;color:var(--muted);font-weight:600}
 .badge-icon{margin-bottom:.5rem;line-height:1;display:flex;justify-content:center}
 .badge-icon svg{width:26px;height:26px}
 .badge-name{font-family:'Fraunces',serif;font-size:.78rem;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:.2rem}
@@ -902,29 +916,22 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
     <button class="nav-item" data-page="calendar" onclick="nav('calendar',this)"><i data-lucide="calendar"></i>Calendar</button>
     <div class="sidebar-sep"></div>
     <button class="nav-item" data-page="study" onclick="nav('study',this)"><i data-lucide="brain"></i>Study Methods</button>
-    <button class="nav-item" data-page="scores" onclick="nav('scores',this)"><i data-lucide="trophy"></i>Scores</button>
-    <button class="nav-item" data-page="stats" onclick="nav('stats',this)"><i data-lucide="bar-chart-2"></i>Stats</button>
-    <div id="sidebar-action-btns" style="margin-top:auto;padding-top:.75rem;display:grid;grid-template-columns:1fr 1fr;gap:5px">
-      <button id="pwa-install-btn" onclick="pwaInstall()" style="display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 8px;border-radius:10px;border:none;background:#6366f1;color:#ffffff;font-family:'Plus Jakarta Sans',sans-serif;font-size:12.5px;font-weight:600;cursor:pointer;transition:all .15s;text-align:center">
-        <i data-lucide="smartphone" style="width:14px;height:14px;flex-shrink:0"></i><span>Get the App</span>
-      </button>
-      <button onclick="replayTour()" style="display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 8px;border-radius:10px;border:none;background:#6366f1;color:#ffffff;font-family:'Plus Jakarta Sans',sans-serif;font-size:12.5px;font-weight:600;cursor:pointer;transition:all .15s;text-align:center">
-        <i data-lucide="play-circle" style="width:14px;height:14px;flex-shrink:0"></i>Tutorial
-      </button>
-    </div>
+    <button class="nav-item" data-page="scores" onclick="nav('stats',this)"><i data-lucide="bar-chart-2"></i>Progress &amp; ATAR</button>
+    <button class="nav-item" onclick="openSubjModal()"><i data-lucide="layers"></i>Subjects</button>
   </nav>
   <div class="sidebar-bottom">
     <div class="sbr-menu" id="sbr-menu">
-      <button class="sidebar-link" onclick="openSubjModal();closeSbrMenu()"><i data-lucide="book-open"></i>Manage Subjects</button>
       <button class="sidebar-link" onclick="openNotifModal();closeSbrMenu()"><i data-lucide="bell"></i>Notifications</button>
       <a class="sidebar-link" href="suggestions.html"><i data-lucide="message-circle"></i>Suggestions</a>
+      <button class="sidebar-link" onclick="replayTour();closeSbrMenu()"><i data-lucide="play-circle"></i>Tutorial</button>
       <div style="padding:.4rem .5rem .2rem;border-top:1px solid rgba(255,255,255,.08);margin-top:.2rem">
         <div style="font-size:10px;color:rgba(255,255,255,.3);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.4rem">Accent colour</div>
         <div class="theme-swatches" id="theme-swatches"></div>
       </div>
     </div>
     <div style="display:flex;gap:3px;align-items:center">
-      <button class="sidebar-link" id="sbr-settings-btn" onclick="toggleSbrMenu()" style="flex:1"><i data-lucide="settings"></i>Settings</button>
+      <button id="pwa-install-btn" onclick="pwaInstall()" class="sidebar-link" style="flex:1"><i data-lucide="smartphone"></i>Get the App</button>
+      <button class="sidebar-link" id="sbr-settings-btn" onclick="toggleSbrMenu()" style="padding:7px 10px;flex-shrink:0" title="Settings"><i data-lucide="settings"></i></button>
       <div id="sync-dot" class="sync-dot" title=""></div>
       <button class="tbtn" id="dark-toggle" onclick="toggleDark()" title="Toggle dark/light mode" style="margin-right:2px"><i data-lucide="moon"></i></button>
       <button class="sidebar-link" onclick="logout()" title="Sign out" style="padding:7px 10px;flex-shrink:0"><i data-lucide="log-out"></i></button>
@@ -951,7 +958,6 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
     <div class="hstat"><div class="hstat-num" id="hs-streak">0</div><div class="hstat-label">Day streak <i data-lucide="flame" style="width:11px;height:11px;color:#f97316;vertical-align:-1px"></i></div></div>
     <div class="hstat"><div class="hstat-num" id="hs-sacs">0</div><div class="hstat-label">Upcoming SACs</div></div>
   </div>
-  <div class="h-quote"><div class="h-qmark">"</div><div><div class="h-qtext" id="h-qt"></div><div class="h-qauthor" id="h-qa"></div></div></div>
   <div id="h-getstarted" style="display:none;margin-bottom:1.25rem">
     <div class="card" style="margin-bottom:0;border:1.5px dashed var(--border)">
       <div class="sh" style="margin-bottom:.75rem">Get started</div>
@@ -963,6 +969,10 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
       </div>
     </div>
   </div>
+  <div style="margin-bottom:1.25rem">
+    <div class="sh">Subject health</div>
+    <div class="health-grid" id="h-health"></div>
+  </div>
   <div class="home-grid">
     <div class="card" style="margin-bottom:0">
       <div class="hst">Today's tasks<a onclick="navTo('tasks')">View all →</a></div>
@@ -972,10 +982,6 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
       <div class="hst">Upcoming SACs &amp; Exams<a onclick="navTo('sacs')">View all →</a></div>
       <div class="h-saclist" id="h-sacs"></div>
     </div>
-  </div>
-  <div style="margin-top:1.25rem">
-    <div class="sh">Subject health</div>
-    <div class="health-grid" id="h-health"></div>
   </div>
   <div id="vce-cd-wrap"></div>
 </div></div>
@@ -998,6 +1004,7 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
       <button class="tf-add-inline" id="tf-add-inline-btn" onclick="addTask()">+ Add</button>
     </div>
     <div id="task-form-expand">
+      <div id="tf-no-subj-warn" style="display:none;margin:0 1.25rem .75rem;padding:.6rem .9rem;background:rgba(184,120,72,.1);border:1px solid rgba(184,120,72,.3);border-radius:10px;font-size:12.5px;color:var(--amber)">No subjects yet — <button onclick="openSubjModal()" style="background:none;border:none;color:var(--amber);font-weight:700;cursor:pointer;padding:0;font-family:inherit;font-size:inherit;text-decoration:underline">add one in Subjects</button> first.</div>
       <div style="padding:0 1.25rem 1.25rem">
         <div class="frow" style="grid-template-columns:1fr 1fr 1fr;margin-bottom:.75rem">
           <div class="fg"><label>Subject</label><select id="subj-input" class="subj-sel" onchange="colourSel(this)"></select></div>
@@ -1012,7 +1019,7 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
       </div>
     </div>
   </div>
-  <div class="toolbar" id="filter-btns-wrap"></div>
+  <div class="toolbar-wrap"><div class="toolbar" id="filter-btns-wrap"></div></div>
   <div class="tlist" id="task-list"></div>
 </div></div>
 
@@ -1068,7 +1075,8 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 
 <!-- STATS -->
 <div class="page" id="page-stats"><div class="container">
-  <div class="page-hdr"><div class="page-hdr-title">Stats</div><div class="page-hdr-sub">Progress, streaks and subject insights all in one place</div></div>
+  <div class="page-hdr"><div class="page-hdr-title">Progress</div><div class="page-hdr-sub">Streaks, study hours and achievements</div></div>
+  <div class="pg-tabs"><button class="pg-tab active" onclick="nav('stats',document.querySelector('.nav-item[data-page=scores]'))">Stats</button><button class="pg-tab" onclick="nav('scores',document.querySelector('.nav-item[data-page=scores]'))">ATAR &amp; Scores</button></div>
   <div id="xp-stats"></div>
   <div class="home-stats" style="grid-template-columns:repeat(5,1fr)">
     <div class="hstat"><div class="hstat-num" id="st-streak">0</div><div class="hstat-label"><i data-lucide="flame" style="width:11px;height:11px;color:#f97316;vertical-align:-1px"></i> Streak</div></div>
@@ -1132,15 +1140,23 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 <div class="page" id="page-sacs"><div class="container">
   <div class="page-hdr"><div class="page-hdr-title">SACs &amp; Exams</div><div class="page-hdr-sub">Track and prepare for your assessment schedule</div></div>
   <div id="nub-wrap"></div>
-  <div class="card" style="margin-bottom:1.25rem" id="ev-form-card">
-    <div id="ev-edit-banner" class="edit-mode-banner" style="display:none">✏️ Editing SAC/Exam<button class="edit-cancel-btn" onclick="cancelEvEdit()">Cancel</button></div>
-    <div class="sh" id="ev-form-title">Add SAC or Exam</div>
-    <div class="frow" style="grid-template-columns:1fr auto auto auto auto">
-      <div class="fg"><label>Name</label><input type="text" id="ev-name" placeholder="e.g. Analytical essay SAC…"/></div>
-      <div class="fg"><label>Subject</label><select id="ev-subj" class="subj-sel" onchange="colourSel(this)"></select></div>
-      <div class="fg"><label>Type</label><select id="ev-type"><option value="sac">SAC</option><option value="exam">Exam</option></select></div>
-      <div class="fg"><label>Date</label><input type="date" id="ev-date"/></div>
-      <div class="fg"><label>&nbsp;</label><button class="abtn" id="ev-submit-btn" onclick="addEvent()">+ Add</button></div>
+  <div class="card" style="margin-bottom:1.25rem;padding:0;overflow:hidden" id="ev-form-card">
+    <div id="ev-edit-banner" class="edit-mode-banner" style="display:none;border-radius:0;border-bottom:1px solid var(--border)">✏️ Editing SAC/Exam<button class="edit-cancel-btn" onclick="cancelEvEdit()">Cancel</button></div>
+    <div class="tf-bar">
+      <input type="text" id="ev-name" class="tf-inp" placeholder="Add a SAC or Exam…" onfocus="evFormOpen()" autocomplete="off"/>
+    </div>
+    <div id="ev-form-expand">
+      <div style="padding:0 1.25rem 1.25rem">
+        <div class="frow" style="grid-template-columns:1fr 1fr 1fr;margin-bottom:.85rem">
+          <div class="fg"><label>Subject</label><select id="ev-subj" class="subj-sel" onchange="colourSel(this)"></select></div>
+          <div class="fg"><label>Type</label><select id="ev-type"><option value="sac">SAC</option><option value="exam">Exam</option></select></div>
+          <div class="fg"><label>Date</label><input type="date" id="ev-date"/></div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:.5rem">
+          <button class="abtn outline sm" onclick="evFormClose()">Cancel</button>
+          <button class="abtn" id="ev-submit-btn" onclick="addEvent()">+ Add</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1279,7 +1295,8 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 
 <!-- SCORES -->
 <div class="page" id="page-scores"><div class="container">
-  <div class="page-hdr"><div class="page-hdr-title">Scores</div><div class="page-hdr-sub">Track your SAC results and monitor your study score progress</div></div>
+  <div class="page-hdr"><div class="page-hdr-title">ATAR &amp; Scores</div><div class="page-hdr-sub">SAC results, study score estimates and ATAR calculator</div></div>
+  <div class="pg-tabs"><button class="pg-tab" onclick="nav('stats',document.querySelector('.nav-item[data-page=scores]'))">Stats</button><button class="pg-tab active" onclick="nav('scores',document.querySelector('.nav-item[data-page=scores]'))">ATAR &amp; Scores</button></div>
 
   <!-- add score form -->
   <div class="score-add-form">
@@ -1552,12 +1569,18 @@ function renderSubjOv(){
 
 function renderFilterBtns(){
   const fw=document.getElementById('filter-btns-wrap');if(!fw)return;
-  fw.innerHTML=`<button class="fp active" data-filter="all">All</button>
-    <button class="fp" data-filter="todo">To do</button>
-    <button class="fp" data-filter="urgent"><i data-lucide="flame" style="width:12px;height:12px;vertical-align:-1px"></i> Urgent</button>
-    ${userSubjects.map(s=>`<button class="fp" data-filter="${s.id}">${s.label}</button>`).join('')}
-    <button class="fp" data-filter="__other__">Other</button>
-    <button class="fp" data-filter="done">Done</button>
+  const tc=n=>`<span class="fp-count">${n}</span>`;
+  const pending=tasks.filter(t=>!t.done);
+  const todoN=pending.length;
+  const urgentN=pending.filter(t=>t.urgent).length;
+  const doneN=tasks.filter(t=>t.done).length;
+  const otherN=pending.filter(t=>t.subject==='__other__').length;
+  fw.innerHTML=`<button class="fp active" data-filter="all">All${todoN?tc(todoN):''}</button>
+    <button class="fp" data-filter="todo">To do${todoN?tc(todoN):''}</button>
+    <button class="fp" data-filter="urgent"><i data-lucide="flame" style="width:11px;height:11px;vertical-align:-1px"></i> Urgent${urgentN?tc(urgentN):''}</button>
+    ${userSubjects.map(s=>{const n=pending.filter(t=>t.subject===s.id).length;return`<button class="fp" data-filter="${s.id}">${s.label}${n?tc(n):''}</button>`}).join('')}
+    ${otherN?`<button class="fp" data-filter="__other__">Other${tc(otherN)}</button>`:''}
+    <button class="fp" data-filter="done">Done${doneN?tc(doneN):''}</button>
     <select class="ssort" id="sort-select" onchange="renderTasks()">
       <option value="due">Sort by due date</option>
       <option value="subj">Sort by subject</option>
@@ -1568,6 +1591,9 @@ function renderFilterBtns(){
     fw.querySelectorAll('.fp').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');renderTasks();
   }));
+  // restore active filter pill
+  const cur=fw.querySelector(`.fp[data-filter="${tfilter}"]`);
+  if(cur){fw.querySelectorAll('.fp').forEach(b=>b.classList.remove('active'));cur.classList.add('active');}
   if(typeof lucide!=='undefined')lucide.createIcons();
 }
 
@@ -1815,7 +1841,11 @@ function cancelTaskEdit(){
   document.getElementById('task-submit-btn').textContent='+ Add task';
   taskFormClose();
 }
-function taskFormOpen(){document.getElementById('task-form-card').classList.add('open');}
+function taskFormOpen(){
+  document.getElementById('task-form-card').classList.add('open');
+  const warn=document.getElementById('tf-no-subj-warn');
+  if(warn)warn.style.display=userSubjects.length===0?'block':'none';
+}
 function taskFormClose(){
   if(_editTaskId)return;
   document.getElementById('task-form-card').classList.remove('open');
@@ -1824,6 +1854,12 @@ function taskFormClose(){
 
 // ── EDIT SACs/EVENTS ──────────────────────────────────────────────────────────
 let _editEvId=null;
+function evFormOpen(){document.getElementById('ev-form-card').classList.add('open');}
+function evFormClose(){
+  if(_editEvId)return;
+  document.getElementById('ev-form-card').classList.remove('open');
+  document.getElementById('ev-name').blur();
+}
 function startEvEdit(id){
   const ev=events.find(x=>x.id===id);if(!ev)return;
   _editEvId=id;
@@ -1832,8 +1868,8 @@ function startEvEdit(id){
   document.getElementById('ev-type').value=ev.type;
   document.getElementById('ev-date').value=ev.date;
   document.getElementById('ev-edit-banner').style.display='flex';
-  document.getElementById('ev-form-title').textContent='Edit SAC / Exam';
   document.getElementById('ev-submit-btn').textContent='Update';
+  evFormOpen();
   document.getElementById('ev-form-card').scrollIntoView({behavior:'smooth',block:'start'});
   document.getElementById('ev-name').focus();
 }
@@ -1841,8 +1877,8 @@ function cancelEvEdit(){
   _editEvId=null;
   document.getElementById('ev-name').value='';document.getElementById('ev-date').value=todayStr();
   document.getElementById('ev-edit-banner').style.display='none';
-  document.getElementById('ev-form-title').textContent='Add SAC or Exam';
   document.getElementById('ev-submit-btn').textContent='+ Add';
+  evFormClose();
 }
 
 // ── TODAY'S REVISION PANEL ────────────────────────────────────────────────────
@@ -2015,7 +2051,9 @@ function nav(p,btn){
   document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
   document.getElementById('page-'+p).classList.add('active');
-  btn.classList.add('active');
+  if(btn)btn.classList.add('active');
+  // stats and scores share the same nav button
+  if(p==='stats'||p==='scores'){const nb=document.querySelector('.nav-item[data-page=scores]');if(nb)nb.classList.add('active');}
   closeSidebar();
   if(p==='home')renderHome();
   if(p==='calendar')renderCal();
@@ -2027,7 +2065,7 @@ function nav(p,btn){
   if(p==='revision'){renderRevision();renderTodayRevPanel();}
 }
 function navTo(p){
-  const btn=document.querySelector(`.nav-item[data-page="${p}"]`);
+  const btn=document.querySelector(`.nav-item[data-page="${p}"]`)||document.querySelector(`.nav-item[data-page="scores"]`);
   if(btn)nav(p,btn);
 }
 function openSidebar(){
@@ -2153,7 +2191,10 @@ async function init(){
   document.addEventListener('click',e=>{
     const card=document.getElementById('task-form-card');
     if(card&&card.classList.contains('open')&&!_editTaskId&&!card.contains(e.target)&&!document.getElementById('task-input').value.trim()){taskFormClose();}
+    const ecard=document.getElementById('ev-form-card');
+    if(ecard&&ecard.classList.contains('open')&&!_editEvId&&!ecard.contains(e.target)&&!document.getElementById('ev-name').value.trim()){evFormClose();}
   });
+  document.getElementById('ev-name').addEventListener('keydown',e=>{if(e.key==='Escape')evFormClose()});
   document.getElementById('plan-title').addEventListener('keydown',e=>{if(e.key==='Enter')addPlanBlock()});
   document.getElementById('ce-name').addEventListener('keydown',e=>{if(e.key==='Enter')addCalEvent()});
   document.getElementById('ce-repeat-n').addEventListener('change',updateRepeatPreview);
@@ -2244,7 +2285,8 @@ function renderTasks(){
   if(!vis.length){list.innerHTML=`<div class="empty"><div class="eb">${tfilter==='done'?'No completed tasks yet':tfilter==='urgent'?'No urgent tasks 🎉':'No tasks here'}</div><div class="es">${tfilter==='all'||tfilter==='todo'?'Add a task above.':'Switch filter.'}</div></div>`}
   else list.innerHTML=vis.map(t=>{
     const s=SUBJ[t.subject]||{label:t.subject,cls:'eng'};const ds=dueStatus(t.due);const ev=t.evLink?events.find(e=>e.id==t.evLink):null;
-    return`<div class="tc ${t.done?'done':''} ${t.urgent&&!t.done?'urgent':''}" style="background:${BG[t.subject]||''};border-color:${BR[t.subject]||''}"><div class="cw ${t.done?'ck':''}" onclick="toggleTask(${t.id})" style="margin-top:2px"></div><div class="tb"><div class="ttitle">${t.title}</div>${t.note?`<div class="tnote">${t.note}</div>`:''}<div class="ttags"><span class="badge" style="background:${BG[t.subject]};color:${NC[t.subject]}">${s.label}</span>${t.urgent&&!t.done?'<span class="badge b-urgent">! Urgent</span>':''}${ev?`<span class="badge b-sac">${ev.type.toUpperCase()}: ${ev.name}</span>`:''}</div>${renderSubHtml(t)}</div><div class="dinfo" style="padding-top:2px"><div class="${ds.cls}">${ds.label}</div></div><button class="urgbtn ${t.urgent?'on':''}" onclick="toggleUrgent(${t.id})" style="margin-top:1px">${t.urgent?'! Urgent':'! Urgent'}</button><button class="dbtn" style="font-size:13px;padding:0 8px;margin-top:1px" onclick="startTaskEdit(${t.id})" title="Edit task">✏️</button><button class="dbtn" onclick="removeTask(${t.id})" style="margin-top:1px">×</button></div>`;
+    const timerBtn=!t.done&&t.subject&&t.subject!=='__other__'?`<button class="dbtn" onclick="quickStudyTimer('${t.subject}')" title="Start study timer" style="margin-top:1px">⏱</button>`:'';
+    return`<div class="tc ${t.done?'done':''} ${t.urgent&&!t.done?'urgent':''}" style="background:${BG[t.subject]||''};border-color:${BR[t.subject]||''}"><div class="cw ${t.done?'ck':''}" onclick="toggleTask(${t.id})" style="margin-top:2px"></div><div class="tb"><div class="ttitle">${t.title}</div>${t.note?`<div class="tnote">${t.note}</div>`:''}<div class="ttags"><span class="badge" style="background:${BG[t.subject]};color:${NC[t.subject]}">${s.label}</span>${t.urgent&&!t.done?'<span class="badge b-urgent">! Urgent</span>':''}${ev?`<span class="badge b-sac">${ev.type.toUpperCase()}: ${ev.name}</span>`:''}</div>${renderSubHtml(t)}</div><div class="dinfo" style="padding-top:2px"><div class="${ds.cls}">${ds.label}</div></div>${timerBtn}<button class="urgbtn ${t.urgent?'on':''}" onclick="toggleUrgent(${t.id})" style="margin-top:1px">${t.urgent?'! Urgent':'! Urgent'}</button><button class="dbtn" style="font-size:13px;padding:0 8px;margin-top:1px" onclick="startTaskEdit(${t.id})" title="Edit task">✏️</button><button class="dbtn" onclick="removeTask(${t.id})" style="margin-top:1px">×</button></div>`;
   }).join('');
   const rem=tasks.filter(t=>!t.done);
   document.getElementById('s-total').textContent=rem.length;
@@ -2252,6 +2294,7 @@ function renderTasks(){
   document.getElementById('s-week').textContent=rem.filter(t=>t.due&&t.due>=todayStr()&&t.due<=weekEndStr()).length;
   document.getElementById('s-overdue').textContent=rem.filter(t=>t.due&&t.due<todayStr()).length;
   renderSubjOv();
+  renderFilterBtns();
 }
 
 // ── DAY PLANNER ──
@@ -2295,7 +2338,9 @@ function addEvent(){
   }
   events.push({id:Date.now(),name,subject,type,date,checklist:[]});
   events.sort((a,b)=>a.date.localeCompare(b.date));
-  document.getElementById('ev-name').value='';saveE();renderEvents();updateEvLink();showToast('Added! 🎯');
+  document.getElementById('ev-name').value='';
+  evFormClose();
+  saveE();renderEvents();updateEvLink();showToast('Added! 🎯');
 }
 function removeEvent(id){if(confirm('Remove?')){events=events.filter(x=>x.id!==id);saveE();renderEvents();updateEvLink()}}
 function toggleCL(evId,idx){const ev=events.find(e=>e.id===evId);if(!ev)return;ev.checklist[idx].done=!ev.checklist[idx].done;saveE();renderEvents()}
@@ -2602,10 +2647,6 @@ function renderHome(){
   let streak=0;for(let i=0;i<60;i++){const dd=new Date(TODAY);dd.setDate(dd.getDate()-i);if(cd.includes(localStr(dd)))streak++;else break}
   document.getElementById('hs-streak').textContent=streak;
   document.getElementById('hs-sacs').textContent=events.filter(e=>daysUntil(e.date)>=0).length;
-  const doy=localDayIndex();
-  const q=QUOTES[doy%QUOTES.length];
-  document.getElementById('h-qt').textContent=q.text;
-  document.getElementById('h-qa').textContent='— '+q.author;
   // health check
   const rem=tasks.filter(t=>!t.done);
   document.getElementById('h-health').innerHTML=userSubjects.map(s=>{
@@ -2792,6 +2833,14 @@ const SM_METHODS=[
 ];
 
 let _smActive=null,_smTimer=null,_smElapsed=0,_smRunning=false;
+function quickStudyTimer(subjId){
+  navTo('study');
+  setTimeout(()=>{
+    const gs=document.getElementById('gen-subj');const ps=document.getElementById('pom-subj');
+    if(gs){gs.value=subjId;colourSel(gs);}
+    if(ps){ps.value=subjId;colourSel(ps);}
+  },120);
+}
 let _fcCards=[],_fcIdx=0,_fcGot=0,_fcMiss=0,_fcFlipped=false;
 let _mmBranches=[];
 let _genInterval=null,_genSecs=0,_genRunning=false;
@@ -3869,34 +3918,34 @@ if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.se
 // ── ACHIEVEMENT BADGES ───────────────────────────────────────────────────────
 const BADGE_DEFS=[
   // Tasks
-  {id:'first-task',   icon:'check-circle-2', name:'First Step',        desc:'Complete your first task',       check:()=>tasks.filter(t=>t.done).length>=1},
-  {id:'tasks-10',     icon:'target',         name:'Getting Things Done',desc:'Complete 10 tasks',              check:()=>tasks.filter(t=>t.done).length>=10},
-  {id:'tasks-50',     icon:'zap',            name:'Task Machine',       desc:'Complete 50 tasks',              check:()=>tasks.filter(t=>t.done).length>=50},
-  {id:'tasks-100',    icon:'star',           name:'Centurion',          desc:'Complete 100 tasks',             check:()=>tasks.filter(t=>t.done).length>=100},
+  {id:'first-task',   icon:'check-circle-2', name:'First Step',        desc:'Complete your first task',       check:()=>tasks.filter(t=>t.done).length>=1,    progress:()=>{const n=tasks.filter(t=>t.done).length;return{cur:Math.min(n,1),max:1}}},
+  {id:'tasks-10',     icon:'target',         name:'Getting Things Done',desc:'Complete 10 tasks',              check:()=>tasks.filter(t=>t.done).length>=10,   progress:()=>{const n=tasks.filter(t=>t.done).length;return{cur:Math.min(n,10),max:10}}},
+  {id:'tasks-50',     icon:'zap',            name:'Task Machine',       desc:'Complete 50 tasks',              check:()=>tasks.filter(t=>t.done).length>=50,   progress:()=>{const n=tasks.filter(t=>t.done).length;return{cur:Math.min(n,50),max:50}}},
+  {id:'tasks-100',    icon:'star',           name:'Centurion',          desc:'Complete 100 tasks',             check:()=>tasks.filter(t=>t.done).length>=100,  progress:()=>{const n=tasks.filter(t=>t.done).length;return{cur:Math.min(n,100),max:100}}},
   // Streaks
-  {id:'streak-3',     icon:'flame',          name:'On Fire',            desc:'3-day study streak',             check:()=>calcBestStreak()>=3},
-  {id:'streak-7',     icon:'sparkles',       name:'Week Warrior',       desc:'7-day study streak',             check:()=>calcBestStreak()>=7},
-  {id:'streak-14',    icon:'trophy',         name:'Fortnight Focus',    desc:'14-day study streak',            check:()=>calcBestStreak()>=14},
-  {id:'streak-30',    icon:'crown',          name:'Unstoppable',        desc:'30-day study streak',            check:()=>calcBestStreak()>=30},
+  {id:'streak-3',     icon:'flame',          name:'On Fire',            desc:'3-day study streak',             check:()=>calcBestStreak()>=3,  progress:()=>({cur:Math.min(calcBestStreak(),3),max:3})},
+  {id:'streak-7',     icon:'sparkles',       name:'Week Warrior',       desc:'7-day study streak',             check:()=>calcBestStreak()>=7,  progress:()=>({cur:Math.min(calcBestStreak(),7),max:7})},
+  {id:'streak-14',    icon:'trophy',         name:'Fortnight Focus',    desc:'14-day study streak',            check:()=>calcBestStreak()>=14, progress:()=>({cur:Math.min(calcBestStreak(),14),max:14})},
+  {id:'streak-30',    icon:'crown',          name:'Unstoppable',        desc:'30-day study streak',            check:()=>calcBestStreak()>=30, progress:()=>({cur:Math.min(calcBestStreak(),30),max:30})},
   // Study hours
-  {id:'hours-1',      icon:'clock',          name:'Clock In',           desc:'Log your first study hour',      check:()=>studyLog.reduce((a,l)=>a+l.hours,0)>=1},
-  {id:'hours-10',     icon:'book-open',      name:'Bookworm',           desc:'Log 10 hours of study',          check:()=>studyLog.reduce((a,l)=>a+l.hours,0)>=10},
-  {id:'hours-50',     icon:'book',           name:'Scholar',            desc:'Log 50 hours of study',          check:()=>studyLog.reduce((a,l)=>a+l.hours,0)>=50},
-  {id:'hours-100',    icon:'brain',          name:'VCE Grind',          desc:'Log 100 hours of study',         check:()=>studyLog.reduce((a,l)=>a+l.hours,0)>=100},
+  {id:'hours-1',      icon:'clock',          name:'Clock In',           desc:'Log your first study hour',      check:()=>studyLog.reduce((a,l)=>a+l.hours,0)>=1,   progress:()=>{const h=studyLog.reduce((a,l)=>a+l.hours,0);return{cur:Math.min(Math.round(h*10)/10,1),max:1}}},
+  {id:'hours-10',     icon:'book-open',      name:'Bookworm',           desc:'Log 10 hours of study',          check:()=>studyLog.reduce((a,l)=>a+l.hours,0)>=10,  progress:()=>{const h=studyLog.reduce((a,l)=>a+l.hours,0);return{cur:Math.min(Math.round(h*10)/10,10),max:10}}},
+  {id:'hours-50',     icon:'book',           name:'Scholar',            desc:'Log 50 hours of study',          check:()=>studyLog.reduce((a,l)=>a+l.hours,0)>=50,  progress:()=>{const h=studyLog.reduce((a,l)=>a+l.hours,0);return{cur:Math.min(Math.round(h*10)/10,50),max:50}}},
+  {id:'hours-100',    icon:'brain',          name:'VCE Grind',          desc:'Log 100 hours of study',         check:()=>studyLog.reduce((a,l)=>a+l.hours,0)>=100, progress:()=>{const h=studyLog.reduce((a,l)=>a+l.hours,0);return{cur:Math.min(Math.round(h*10)/10,100),max:100}}},
   // SACs & scores
-  {id:'first-sac',    icon:'file-text',      name:'Assessment Ready',   desc:'Add your first SAC or exam',     check:()=>events.length>=1},
-  {id:'first-score',  icon:'award',          name:'Result Logged',      desc:'Log your first SAC score',       check:()=>scores.length>=1},
-  {id:'score-90',     icon:'sparkles',       name:'High Achiever',      desc:'Score 90% or above on any SAC',  check:()=>scores.some(s=>s.score/s.max>=.9)},
+  {id:'first-sac',    icon:'file-text',      name:'Assessment Ready',   desc:'Add your first SAC or exam',     check:()=>events.length>=1,       progress:()=>({cur:Math.min(events.length,1),max:1})},
+  {id:'first-score',  icon:'award',          name:'Result Logged',      desc:'Log your first SAC score',       check:()=>scores.length>=1,       progress:()=>({cur:Math.min(scores.length,1),max:1})},
+  {id:'score-90',     icon:'sparkles',       name:'High Achiever',      desc:'Score 90% or above on any SAC',  check:()=>scores.some(s=>s.score/s.max>=.9), progress:()=>({cur:scores.length?Math.round(Math.max(...scores.map(s=>s.score/s.max))*100):0,max:90,suffix:'%'})},
   // XP & levels
-  {id:'xp-100',       icon:'zap',            name:'XP Earner',          desc:'Reach 100 XP',                  check:()=>xp>=100},
-  {id:'xp-500',       icon:'shield',         name:'Dedicated',          desc:'Reach 500 XP',                  check:()=>xp>=500},
-  {id:'xp-1000',      icon:'gem',            name:'Diamond Scholar',    desc:'Reach 1000 XP',                 check:()=>xp>=1000},
+  {id:'xp-100',       icon:'zap',            name:'XP Earner',          desc:'Reach 100 XP',                  check:()=>xp>=100,  progress:()=>({cur:Math.min(xp,100),max:100,suffix:' XP'})},
+  {id:'xp-500',       icon:'shield',         name:'Dedicated',          desc:'Reach 500 XP',                  check:()=>xp>=500,  progress:()=>({cur:Math.min(xp,500),max:500,suffix:' XP'})},
+  {id:'xp-1000',      icon:'gem',            name:'Diamond Scholar',    desc:'Reach 1000 XP',                 check:()=>xp>=1000, progress:()=>({cur:Math.min(xp,1000),max:1000,suffix:' XP'})},
   // Study methods
-  {id:'method-first', icon:'flask-conical',  name:'Experimenter',       desc:'Complete any study method',      check:()=>parseInt(localStorage.getItem(UID_PREFIX+'methods-done')||'0')>=1},
-  {id:'method-all',   icon:'map',            name:'Method Master',      desc:'Try all 7 study methods',        check:()=>(JSON.parse(localStorage.getItem(UID_PREFIX+'methods-set')||'[]')).length>=7},
+  {id:'method-first', icon:'flask-conical',  name:'Experimenter',       desc:'Complete any study method',      check:()=>parseInt(localStorage.getItem(UID_PREFIX+'methods-done')||'0')>=1, progress:()=>({cur:Math.min(parseInt(localStorage.getItem(UID_PREFIX+'methods-done')||'0'),1),max:1})},
+  {id:'method-all',   icon:'map',            name:'Method Master',      desc:'Try all 7 study methods',        check:()=>(JSON.parse(localStorage.getItem(UID_PREFIX+'methods-set')||'[]')).length>=7, progress:()=>({cur:(JSON.parse(localStorage.getItem(UID_PREFIX+'methods-set')||'[]')).length,max:7})},
   // Special
-  {id:'planner-use',  icon:'calendar-days',  name:'Planner Pro',        desc:'Add 5 day planner blocks',       check:()=>Object.values(planData).flat().length>=5},
-  {id:'early-bird',   icon:'sunrise',        name:'Early Bird',         desc:'Have 3 tasks due before 8am',    check:()=>false},
+  {id:'planner-use',  icon:'calendar-days',  name:'Planner Pro',        desc:'Add 5 day planner blocks',       check:()=>Object.values(planData).flat().length>=5, progress:()=>({cur:Math.min(Object.values(planData).flat().length,5),max:5})},
+  {id:'early-bird',   icon:'sunrise',        name:'Early Bird',         desc:'Have 3 tasks due before 8am',    check:()=>false, progress:()=>({cur:0,max:3})},
 ];
 
 function calcBestStreak(){
@@ -3915,11 +3964,19 @@ function renderBadges(){
   const html=BADGE_DEFS.map(b=>{
     const earned=b.check();
     if(earned&&!seen.has(b.id)){newlyEarned.push(b.id);seen.add(b.id);}
+    let progressHtml='';
+    if(!earned&&b.progress){
+      const p=b.progress();
+      const pct=p.max>0?Math.round(p.cur/p.max*100):0;
+      const suf=p.suffix||'';
+      progressHtml=`<div class="badge-prog-wrap"><div class="badge-prog-bar"><div class="badge-prog-fill" style="width:${pct}%"></div></div><div class="badge-prog-label">${p.cur}${suf} / ${p.max}${suf}</div></div>`;
+    }
     return`<div class="badge-card${earned?' earned':' locked'}">
       ${earned&&newlyEarned.includes(b.id)?'<div class="badge-new">NEW</div>':''}
       <div class="badge-icon"><i data-lucide="${b.icon}"></i></div>
       <div class="badge-name">${b.name}</div>
       <div class="badge-desc">${b.desc}</div>
+      ${progressHtml}
     </div>`;
   }).join('');
   grid.innerHTML=html;
