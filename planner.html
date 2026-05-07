@@ -728,33 +728,6 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 .rs-missed-reschedule{background:var(--accent);color:#fff}
 .rs-missed-skip{background:var(--border);color:var(--muted)}
 /* AI assistant */
-#ai-fab{position:fixed;bottom:1.5rem;right:1.5rem;width:52px;height:52px;border-radius:50%;background:var(--accent);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,.25);z-index:9000;transition:all .2s}
-#ai-fab svg{width:22px;height:22px}
-#ai-fab:hover{transform:scale(1.08);filter:brightness(1.1)}
-#ai-panel{position:fixed;bottom:1.5rem;right:1.5rem;width:360px;max-width:calc(100vw - 2rem);height:540px;max-height:calc(100vh - 2rem);background:var(--surface);border:1px solid var(--border);border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.3);z-index:9001;display:none;flex-direction:column;overflow:hidden}
-#ai-panel.open{display:flex}
-.ai-panel-header{background:var(--hbg);padding:.9rem 1.1rem;display:flex;align-items:center;gap:.6rem;flex-shrink:0}
-.ai-panel-title{font-family:'Fraunces',serif;font-size:.95rem;font-weight:700;color:var(--htxt);flex:1}
-.ai-panel-close{background:transparent;border:none;color:rgba(255,255,255,.6);cursor:pointer;font-size:1.2rem;line-height:1;padding:2px 4px;border-radius:4px;transition:color .15s}
-.ai-panel-close:hover{color:#fff}
-.ai-messages{flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:.75rem}
-.ai-msg{max-width:88%;padding:.65rem .9rem;border-radius:14px;font-size:13.5px;line-height:1.6}
-.ai-msg.user{background:var(--accent);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
-.ai-msg.assistant{background:var(--bg);color:var(--text);align-self:flex-start;border-bottom-left-radius:4px;border:1px solid var(--border)}
-.ai-msg.assistant pre{font-size:12px;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:.4rem .6rem;overflow-x:auto;margin:.4rem 0}
-.ai-input-row{padding:.75rem 1rem;border-top:1px solid var(--border);display:flex;gap:.5rem;flex-shrink:0}
-#ai-input{flex:1;padding:9px 12px;border:1px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:13.5px;outline:none;resize:none;max-height:100px;line-height:1.5;transition:border-color .15s}
-#ai-input:focus{border-color:var(--accent)}
-#ai-send{width:36px;height:36px;border-radius:9px;background:var(--accent);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;align-self:flex-end}
-#ai-send:hover{filter:brightness(1.1)}
-#ai-send:disabled{opacity:.4;cursor:default}
-.ai-key-wrap{padding:1rem;flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:.75rem;text-align:center}
-.ai-key-wrap p{font-size:13px;color:var(--muted);line-height:1.6;max-width:280px}
-.ai-key-wrap input{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;outline:none;transition:border-color .15s}
-.ai-key-wrap input:focus{border-color:var(--accent)}
-.ai-suggestions{display:flex;flex-wrap:wrap;gap:.4rem;padding:.5rem 1rem 0;flex-shrink:0}
-.ai-chip{font-size:11.5px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--bg);color:var(--muted);cursor:pointer;transition:all .15s;font-family:'Plus Jakarta Sans',sans-serif}
-.ai-chip:hover{border-color:var(--accent);color:var(--accent)}
 /* ── BADGES ── */
 .badges-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:.75rem}
 .badge-card{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:1rem .9rem;text-align:center;transition:all .2s;position:relative}
@@ -1016,9 +989,6 @@ input:checked+.toggle-slider::before{transform:translateX(18px)}
 #sac-celebrate-modal.open .sac-modal-box,
 #subj-detail-modal.open .sdm-card{animation:modal-in .2s cubic-bezier(0.16,1,0.3,1)}
 
-/* AI assistant panel slides in from bottom-right corner */
-@keyframes panel-in{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
-#ai-panel.open{animation:panel-in .2s cubic-bezier(0.16,1,0.3,1)}
 
 /* Empty state — gentle infinite float keeps the screen feeling alive */
 @keyframes float-gentle{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
@@ -1598,34 +1568,6 @@ input:checked+.toggle-slider::before{transform:translateX(18px)}
 
 </div><!-- end .main-wrap -->
 
-<!-- AI ASSISTANT FAB -->
-<button id="ai-fab" onclick="aiToggle()" title="AI Study Assistant"><i data-lucide="sparkles"></i></button>
-
-<!-- AI ASSISTANT PANEL -->
-<div id="ai-panel">
-  <div class="ai-panel-header">
-    <i data-lucide="sparkles" style="width:18px;height:18px;color:var(--accent)"></i>
-    <div class="ai-panel-title">AI Study Assistant</div>
-    <button class="ai-panel-close" onclick="aiToggle()">✕</button>
-  </div>
-  <!-- key setup screen (shown if no API key) -->
-  <div id="ai-key-screen" class="ai-key-wrap" style="display:none">
-    <i data-lucide="key-round" style="width:32px;height:32px;color:var(--accent)"></i>
-    <p>Enter your Anthropic API key to use the AI assistant. Your key is stored only in this browser and never sent anywhere except Anthropic.</p>
-    <input type="password" id="ai-key-input" placeholder="sk-ant-..."/>
-    <button class="abtn" onclick="aiSaveKey()" style="width:100%">Save key & start chatting</button>
-    <a href="https://console.anthropic.com/" target="_blank" rel="noopener" style="font-size:11.5px;color:var(--muted)">Get an API key at console.anthropic.com →</a>
-  </div>
-  <!-- chat screen -->
-  <div id="ai-chat-screen" style="display:none;flex-direction:column;flex:1;overflow:hidden">
-    <div class="ai-suggestions" id="ai-chips"></div>
-    <div class="ai-messages" id="ai-messages"></div>
-    <div class="ai-input-row">
-      <textarea id="ai-input" rows="1" placeholder="Ask anything about your subjects…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();aiSend()}"></textarea>
-      <button id="ai-send" onclick="aiSend()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
-    </div>
-  </div>
-</div>
 
 <script defer>
 // ── DATA ──
@@ -1878,13 +1820,13 @@ function toggleSbrMenu(){
   const m=document.getElementById('sbr-menu');if(!m)return;
   m.classList.toggle('open');
   const btn=document.getElementById('sbr-settings-btn');
-  if(btn){const open=m.classList.contains('open');btn.innerHTML=`<i data-lucide="${open?'x':'settings'}"></i>${open?'Close':'Settings'}`;if(typeof lucide!=='undefined')lucide.createIcons();}
+  if(btn){const open=m.classList.contains('open');btn.innerHTML=`<i data-lucide="${open?'x':'settings'}"></i>`;btn.classList.toggle('active',open);if(typeof lucide!=='undefined')lucide.createIcons();}
 }
 function closeSbrMenu(){
   const m=document.getElementById('sbr-menu');if(!m)return;
   m.classList.remove('open');
   const btn=document.getElementById('sbr-settings-btn');
-  if(btn){btn.innerHTML='<i data-lucide="settings"></i>Settings';if(typeof lucide!=='undefined')lucide.createIcons();}
+  if(btn){btn.innerHTML='<i data-lucide="settings"></i>';btn.classList.remove('active');if(typeof lucide!=='undefined')lucide.createIcons();}
 }
 
 // ── SUBJECT MANAGEMENT ────────────────────────────────────────────────────────
@@ -3991,112 +3933,6 @@ function formatDur(mins){
   return m?`${h}h ${m}m`:`${h}h`;
 }
 
-// ── AI STUDY ASSISTANT ────────────────────────────────────────────────────────
-const AI_MODEL='claude-haiku-4-5';
-let aiOpen=false,aiHistory=[];
-
-function aiToggle(){
-  aiOpen=!aiOpen;
-  const panel=document.getElementById('ai-panel');
-  panel.classList.toggle('open',aiOpen);
-  if(aiOpen)aiInit();
-}
-
-function aiInit(){
-  const key=localStorage.getItem('vce-ai-key')||'';
-  document.getElementById('ai-key-screen').style.display=key?'none':'flex';
-  const chat=document.getElementById('ai-chat-screen');
-  chat.style.display=key?'flex':'none';
-  if(key&&!aiHistory.length)aiWelcome();
-  aiRenderChips();
-}
-
-function aiWelcome(){
-  const subjList=userSubjects.map(s=>s.label).join(', ')||'your subjects';
-  const upcoming=events.filter(e=>daysUntil(e.date)>=0).slice(0,3).map(e=>`${e.name} in ${daysUntil(e.date)}d`).join(', ')||'none upcoming';
-  aiAddMsg('assistant',`Hi! I'm your VCE study assistant. I can see you're studying **${subjList}** and have upcoming assessments: ${upcoming}.\n\nAsk me to explain a concept, quiz you, summarise notes, or help you plan. What do you need?`);
-}
-
-function aiRenderChips(){
-  const chips=['Quiz me on a topic','Explain a concept simply','Help me plan my revision','What should I study today?','Check my understanding'];
-  document.getElementById('ai-chips').innerHTML=chips.map(c=>`<button class="ai-chip" onclick="aiChip(this)">${c}</button>`).join('');
-}
-
-function aiChip(btn){
-  document.getElementById('ai-input').value=btn.textContent;
-  document.getElementById('ai-input').focus();
-}
-
-function aiSaveKey(){
-  const k=document.getElementById('ai-key-input').value.trim();
-  if(!k.startsWith('sk-')){showToast('Invalid key — should start with sk-');return;}
-  localStorage.setItem('vce-ai-key',k);
-  aiInit();
-}
-
-function aiAddMsg(role,md){
-  aiHistory.push({role,content:md});
-  const msgs=document.getElementById('ai-messages');
-  const div=document.createElement('div');
-  div.className='ai-msg '+role;
-  div.innerHTML=aiMd(md);
-  msgs.appendChild(div);
-  msgs.scrollTop=msgs.scrollHeight;
-}
-
-function aiMd(text){
-  return text
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
-    .replace(/\*(.*?)\*/g,'<em>$1</em>')
-    .replace(/`([^`]+)`/g,'<code style="background:var(--border);padding:1px 4px;border-radius:4px;font-size:12px">$1</code>')
-    .replace(/\n/g,'<br>');
-}
-
-async function aiSend(){
-  const inp=document.getElementById('ai-input');
-  const text=inp.value.trim();
-  if(!text)return;
-  const key=localStorage.getItem('vce-ai-key')||'';
-  if(!key){aiToggle();return;}
-  inp.value='';
-  aiAddMsg('user',text);
-  const send=document.getElementById('ai-send');
-  send.disabled=true;
-
-  // build system prompt with context
-  const subjList=userSubjects.map(s=>s.label).join(', ')||'various subjects';
-  const upcoming=events.filter(e=>daysUntil(e.date)>=0).slice(0,5).map(e=>`${e.name} (${e.subject?userSubjects.find(s=>s.id===e.subject)?.label:''}, ${daysUntil(e.date)} days away)`).join('; ')||'none';
-  const sys=`You are a helpful study assistant for a VCE (Victorian Certificate of Education) student in Australia. The student studies: ${subjList}. Upcoming assessments: ${upcoming}. Be concise, encouraging and specific to VCE. Use markdown formatting sparingly.`;
-
-  // loading indicator
-  const msgs=document.getElementById('ai-messages');
-  const loader=document.createElement('div');
-  loader.className='ai-msg assistant';
-  loader.innerHTML='<span style="opacity:.5">Thinking…</span>';
-  msgs.appendChild(loader);msgs.scrollTop=msgs.scrollHeight;
-
-  try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'x-api-key':key,'anthropic-version':'2023-06-01','content-type':'application/json','anthropic-dangerous-direct-browser-calls':'true'},
-      body:JSON.stringify({model:AI_MODEL,max_tokens:800,system:sys,messages:aiHistory.filter(m=>m.role!=='system').map(m=>({role:m.role,content:m.content}))})
-    });
-    const data=await res.json();
-    loader.remove();
-    if(data.error){aiAddMsg('assistant','Sorry, something went wrong: '+data.error.message);send.disabled=false;return;}
-    const reply=data.content?.[0]?.text||'No response';
-    aiAddMsg('assistant',reply);
-  }catch(err){
-    loader.remove();
-    if(err.message.includes('Failed to fetch')){
-      aiAddMsg('assistant','Network error — check your connection or API key.');
-    } else {
-      aiAddMsg('assistant','Error: '+err.message);
-    }
-  }
-  send.disabled=false;
-}
 
 // ── PWA ──────────────────────────────────────────────────────────────────────
 function pwaInstall(){
