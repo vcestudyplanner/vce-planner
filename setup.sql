@@ -35,3 +35,15 @@ create policy "own_subjects" on public.subjects
 
 create policy "insert_suggestions" on public.suggestions
   for insert with check (true);
+
+-- Cloud sync blob — one row per user, stores all localStorage keys as JSON
+create table if not exists public.user_data (
+  user_id uuid references auth.users on delete cascade primary key,
+  data jsonb not null default '{}',
+  updated_at timestamptz default now()
+);
+
+alter table public.user_data enable row level security;
+
+create policy "own_user_data" on public.user_data
+  for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
