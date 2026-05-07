@@ -81,17 +81,22 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .nav-item:hover{background:var(--shover);color:var(--stxt)}
 .nav-item.active{background:rgba(99,102,241,.18);color:var(--accent);font-weight:600}
 [data-theme=dark] .nav-item.active{background:rgba(129,140,248,.18);color:var(--accent-light)}
-.sidebar-bottom{padding:.75rem;border-top:1px solid var(--ssep);display:flex;flex-direction:column;gap:3px}
+.sidebar-bottom{padding:.6rem .75rem .75rem;border-top:1px solid var(--ssep);display:flex;flex-direction:column;gap:2px}
 .sidebar-link{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:9px;font-size:12.5px;font-weight:500;color:var(--slink);text-decoration:none;transition:all .15s;background:transparent;border:none;cursor:pointer;width:100%;text-align:left}
 .sidebar-link svg{width:13px;height:13px}
 .sidebar-link:hover{background:var(--shover);color:var(--stxt)}
-.sbr-menu{display:none;flex-direction:column;gap:2px;background:var(--shover);border:1px solid var(--ssep);border-radius:12px;padding:.3rem;margin-bottom:.35rem}
+.sbr-menu{display:none;flex-direction:column;gap:2px;background:var(--shover);border:1px solid var(--ssep);border-radius:12px;padding:.3rem;margin-bottom:.4rem}
 .sbr-menu.open{display:flex}
-.tbtn{width:26px;height:26px;border-radius:7px;border:1.5px solid var(--ssep);background:var(--shover);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;padding:0;flex-shrink:0}
-.tbtn svg{width:13px;height:13px;color:var(--smuted)}
-.tbtn:hover{background:rgba(99,102,241,.14)}
-#pwa-install-btn:hover{background:#4f46e5;color:#ffffff}
-#sidebar-action-btns button:hover{filter:brightness(.9)}
+.sbr-actions{display:flex;align-items:center;gap:2px;padding-top:.3rem}
+.sbr-actions .sync-dot{margin:0 4px 0 2px}
+.sba-btn{width:30px;height:30px;border-radius:8px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--smuted);transition:all .15s;padding:0;flex-shrink:0}
+.sba-btn svg{width:14px;height:14px}
+.sba-btn:hover{background:var(--shover);color:var(--stxt)}
+.sba-btn.active{color:var(--accent)}
+.tbtn{width:30px;height:30px;border-radius:8px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;padding:0;flex-shrink:0}
+.tbtn svg{width:14px;height:14px;color:var(--smuted)}
+.tbtn:hover{background:var(--shover)}
+.sbr-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--smuted);padding:.5rem .6rem .2rem;}
 .sidebar-collapse-btn{margin-left:auto;width:24px;height:24px;border-radius:7px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--smuted);transition:all .15s;flex-shrink:0;padding:0}
 .sidebar-collapse-btn svg{width:14px;height:14px}
 .sidebar-collapse-btn:hover{background:var(--shover);color:var(--stxt)}
@@ -1085,16 +1090,17 @@ input:checked+.toggle-slider::before{transform:translateX(18px)}
   </nav>
   <div class="sidebar-bottom">
     <div class="sbr-menu" id="sbr-menu">
+      <div class="sbr-label">More</div>
       <button class="sidebar-link" onclick="openNotifModal();closeSbrMenu()"><i data-lucide="bell"></i>Notifications</button>
       <a class="sidebar-link" href="suggestions.html"><i data-lucide="message-circle"></i>Suggestions</a>
       <button class="sidebar-link" onclick="replayTour();closeSbrMenu()"><i data-lucide="play-circle"></i>Tutorial</button>
+      <button id="pwa-install-btn" onclick="pwaInstall();closeSbrMenu()" class="sidebar-link"><i data-lucide="smartphone"></i>Get the App</button>
     </div>
-    <div style="display:flex;gap:3px;align-items:center">
-      <button id="pwa-install-btn" onclick="pwaInstall()" class="sidebar-link" style="flex:1"><i data-lucide="smartphone"></i>Get the App</button>
-      <button class="sidebar-link" id="sbr-settings-btn" onclick="toggleSbrMenu()" style="padding:7px 10px;flex-shrink:0" title="Settings" aria-label="Settings"><i data-lucide="settings"></i></button>
+    <div class="sbr-actions">
       <div id="sync-dot" class="sync-dot" title=""></div>
-      <button class="tbtn" id="dark-toggle" onclick="toggleDark()" title="Toggle dark/light mode" aria-label="Toggle dark/light mode" style="margin-right:2px"><i data-lucide="moon"></i></button>
-      <button class="sidebar-link" onclick="logout()" title="Sign out" style="padding:7px 10px;flex-shrink:0"><i data-lucide="log-out"></i></button>
+      <button class="tbtn" id="dark-toggle" onclick="toggleDark()" title="Toggle dark mode"><i data-lucide="moon"></i></button>
+      <button class="sba-btn" id="sbr-settings-btn" onclick="toggleSbrMenu()" title="More options"><i data-lucide="settings"></i></button>
+      <button class="sba-btn" onclick="logout()" title="Sign out"><i data-lucide="log-out"></i></button>
     </div>
   </div>
 </aside>
