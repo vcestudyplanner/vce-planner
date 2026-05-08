@@ -897,10 +897,6 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 .task-search-wrap .ts-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--muted);pointer-events:none}
 #task-search{padding-left:34px!important;height:38px;border-radius:12px}
 
-/* ── DUE DATE SHORTCUTS ── */
-.date-shortcuts{display:flex;gap:5px;flex-wrap:wrap;margin-top:.35rem}
-.ds-btn{padding:3px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg);font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s;font-family:'Plus Jakarta Sans',sans-serif}
-.ds-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(99,102,241,.06)}
 
 /* ── AUTO-URGENT (due within 24h, not manually flagged) ── */
 .tc.auto-urgent:not(.urgent){outline:1.5px solid var(--amber);outline-offset:-1px}
@@ -1048,14 +1044,10 @@ input:checked+.toggle-slider::before{transform:translateX(18px)}
   <nav class="sidebar-nav">
     <button class="nav-item active" data-page="home" onclick="nav('home',this)"><i data-lucide="home"></i>Home</button>
     <button class="nav-item" data-page="tasks" onclick="nav('tasks',this)"><i data-lucide="check-square-2"></i>Tasks</button>
-    <div class="sidebar-sep"></div>
-    <button class="nav-item" data-page="planner" onclick="nav('planner',this)"><i data-lucide="layout-list"></i>Day Planner</button>
     <button class="nav-item" data-page="sacs" onclick="nav('sacs',this)"><i data-lucide="target"></i>SACs &amp; Exams</button>
-    <button class="nav-item" data-page="revision" onclick="nav('revision',this)"><i data-lucide="calendar-check"></i>Revision Planner</button>
-    <button class="nav-item" data-page="calendar" onclick="nav('calendar',this)"><i data-lucide="calendar"></i>Calendar</button>
     <div class="sidebar-sep"></div>
-    <button class="nav-item" data-page="study" onclick="nav('study',this)"><i data-lucide="brain"></i>Study Methods</button>
-    <button class="nav-item" data-page="scores" onclick="nav('stats',this)"><i data-lucide="bar-chart-2"></i>Progress &amp; ATAR</button>
+    <button class="nav-item" data-page="study" onclick="nav('study',this)"><i data-lucide="brain"></i>Study</button>
+    <button class="nav-item" data-page="scores" onclick="nav('stats',this)"><i data-lucide="bar-chart-2"></i>Progress</button>
     <button class="nav-item" onclick="openSubjModal()"><i data-lucide="layers"></i>Subjects</button>
   </nav>
   <div class="sidebar-bottom">
@@ -1134,10 +1126,6 @@ input:checked+.toggle-slider::before{transform:translateX(18px)}
       </div>
     </div>
   </div>
-  <div style="margin-bottom:1.25rem">
-    <div class="sh">Subject health</div>
-    <div class="health-grid" id="h-health"></div>
-  </div>
   <div class="home-grid">
     <div class="card" style="margin-bottom:0">
       <div class="hst">Due soon<a onclick="navTo('tasks')">View all →</a></div>
@@ -1154,6 +1142,7 @@ input:checked+.toggle-slider::before{transform:translateX(18px)}
 <!-- TASKS -->
 <div class="page" id="page-tasks"><div class="container">
   <div class="page-hdr"><div class="page-hdr-title">Tasks</div><div class="page-hdr-sub">Track assignments, essays and study goals across all subjects</div></div>
+  <div class="pg-tabs"><button class="pg-tab active" onclick="navTo('tasks')">Tasks</button><button class="pg-tab" onclick="navTo('planner')">Day Planner</button></div>
   <div id="xp-tasks"></div>
   <div class="stats-grid">
     <div class="stat-card"><div class="stat-label">Remaining</div><div class="stat-num" id="s-total">0</div></div>
@@ -1173,7 +1162,7 @@ input:checked+.toggle-slider::before{transform:translateX(18px)}
       <div style="padding:0 1.25rem 1.25rem">
         <div class="frow" style="grid-template-columns:1fr 1fr 1fr;margin-bottom:.75rem">
           <div class="fg"><label>Subject</label><select id="subj-input" class="subj-sel" onchange="colourSel(this)"></select></div>
-          <div class="fg"><label>Due date</label><input type="date" id="date-input"/><div class="date-shortcuts"><button class="ds-btn" onclick="setDueShortcut(0)">Today</button><button class="ds-btn" onclick="setDueShortcut(1)">Tomorrow</button><button class="ds-btn" onclick="setDueShortcut(7)">Next week</button></div></div>
+          <div class="fg"><label>Due date</label><input type="date" id="date-input"/></div>
           <div class="fg"><label>Link SAC/Exam</label><select id="task-ev-link"><option value="">None</option></select></div>
         </div>
         <div class="fg" style="margin-bottom:.85rem"><label>Notes (optional)</label><textarea id="note-input" placeholder="Page numbers, reminders…" maxlength="500"></textarea></div>
@@ -1199,7 +1188,8 @@ input:checked+.toggle-slider::before{transform:translateX(18px)}
 
 <!-- DAY PLANNER -->
 <div class="page" id="page-planner"><div class="container">
-  <div class="page-hdr"><div class="page-hdr-title">Day Planner</div><div class="page-hdr-sub">Schedule your day hour by hour</div></div>
+  <div class="page-hdr"><div class="page-hdr-title">Tasks</div></div>
+  <div class="pg-tabs"><button class="pg-tab" onclick="navTo('tasks')">Tasks</button><button class="pg-tab active" onclick="navTo('planner')">Day Planner</button></div>
   <div style="display:grid;grid-template-columns:1fr 320px;gap:1.25rem;align-items:start">
     <div class="card" style="margin-bottom:0">
       <div class="planner-nav">
@@ -1313,6 +1303,7 @@ input:checked+.toggle-slider::before{transform:translateX(18px)}
 <!-- SACs & EXAMS -->
 <div class="page" id="page-sacs"><div class="container">
   <div class="page-hdr"><div class="page-hdr-title">SACs &amp; Exams</div><div class="page-hdr-sub">Track and prepare for your assessment schedule</div></div>
+  <div class="pg-tabs"><button class="pg-tab active" onclick="navTo('sacs')">SACs &amp; Exams</button><button class="pg-tab" onclick="navTo('calendar')">Calendar</button><button class="pg-tab" onclick="navTo('revision')">Revision</button></div>
   <div id="nub-wrap"></div>
   <div class="card" style="margin-bottom:1.25rem;padding:0;overflow:hidden" id="ev-form-card">
     <div id="ev-edit-banner" class="edit-mode-banner" style="display:none;border-radius:0;border-bottom:1px solid var(--border)">✏️ Editing SAC/Exam<button class="edit-cancel-btn" onclick="cancelEvEdit()">Cancel</button></div>
@@ -1340,7 +1331,8 @@ input:checked+.toggle-slider::before{transform:translateX(18px)}
 
 <!-- CALENDAR -->
 <div class="page" id="page-calendar"><div class="container">
-  <div class="page-hdr"><div class="page-hdr-title">Calendar</div><div class="page-hdr-sub">Monthly overview with SACs, exams and recurring events</div></div>
+  <div class="page-hdr"><div class="page-hdr-title">SACs &amp; Exams</div></div>
+  <div class="pg-tabs"><button class="pg-tab" onclick="navTo('sacs')">SACs &amp; Exams</button><button class="pg-tab active" onclick="navTo('calendar')">Calendar</button><button class="pg-tab" onclick="navTo('revision')">Revision</button></div>
   <div class="card">
     <div class="cal-hdr">
       <button class="cnav" onclick="calMove(-1)">&#8592;</button>
@@ -1553,7 +1545,8 @@ input:checked+.toggle-slider::before{transform:translateX(18px)}
 
 <!-- REVISION PLANNER -->
 <div class="page" id="page-revision"><div class="container">
-  <div class="page-hdr"><div class="page-hdr-title">Revision Planner</div><div class="page-hdr-sub">Spaced revision schedules generated from your upcoming SACs &amp; exams</div></div>
+  <div class="page-hdr"><div class="page-hdr-title">SACs &amp; Exams</div></div>
+  <div class="pg-tabs"><button class="pg-tab" onclick="navTo('sacs')">SACs &amp; Exams</button><button class="pg-tab" onclick="navTo('calendar')">Calendar</button><button class="pg-tab active" onclick="navTo('revision')">Revision</button></div>
   <!-- Today's revision tasks -->
   <div id="rev-today-panel" class="card" style="margin-bottom:1.25rem;display:none">
     <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.7rem">
@@ -2178,7 +2171,8 @@ function nav(p,btn){
   document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
   document.getElementById('page-'+p).classList.add('active');
   if(btn)btn.classList.add('active');
-  // stats and scores share the same nav button
+  if(p==='planner'){const nb=document.querySelector('.nav-item[data-page=tasks]');if(nb)nb.classList.add('active');}
+  if(p==='calendar'||p==='revision'){const nb=document.querySelector('.nav-item[data-page=sacs]');if(nb)nb.classList.add('active');}
   if(p==='stats'||p==='scores'){const nb=document.querySelector('.nav-item[data-page=scores]');if(nb)nb.classList.add('active');}
   closeSidebar();
   if(p==='home')renderHome();
@@ -2191,8 +2185,8 @@ function nav(p,btn){
   if(p==='revision'){renderRevision();renderTodayRevPanel();}
 }
 function navTo(p){
-  const btn=document.querySelector(`.nav-item[data-page="${p}"]`)||document.querySelector(`.nav-item[data-page="scores"]`);
-  if(btn)nav(p,btn);
+  const btn=document.querySelector(`.nav-item[data-page="${p}"]`);
+  nav(p,btn);
 }
 function openSidebar(){
   document.getElementById('sidebar').classList.add('open');
@@ -2423,7 +2417,7 @@ function renderTasks(){
   if(!vis.length){list.innerHTML=`<div class="empty"><div class="eb">${tfilter==='done'?'No completed tasks yet':tfilter==='urgent'?'No urgent tasks 🎉':'No tasks here'}</div><div class="es">${tfilter==='all'||tfilter==='todo'?'Add a task above.':'Switch filter.'}</div></div>`}
   else list.innerHTML=vis.map(t=>{
     const s=SUBJ[t.subject]||{label:t.subject,cls:'eng'};const ds=dueStatus(t.due);const ev=t.evLink?events.find(e=>e.id==t.evLink):null;
-    const timerBtn=!t.done&&t.subject&&t.subject!=='__other__'?`<button class="dbtn" onclick="quickStudyTimer('${t.subject}')" title="Start study timer" style="margin-top:1px">⏱</button>`:'';
+    const timerBtn=!t.done&&t.subject&&t.subject!=='__other__'?`<button class="dbtn" onclick="quickStudyTimer('${t.subject}')" title="Start study timer" style="margin-top:1px">⏱</button>`:`<span></span>`;
     const safeTitle=t.title.replace(/"/g,'&quot;');
     return`<div class="tc ${t.done?'done':''} ${t.urgent&&!t.done?'urgent':''}" style="background:${BG[t.subject]||''};border-color:${BR[t.subject]||''}"><div class="cw ${t.done?'ck':''}" role="button" tabindex="0" aria-pressed="${t.done}" aria-label="${t.done?'Mark incomplete':'Mark complete'}: ${safeTitle}" onclick="toggleTask(${t.id})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleTask(${t.id})}" style="margin-top:2px"></div><div class="tb"><div class="ttitle">${t.title}</div>${t.note?`<div class="tnote">${t.note}</div>`:''}<div class="ttags"><span class="badge" style="background:${BG[t.subject]};color:${NC[t.subject]}">${s.label}</span>${t.urgent&&!t.done?'<span class="badge b-urgent">! Urgent</span>':''}${ev?`<span class="badge b-sac">${ev.type.toUpperCase()}: ${ev.name}</span>`:''}</div>${renderSubHtml(t)}</div><div class="dinfo" style="padding-top:2px"><div class="${ds.cls}">${ds.label}</div></div>${timerBtn}<button class="urgbtn ${t.urgent?'on':''}" onclick="toggleUrgent(${t.id})" style="margin-top:1px" aria-label="${t.urgent?'Remove urgent flag':'Mark as urgent'}" title="${t.urgent?'Remove urgent flag':'Mark as urgent'}">${t.urgent?'! Urgent':'Flag'}</button><button class="dbtn" style="font-size:13px;padding:0 8px;margin-top:1px" onclick="startTaskEdit(${t.id})" title="Edit task" aria-label="Edit task">✏️</button><button class="dbtn" onclick="removeTask(${t.id})" style="margin-top:1px" aria-label="Delete task">×</button></div>`;
   }).join('');
