@@ -1979,20 +1979,17 @@ function changeSubjectColor(id,hex){
 const SWATCH_COLORS=['#6366f1','#8b5cf6','#a855f7','#ec4899','#ef4444','#f97316','#f59e0b','#eab308','#84cc16','#22c55e','#10b981','#06b6d4','#3b82f6','#64748b','#78716c'];
 let _scpCloseHandler=null;
 function toggleSubjColorPicker(id,btn){
-  document.querySelectorAll('.subj-color-picker.open').forEach(p=>{p.classList.remove('open');p.style.cssText='';});
+  document.querySelectorAll('.subj-color-picker.open').forEach(p=>p.classList.remove('open'));
   if(_scpCloseHandler){document.removeEventListener('click',_scpCloseHandler);_scpCloseHandler=null;}
   const picker=document.getElementById('scp-'+id);if(!picker)return;
-  // Use fixed positioning to escape overflow:auto clipping in the modal
-  const r=btn.getBoundingClientRect();
-  picker.style.cssText=`position:fixed;left:${r.left}px;top:${r.bottom+4}px;z-index:10000`;
   picker.classList.add('open');
   setTimeout(()=>{
-    _scpCloseHandler=e=>{if(!picker.contains(e.target)&&e.target!==btn&&!btn.contains(e.target)){picker.classList.remove('open');picker.style.cssText='';document.removeEventListener('click',_scpCloseHandler);_scpCloseHandler=null;}};
+    _scpCloseHandler=e=>{if(!picker.contains(e.target)&&e.target!==btn&&!btn.contains(e.target)){picker.classList.remove('open');document.removeEventListener('click',_scpCloseHandler);_scpCloseHandler=null;}};
     document.addEventListener('click',_scpCloseHandler);
   },0);
 }
 function pickSubjColor(id,hex,pickerEl){
-  if(pickerEl){pickerEl.classList.remove('open');pickerEl.style.cssText='';}
+  if(pickerEl){pickerEl.classList.remove('open');}
   if(_scpCloseHandler){document.removeEventListener('click',_scpCloseHandler);_scpCloseHandler=null;}
   changeSubjectColor(id,hex);
 }
@@ -5166,6 +5163,9 @@ init().then(()=>{
   </div>
 </div>
 
+<!-- SAC celebration modal -->
+<div id="sac-celebrate-modal">
+  <div class="sac-modal-box">
 <!-- FOCUS MODE -->
 <div id="focus-overlay" class="focus-overlay">
   <div class="focus-wrap">
@@ -5177,9 +5177,6 @@ init().then(()=>{
   </div>
 </div>
 
-<!-- SAC celebration modal -->
-<div id="sac-celebrate-modal">
-  <div class="sac-modal-box">
     <div class="sac-modal-emoji">🎉</div>
     <div class="sac-modal-title">SAC Complete!</div>
     <div id="sac-cel-subj" class="sac-modal-subj"></div>
