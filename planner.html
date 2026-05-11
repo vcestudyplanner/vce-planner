@@ -742,6 +742,11 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 .badge-name{font-family:'Fraunces',serif;font-size:.78rem;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:.2rem}
 .badge-desc{font-size:10.5px;color:var(--muted);line-height:1.4}
 .badge-new{position:absolute;top:.4rem;right:.5rem;font-size:9px;font-weight:700;background:var(--accent);color:#fff;padding:1px 5px;border-radius:6px;letter-spacing:.04em}
+.badge-cat-section{margin-bottom:1.75rem}
+.badge-cat-section:last-child{margin-bottom:0}
+.badge-cat-hdr{display:flex;align-items:center;gap:.6rem;margin-bottom:.8rem;padding-bottom:.5rem;border-bottom:1.5px solid var(--border)}
+.badge-cat-name{font-family:'Fraunces',serif;font-size:.9rem;font-weight:700;color:var(--text)}
+.badge-cat-count{font-size:11px;color:var(--muted);font-weight:600;background:var(--bg);border:1px solid var(--border);padding:1px 8px;border-radius:10px;margin-left:auto}
 /* ── NOTIF SETTINGS MODAL ── */
 #notif-modal{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9100;display:none;align-items:center;justify-content:center}
 #notif-modal.open{display:flex}
@@ -1296,7 +1301,7 @@ input:checked+.toggle-slider::before{transform:translateX(18px)}
       <div class="sh" style="margin-bottom:0">Achievements</div>
       <div id="badges-count" style="font-size:12px;color:var(--muted);margin-left:auto"></div>
     </div>
-    <div class="badges-grid" id="badges-grid"></div>
+    <div id="badges-grid"></div>
   </div>
 </div></div>
 
@@ -3951,35 +3956,72 @@ if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.se
 
 // ── ACHIEVEMENT BADGES ───────────────────────────────────────────────────────
 const BADGE_DEFS=[
-  // Tasks
-  {id:'first-task',   icon:'check-circle-2', name:'First Step',        desc:'Complete your first task',       check:()=>tasks.filter(t=>t.done).length>=1,    progress:()=>{const n=tasks.filter(t=>t.done).length;return{cur:Math.min(n,1),max:1}}},
-  {id:'tasks-10',     icon:'target',         name:'Getting Things Done',desc:'Complete 10 tasks',              check:()=>tasks.filter(t=>t.done).length>=10,   progress:()=>{const n=tasks.filter(t=>t.done).length;return{cur:Math.min(n,10),max:10}}},
-  {id:'tasks-50',     icon:'zap',            name:'Task Machine',       desc:'Complete 50 tasks',              check:()=>tasks.filter(t=>t.done).length>=50,   progress:()=>{const n=tasks.filter(t=>t.done).length;return{cur:Math.min(n,50),max:50}}},
-  {id:'tasks-100',    icon:'star',           name:'Centurion',          desc:'Complete 100 tasks',             check:()=>tasks.filter(t=>t.done).length>=100,  progress:()=>{const n=tasks.filter(t=>t.done).length;return{cur:Math.min(n,100),max:100}}},
-  // Streaks
-  {id:'streak-3',     icon:'flame',          name:'On Fire',            desc:'3-day study streak',             check:()=>calcBestStreak()>=3,  progress:()=>({cur:Math.min(calcBestStreak(),3),max:3})},
-  {id:'streak-7',     icon:'sparkles',       name:'Week Warrior',       desc:'7-day study streak',             check:()=>calcBestStreak()>=7,  progress:()=>({cur:Math.min(calcBestStreak(),7),max:7})},
-  {id:'streak-14',    icon:'trophy',         name:'Fortnight Focus',    desc:'14-day study streak',            check:()=>calcBestStreak()>=14, progress:()=>({cur:Math.min(calcBestStreak(),14),max:14})},
-  {id:'streak-30',    icon:'crown',          name:'Unstoppable',        desc:'30-day study streak',            check:()=>calcBestStreak()>=30, progress:()=>({cur:Math.min(calcBestStreak(),30),max:30})},
-  // Study hours
-  {id:'hours-1',      icon:'clock',          name:'Clock In',           desc:'Log your first study hour',      check:()=>studyLog.reduce((a,l)=>a+l.hours,0)>=1,   progress:()=>{const h=studyLog.reduce((a,l)=>a+l.hours,0);return{cur:Math.min(Math.round(h*10)/10,1),max:1}}},
-  {id:'hours-10',     icon:'book-open',      name:'Bookworm',           desc:'Log 10 hours of study',          check:()=>studyLog.reduce((a,l)=>a+l.hours,0)>=10,  progress:()=>{const h=studyLog.reduce((a,l)=>a+l.hours,0);return{cur:Math.min(Math.round(h*10)/10,10),max:10}}},
-  {id:'hours-50',     icon:'book',           name:'Scholar',            desc:'Log 50 hours of study',          check:()=>studyLog.reduce((a,l)=>a+l.hours,0)>=50,  progress:()=>{const h=studyLog.reduce((a,l)=>a+l.hours,0);return{cur:Math.min(Math.round(h*10)/10,50),max:50}}},
-  {id:'hours-100',    icon:'brain',          name:'VCE Grind',          desc:'Log 100 hours of study',         check:()=>studyLog.reduce((a,l)=>a+l.hours,0)>=100, progress:()=>{const h=studyLog.reduce((a,l)=>a+l.hours,0);return{cur:Math.min(Math.round(h*10)/10,100),max:100}}},
-  // SACs & scores
-  {id:'first-sac',    icon:'file-text',      name:'Assessment Ready',   desc:'Add your first SAC or exam',     check:()=>events.length>=1,       progress:()=>({cur:Math.min(events.length,1),max:1})},
-  {id:'first-score',  icon:'award',          name:'Result Logged',      desc:'Log your first SAC score',       check:()=>scores.length>=1,       progress:()=>({cur:Math.min(scores.length,1),max:1})},
-  {id:'score-90',     icon:'sparkles',       name:'High Achiever',      desc:'Score 90% or above on any SAC',  check:()=>scores.some(s=>s.score/s.max>=.9), progress:()=>({cur:scores.length?Math.round(Math.max(...scores.map(s=>s.score/s.max))*100):0,max:90,suffix:'%'})},
-  // XP & levels
-  {id:'xp-100',       icon:'zap',            name:'XP Earner',          desc:'Reach 100 XP',                  check:()=>xp>=100,  progress:()=>({cur:Math.min(xp,100),max:100,suffix:' XP'})},
-  {id:'xp-500',       icon:'shield',         name:'Dedicated',          desc:'Reach 500 XP',                  check:()=>xp>=500,  progress:()=>({cur:Math.min(xp,500),max:500,suffix:' XP'})},
-  {id:'xp-1000',      icon:'gem',            name:'Diamond Scholar',    desc:'Reach 1000 XP',                 check:()=>xp>=1000, progress:()=>({cur:Math.min(xp,1000),max:1000,suffix:' XP'})},
-  // Study methods
-  {id:'method-first', icon:'flask-conical',  name:'Experimenter',       desc:'Complete any study method',      check:()=>parseInt(localStorage.getItem(UID_PREFIX+'methods-done')||'0')>=1, progress:()=>({cur:Math.min(parseInt(localStorage.getItem(UID_PREFIX+'methods-done')||'0'),1),max:1})},
-  {id:'method-all',   icon:'map',            name:'Method Master',      desc:'Try all 7 study methods',        check:()=>(JSON.parse(localStorage.getItem(UID_PREFIX+'methods-set')||'[]')).length>=7, progress:()=>({cur:(JSON.parse(localStorage.getItem(UID_PREFIX+'methods-set')||'[]')).length,max:7})},
-  // Special
-  {id:'planner-use',  icon:'calendar-days',  name:'Planner Pro',        desc:'Add 5 day planner blocks',       check:()=>Object.values(planData).flat().length>=5, progress:()=>({cur:Math.min(Object.values(planData).flat().length,5),max:5})},
-  {id:'early-bird',   icon:'sunrise',        name:'Early Bird',         desc:'Have 3 tasks due before 8am',    check:()=>false, progress:()=>({cur:0,max:3})},
+  // ── Tasks ──
+  {cat:'Tasks',id:'first-task',    icon:'check-circle-2', name:'First Step',          desc:'Complete your first task',                   check:()=>tasks.filter(t=>t.done).length>=1,   progress:()=>{const n=tasks.filter(t=>t.done).length;return{cur:Math.min(n,1),max:1}}},
+  {cat:'Tasks',id:'tasks-10',      icon:'list-checks',    name:'Getting Things Done', desc:'Complete 10 tasks',                           check:()=>tasks.filter(t=>t.done).length>=10,  progress:()=>{const n=tasks.filter(t=>t.done).length;return{cur:Math.min(n,10),max:10}}},
+  {cat:'Tasks',id:'tasks-25',      icon:'check-square',   name:'Quarter Century',     desc:'Complete 25 tasks',                           check:()=>tasks.filter(t=>t.done).length>=25,  progress:()=>{const n=tasks.filter(t=>t.done).length;return{cur:Math.min(n,25),max:25}}},
+  {cat:'Tasks',id:'tasks-50',      icon:'zap',            name:'Task Machine',        desc:'Complete 50 tasks',                           check:()=>tasks.filter(t=>t.done).length>=50,  progress:()=>{const n=tasks.filter(t=>t.done).length;return{cur:Math.min(n,50),max:50}}},
+  {cat:'Tasks',id:'tasks-100',     icon:'star',           name:'Centurion',           desc:'Complete 100 tasks',                          check:()=>tasks.filter(t=>t.done).length>=100, progress:()=>{const n=tasks.filter(t=>t.done).length;return{cur:Math.min(n,100),max:100}}},
+  {cat:'Tasks',id:'tasks-250',     icon:'shield-check',   name:'Task Titan',          desc:'Complete 250 tasks',                          check:()=>tasks.filter(t=>t.done).length>=250, progress:()=>{const n=tasks.filter(t=>t.done).length;return{cur:Math.min(n,250),max:250}}},
+  {cat:'Tasks',id:'tasks-500',     icon:'crown',          name:'Task Legend',         desc:'Complete 500 tasks',                          check:()=>tasks.filter(t=>t.done).length>=500, progress:()=>{const n=tasks.filter(t=>t.done).length;return{cur:Math.min(n,500),max:500}}},
+  {cat:'Tasks',id:'urgent-done',   icon:'alert-triangle', name:'Fire Fighter',        desc:'Complete 5 urgent tasks',                     check:()=>tasks.filter(t=>t.done&&t.urgent).length>=5, progress:()=>{const n=tasks.filter(t=>t.done&&t.urgent).length;return{cur:Math.min(n,5),max:5}}},
+  {cat:'Tasks',id:'noted-task',    icon:'notebook-pen',   name:'Detail Oriented',     desc:'Add notes to 5 tasks',                        check:()=>tasks.filter(t=>t.note&&t.note.trim()).length>=5, progress:()=>{const n=tasks.filter(t=>t.note&&t.note.trim()).length;return{cur:Math.min(n,5),max:5}}},
+  {cat:'Tasks',id:'all-subjects',  icon:'layout-grid',    name:'All Rounder',         desc:'Complete at least one task per subject',       check:()=>userSubjects.length>0&&userSubjects.every(s=>tasks.some(t=>t.done&&t.subject===s.id)), progress:()=>({cur:userSubjects.filter(s=>tasks.some(t=>t.done&&t.subject===s.id)).length,max:Math.max(userSubjects.length,1)})},
+  // ── Streaks ──
+  {cat:'Streaks',id:'streak-3',    icon:'flame',          name:'On Fire',             desc:'3-day study streak',                          check:()=>calcBestStreak()>=3,   progress:()=>({cur:Math.min(calcBestStreak(),3),max:3})},
+  {cat:'Streaks',id:'streak-7',    icon:'sparkles',       name:'Week Warrior',        desc:'7-day study streak',                          check:()=>calcBestStreak()>=7,   progress:()=>({cur:Math.min(calcBestStreak(),7),max:7})},
+  {cat:'Streaks',id:'streak-14',   icon:'trophy',         name:'Fortnight Focus',     desc:'14-day study streak',                         check:()=>calcBestStreak()>=14,  progress:()=>({cur:Math.min(calcBestStreak(),14),max:14})},
+  {cat:'Streaks',id:'streak-30',   icon:'award',          name:'Unstoppable',         desc:'30-day study streak',                         check:()=>calcBestStreak()>=30,  progress:()=>({cur:Math.min(calcBestStreak(),30),max:30})},
+  {cat:'Streaks',id:'streak-60',   icon:'gem',            name:'Marathon Mindset',    desc:'60-day study streak',                         check:()=>calcBestStreak()>=60,  progress:()=>({cur:Math.min(calcBestStreak(),60),max:60})},
+  {cat:'Streaks',id:'streak-100',  icon:'star',           name:'Triple Figures',      desc:'100-day study streak',                        check:()=>calcBestStreak()>=100, progress:()=>({cur:Math.min(calcBestStreak(),100),max:100})},
+  {cat:'Streaks',id:'active-30',   icon:'calendar-check', name:'Regular',             desc:'Study on 30 different days',                  check:()=>JSON.parse(localStorage.getItem(UID_PREFIX+'cd')||'[]').length>=30, progress:()=>({cur:Math.min(JSON.parse(localStorage.getItem(UID_PREFIX+'cd')||'[]').length,30),max:30})},
+  // ── Study Hours ──
+  {cat:'Study Hours',id:'hours-1',   icon:'clock',          name:'Clock In',            desc:'Log your first study hour',                   check:()=>studyLog.reduce((a,l)=>a+l.hours,0)>=1,   progress:()=>{const h=studyLog.reduce((a,l)=>a+l.hours,0);return{cur:Math.min(+h.toFixed(1),1),max:1}}},
+  {cat:'Study Hours',id:'hours-10',  icon:'book-open',      name:'Bookworm',            desc:'Log 10 hours of study',                        check:()=>studyLog.reduce((a,l)=>a+l.hours,0)>=10,  progress:()=>{const h=studyLog.reduce((a,l)=>a+l.hours,0);return{cur:Math.min(+h.toFixed(1),10),max:10}}},
+  {cat:'Study Hours',id:'hours-25',  icon:'bookmark',       name:'Halfway There',       desc:'Log 25 hours of study',                        check:()=>studyLog.reduce((a,l)=>a+l.hours,0)>=25,  progress:()=>{const h=studyLog.reduce((a,l)=>a+l.hours,0);return{cur:Math.min(+h.toFixed(1),25),max:25}}},
+  {cat:'Study Hours',id:'hours-50',  icon:'book',           name:'Scholar',             desc:'Log 50 hours of study',                        check:()=>studyLog.reduce((a,l)=>a+l.hours,0)>=50,  progress:()=>{const h=studyLog.reduce((a,l)=>a+l.hours,0);return{cur:Math.min(+h.toFixed(1),50),max:50}}},
+  {cat:'Study Hours',id:'hours-100', icon:'brain',          name:'VCE Grind',           desc:'Log 100 hours of study',                       check:()=>studyLog.reduce((a,l)=>a+l.hours,0)>=100, progress:()=>{const h=studyLog.reduce((a,l)=>a+l.hours,0);return{cur:Math.min(+h.toFixed(1),100),max:100}}},
+  {cat:'Study Hours',id:'hours-200', icon:'graduation-cap', name:'Dedicated Student',   desc:'Log 200 hours of study',                       check:()=>studyLog.reduce((a,l)=>a+l.hours,0)>=200, progress:()=>{const h=studyLog.reduce((a,l)=>a+l.hours,0);return{cur:Math.min(+h.toFixed(1),200),max:200}}},
+  {cat:'Study Hours',id:'hours-500', icon:'zap',            name:'Study God',           desc:'Log 500 hours of study',                       check:()=>studyLog.reduce((a,l)=>a+l.hours,0)>=500, progress:()=>{const h=studyLog.reduce((a,l)=>a+l.hours,0);return{cur:Math.min(+h.toFixed(1),500),max:500}}},
+  {cat:'Study Hours',id:'marathon',  icon:'timer',          name:'Marathon Session',    desc:'Log 3+ hours in a single day',                 check:()=>{const d={};studyLog.forEach(l=>{d[l.date]=(d[l.date]||0)+l.hours});return Object.values(d).some(h=>h>=3)}, progress:()=>{const d={};studyLog.forEach(l=>{d[l.date]=(d[l.date]||0)+l.hours});const best=Object.values(d).reduce((a,h)=>Math.max(a,h),0);return{cur:+Math.min(best,3).toFixed(1),max:3}}},
+  {cat:'Study Hours',id:'multi-subj',icon:'layers',         name:'Well Rounded',        desc:'Log study hours across 3 subjects',            check:()=>new Set(studyLog.map(l=>l.subject).filter(s=>s&&s!=='__other__')).size>=3, progress:()=>({cur:Math.min(new Set(studyLog.map(l=>l.subject).filter(s=>s&&s!=='__other__')).size,3),max:3})},
+  // ── SACs & Exams ──
+  {cat:'SACs & Exams',id:'first-sac',     icon:'file-text',      name:'Assessment Ready',    desc:'Add your first SAC or exam',                   check:()=>events.length>=1,  progress:()=>({cur:Math.min(events.length,1),max:1})},
+  {cat:'SACs & Exams',id:'sacs-5',        icon:'clipboard',      name:'Assessment Veteran',  desc:'Add 5 SACs or exams',                          check:()=>events.length>=5,  progress:()=>({cur:Math.min(events.length,5),max:5})},
+  {cat:'SACs & Exams',id:'sacs-10',       icon:'target',         name:'Full Schedule',       desc:'Add 10 SACs or exams',                         check:()=>events.length>=10, progress:()=>({cur:Math.min(events.length,10),max:10})},
+  {cat:'SACs & Exams',id:'first-score',   icon:'award',          name:'Result Logged',       desc:'Log your first SAC score',                     check:()=>scores.length>=1,  progress:()=>({cur:Math.min(scores.length,1),max:1})},
+  {cat:'SACs & Exams',id:'scores-5',      icon:'bar-chart-2',    name:'Score Collector',     desc:'Log 5 SAC scores',                             check:()=>scores.length>=5,  progress:()=>({cur:Math.min(scores.length,5),max:5})},
+  {cat:'SACs & Exams',id:'score-90',      icon:'sparkles',       name:'High Achiever',       desc:'Score 90%+ on any SAC',                        check:()=>scores.some(s=>s.score/s.max>=.9), progress:()=>({cur:scores.length?Math.round(Math.max(...scores.map(s=>s.score/s.max))*100):0,max:90,suffix:'%'})},
+  {cat:'SACs & Exams',id:'score-100',     icon:'medal',          name:'Perfect Score',       desc:'Score 100% on any SAC',                        check:()=>scores.some(s=>s.score>=s.max), progress:()=>({cur:scores.length?Math.min(Math.round(Math.max(...scores.map(s=>s.score/s.max))*100),100):0,max:100,suffix:'%'})},
+  {cat:'SACs & Exams',id:'score-avg-80',  icon:'trending-up',    name:'Consistent',          desc:'Average 80%+ across all SAC scores',           check:()=>scores.length>0&&(scores.reduce((a,s)=>a+s.score/s.max,0)/scores.length)>=0.8, progress:()=>({cur:scores.length?Math.min(Math.round((scores.reduce((a,s)=>a+s.score/s.max,0)/scores.length)*100),80):0,max:80,suffix:'%'})},
+  {cat:'SACs & Exams',id:'revision-done', icon:'check-circle-2', name:'Prepared',            desc:'Complete a full SAC revision checklist',        check:()=>events.some(e=>e.checklist&&e.checklist.length>0&&e.checklist.every(c=>c.done)), progress:()=>{const best=events.reduce((a,e)=>{if(!e.checklist||!e.checklist.length)return a;return Math.max(a,e.checklist.filter(c=>c.done).length/e.checklist.length)},0);return{cur:Math.round(best*100),max:100,suffix:'%'}}},
+  // ── XP & Levels ──
+  {cat:'XP & Levels',id:'xp-100',   icon:'zap',            name:'XP Earner',           desc:'Reach 100 XP',                                 check:()=>xp>=100,             progress:()=>({cur:Math.min(xp,100),max:100,suffix:' XP'})},
+  {cat:'XP & Levels',id:'xp-500',   icon:'shield',         name:'Dedicated',           desc:'Reach 500 XP',                                 check:()=>xp>=500,             progress:()=>({cur:Math.min(xp,500),max:500,suffix:' XP'})},
+  {cat:'XP & Levels',id:'xp-1000',  icon:'gem',            name:'Diamond Scholar',     desc:'Reach 1000 XP',                                check:()=>xp>=1000,            progress:()=>({cur:Math.min(xp,1000),max:1000,suffix:' XP'})},
+  {cat:'XP & Levels',id:'xp-2500',  icon:'sparkles',       name:'Elite',               desc:'Reach 2500 XP',                                check:()=>xp>=2500,            progress:()=>({cur:Math.min(xp,2500),max:2500,suffix:' XP'})},
+  {cat:'XP & Levels',id:'xp-5000',  icon:'crown',          name:'XP God',              desc:'Reach 5000 XP',                                check:()=>xp>=5000,            progress:()=>({cur:Math.min(xp,5000),max:5000,suffix:' XP'})},
+  {cat:'XP & Levels',id:'level-5',  icon:'arrow-up-circle',name:'Level 5',             desc:'Reach level 5',                                check:()=>levelFromXP(xp)>=5,  progress:()=>({cur:Math.min(levelFromXP(xp),5),max:5})},
+  {cat:'XP & Levels',id:'level-10', icon:'star',           name:'Level 10',            desc:'Reach level 10',                               check:()=>levelFromXP(xp)>=10, progress:()=>({cur:Math.min(levelFromXP(xp),10),max:10})},
+  {cat:'XP & Levels',id:'level-20', icon:'trophy',         name:'Level 20',            desc:'Reach level 20',                               check:()=>levelFromXP(xp)>=20, progress:()=>({cur:Math.min(levelFromXP(xp),20),max:20})},
+  // ── Study Methods ──
+  {cat:'Study Methods',id:'method-first', icon:'flask-conical', name:'Experimenter',   desc:'Complete any study method',                    check:()=>parseInt(localStorage.getItem(UID_PREFIX+'methods-done')||'0')>=1,  progress:()=>({cur:Math.min(parseInt(localStorage.getItem(UID_PREFIX+'methods-done')||'0'),1),max:1})},
+  {cat:'Study Methods',id:'method-5',     icon:'layers',        name:'Method Regular', desc:'Complete 5 study sessions',                    check:()=>parseInt(localStorage.getItem(UID_PREFIX+'methods-done')||'0')>=5,  progress:()=>({cur:Math.min(parseInt(localStorage.getItem(UID_PREFIX+'methods-done')||'0'),5),max:5})},
+  {cat:'Study Methods',id:'method-all',   icon:'map',           name:'Method Master',  desc:'Try all 7 study methods',                      check:()=>JSON.parse(localStorage.getItem(UID_PREFIX+'methods-set')||'[]').length>=7, progress:()=>({cur:JSON.parse(localStorage.getItem(UID_PREFIX+'methods-set')||'[]').length,max:7})},
+  {cat:'Study Methods',id:'method-20',    icon:'book-open',     name:'Method Veteran', desc:'Complete 20 study sessions',                   check:()=>parseInt(localStorage.getItem(UID_PREFIX+'methods-done')||'0')>=20, progress:()=>({cur:Math.min(parseInt(localStorage.getItem(UID_PREFIX+'methods-done')||'0'),20),max:20})},
+  {cat:'Study Methods',id:'method-50',    icon:'brain',         name:'Method Legend',  desc:'Complete 50 study sessions',                   check:()=>parseInt(localStorage.getItem(UID_PREFIX+'methods-done')||'0')>=50, progress:()=>({cur:Math.min(parseInt(localStorage.getItem(UID_PREFIX+'methods-done')||'0'),50),max:50})},
+  {cat:'Study Methods',id:'pom-10',       icon:'timer',         name:'Pom Starter',    desc:'Complete 10 Pomodoro sessions',                check:()=>pomSessions>=10,  progress:()=>({cur:Math.min(pomSessions,10),max:10})},
+  {cat:'Study Methods',id:'pom-50',       icon:'alarm-clock',   name:'Pom Pro',        desc:'Complete 50 Pomodoro sessions',                check:()=>pomSessions>=50,  progress:()=>({cur:Math.min(pomSessions,50),max:50})},
+  {cat:'Study Methods',id:'pom-100',      icon:'zap',           name:'Pom Master',     desc:'Complete 100 Pomodoro sessions',               check:()=>pomSessions>=100, progress:()=>({cur:Math.min(pomSessions,100),max:100})},
+  // ── Planner & Setup ──
+  {cat:'Planner & Setup',id:'planner-use',    icon:'calendar-days',  name:'Planner Pro',       desc:'Add 5 day planner blocks',               check:()=>Object.values(planData).flat().length>=5,  progress:()=>({cur:Math.min(Object.values(planData).flat().length,5),max:5})},
+  {cat:'Planner & Setup',id:'planner-20',     icon:'calendar-check', name:'Planner Addict',    desc:'Add 20 day planner blocks',              check:()=>Object.values(planData).flat().length>=20, progress:()=>({cur:Math.min(Object.values(planData).flat().length,20),max:20})},
+  {cat:'Planner & Setup',id:'planner-50',     icon:'layout-list',    name:'Schedule King',     desc:'Add 50 day planner blocks',              check:()=>Object.values(planData).flat().length>=50, progress:()=>({cur:Math.min(Object.values(planData).flat().length,50),max:50})},
+  {cat:'Planner & Setup',id:'subjects-3',     icon:'bookmark',       name:'Subject Collector', desc:'Add 3 subjects',                         check:()=>userSubjects.length>=3, progress:()=>({cur:Math.min(userSubjects.length,3),max:3})},
+  {cat:'Planner & Setup',id:'subjects-5',     icon:'book',           name:'Full Roster',       desc:'Add 5 subjects',                         check:()=>userSubjects.length>=5, progress:()=>({cur:Math.min(userSubjects.length,5),max:5})},
+  {cat:'Planner & Setup',id:'cal-event',      icon:'calendar-plus',  name:'Calendar User',     desc:'Add your first calendar event',          check:()=>calEvents.length>=1,   progress:()=>({cur:Math.min(calEvents.length,1),max:1})},
+  {cat:'Planner & Setup',id:'cal-events-10',  icon:'calendar',       name:'Organised',         desc:'Add 10 calendar events',                 check:()=>calEvents.length>=10,  progress:()=>({cur:Math.min(calEvents.length,10),max:10})},
+  {cat:'Planner & Setup',id:'custom-color',   icon:'palette',        name:'Personalised',      desc:'Customise a subject colour',             check:()=>Object.keys(localStorage).some(k=>k.startsWith(UID_PREFIX+'subj-hex-')), progress:()=>({cur:Object.keys(localStorage).filter(k=>k.startsWith(UID_PREFIX+'subj-hex-')).length>0?1:0,max:1})},
 ];
 
 function calcBestStreak(){
@@ -3995,22 +4037,31 @@ function renderBadges(){
   const seenKey=UID_PREFIX+'badges-seen';
   const seen=new Set(JSON.parse(localStorage.getItem(seenKey)||'[]'));
   const newlyEarned=[];
-  const html=BADGE_DEFS.map(b=>{
-    const earned=b.check();
-    if(earned&&!seen.has(b.id)){newlyEarned.push(b.id);seen.add(b.id);}
-    let progressHtml='';
-    if(!earned&&b.progress){
-      const p=b.progress();
-      const pct=p.max>0?Math.round(p.cur/p.max*100):0;
-      const suf=p.suffix||'';
-      progressHtml=`<div class="badge-prog-wrap"><div class="badge-prog-bar"><div class="badge-prog-fill" style="width:${pct}%"></div></div><div class="badge-prog-label">${p.cur}${suf} / ${p.max}${suf}</div></div>`;
-    }
-    return`<div class="badge-card${earned?' earned':' locked'}">
-      ${earned&&newlyEarned.includes(b.id)?'<div class="badge-new">NEW</div>':''}
-      <div class="badge-icon"><i data-lucide="${b.icon}"></i></div>
-      <div class="badge-name">${b.name}</div>
-      <div class="badge-desc">${b.desc}</div>
-      ${progressHtml}
+  const cats=[...new Set(BADGE_DEFS.map(b=>b.cat))];
+  const html=cats.map(cat=>{
+    const defs=BADGE_DEFS.filter(b=>b.cat===cat);
+    const earnedInCat=defs.filter(b=>b.check()).length;
+    const cards=defs.map(b=>{
+      const earned=b.check();
+      if(earned&&!seen.has(b.id)){newlyEarned.push(b.id);seen.add(b.id);}
+      let progressHtml='';
+      if(!earned&&b.progress){
+        const p=b.progress();
+        const pct=p.max>0?Math.round(p.cur/p.max*100):0;
+        const suf=p.suffix||'';
+        progressHtml=`<div class="badge-prog-wrap"><div class="badge-prog-bar"><div class="badge-prog-fill" style="width:${pct}%"></div></div><div class="badge-prog-label">${p.cur}${suf} / ${p.max}${suf}</div></div>`;
+      }
+      return`<div class="badge-card${earned?' earned':' locked'}">
+        ${earned&&newlyEarned.includes(b.id)?'<div class="badge-new">NEW</div>':''}
+        <div class="badge-icon"><i data-lucide="${b.icon}"></i></div>
+        <div class="badge-name">${b.name}</div>
+        <div class="badge-desc">${b.desc}</div>
+        ${progressHtml}
+      </div>`;
+    }).join('');
+    return`<div class="badge-cat-section">
+      <div class="badge-cat-hdr"><span class="badge-cat-name">${cat}</span><span class="badge-cat-count">${earnedInCat} / ${defs.length}</span></div>
+      <div class="badges-grid">${cards}</div>
     </div>`;
   }).join('');
   grid.innerHTML=html;
@@ -4020,7 +4071,7 @@ function renderBadges(){
   if(cnt)cnt.textContent=`${earned} / ${BADGE_DEFS.length} unlocked`;
   if(newlyEarned.length){
     localStorage.setItem(seenKey,JSON.stringify([...seen]));
-    newlyEarned.forEach(id=>{const b=BADGE_DEFS.find(x=>x.id===id);if(b)showToast(`Badge unlocked: ${b.name}!`);});
+    newlyEarned.forEach(id=>{const b=BADGE_DEFS.find(x=>x.id===id);if(b)showToast(`🏅 Achievement unlocked: ${b.name}!`);});
   }
 }
 
