@@ -747,6 +747,59 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 .badge-cat-hdr{display:flex;align-items:center;gap:.6rem;margin-bottom:.8rem;padding-bottom:.5rem;border-bottom:1.5px solid var(--border)}
 .badge-cat-name{font-family:'Fraunces',serif;font-size:.9rem;font-weight:700;color:var(--text)}
 .badge-cat-count{font-size:11px;color:var(--muted);font-weight:600;background:var(--bg);border:1px solid var(--border);padding:1px 8px;border-radius:10px;margin-left:auto}
+/* ── HOME TIP ── */
+.h-tip{background:linear-gradient(135deg,rgba(99,102,241,.08),rgba(129,140,248,.04));border:1px solid rgba(99,102,241,.22);border-radius:14px;padding:.9rem 1.1rem;display:flex;align-items:flex-start;gap:10px;margin-bottom:1.25rem}
+.h-tip-icon{font-size:1.1rem;line-height:1;flex-shrink:0;margin-top:2px}
+.h-tip-label{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:.2rem}
+.h-tip-text{font-size:13px;color:var(--text);line-height:1.55}
+/* ── SCORE TREND SPARKLINE ── */
+.score-trend{display:flex;align-items:flex-end;gap:3px;height:30px;margin:.4rem 0 .15rem}
+.score-trend-bar{flex:1;border-radius:3px 3px 0 0;min-height:3px}
+/* ── COMMAND PALETTE ── */
+#cmd-palette{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);z-index:9800;display:none;align-items:flex-start;justify-content:center;padding-top:100px}
+#cmd-palette.open{display:flex}
+.cmd-box{background:var(--surface);border:1.5px solid var(--border);border-radius:18px;width:min(540px,92vw);box-shadow:0 24px 60px rgba(0,0,0,.35);overflow:hidden}
+.cmd-inp-wrap{display:flex;align-items:center;gap:10px;padding:.85rem 1.1rem;border-bottom:1px solid var(--border)}
+.cmd-inp-icon{width:17px;height:17px;color:var(--muted);flex-shrink:0}
+.cmd-inp{flex:1;border:none;background:transparent;font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;color:var(--text);outline:none}
+.cmd-inp::placeholder{color:var(--muted)}
+.cmd-results{max-height:340px;overflow-y:auto;padding:.4rem}
+.cmd-item{display:flex;align-items:center;gap:11px;padding:.55rem .75rem;border-radius:10px;cursor:pointer;transition:background .1s}
+.cmd-item:hover,.cmd-item.cmd-sel{background:var(--shover)}
+.cmd-item-icon{width:30px;height:30px;border-radius:8px;background:rgba(99,102,241,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.95rem}
+.cmd-item-label{font-size:13.5px;font-weight:500;color:var(--text);flex:1}
+.cmd-item-sub{font-size:11px;color:var(--muted);white-space:nowrap}
+.cmd-group-hdr{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);padding:.5rem .75rem .2rem}
+.cmd-empty{padding:1.5rem;text-align:center;font-size:13px;color:var(--muted)}
+/* ── WEEKLY REVIEW ── */
+#weekly-review-modal{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);z-index:9700;display:none;align-items:center;justify-content:center}
+#weekly-review-modal.open{display:flex}
+.wr-box{background:var(--surface);border:1px solid var(--border);border-radius:24px;max-width:420px;width:92%;box-shadow:0 24px 60px rgba(0,0,0,.3);padding:1.75rem 1.75rem}
+.wr-emoji{font-size:2rem;margin-bottom:.5rem}
+.wr-title{font-family:'Fraunces',serif;font-size:1.2rem;font-weight:700;color:var(--text);margin-bottom:.2rem}
+.wr-sub{font-size:12.5px;color:var(--muted);margin-bottom:1.1rem}
+.wr-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.55rem;margin-bottom:1.1rem}
+.wr-stat{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:.65rem .7rem;text-align:center}
+.wr-stat-num{font-family:'Fraunces',serif;font-size:1.5rem;font-weight:800;color:var(--accent);line-height:1}
+.wr-stat-label{font-size:10px;color:var(--muted);margin-top:.15rem}
+.wr-q{margin-bottom:.85rem}
+.wr-q label{font-size:12px;font-weight:600;color:var(--text);display:block;margin-bottom:.3rem}
+.wr-q textarea{width:100%;border:1.5px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;padding:.55rem .75rem;resize:none;outline:none;transition:border-color .15s;height:64px}
+.wr-q textarea:focus{border-color:var(--accent)}
+/* ── TOAST WITH ACTION ── */
+.toast.has-action{pointer-events:auto;white-space:normal}
+/* ── PRINT ── */
+@media print{
+  .sidebar,.sidebar-show-tab,.tbtn,.sba-btn,.tf-add-inline,#task-form-expand,.toolbar-wrap,.task-search-wrap,.bulk-bar,
+  button:not(.cw),.nav-item,#tour-overlay,#tour-spotlight,#tour-box,.dbtn,.urgbtn,.sl-del,.badge-new,
+  .page:not(.active),#notif-modal,#sac-celebrate-modal,#cmd-palette,#weekly-review-modal{display:none!important}
+  body,.main-wrap{margin:0!important;padding:0!important}
+  .main-wrap{margin-left:0!important}
+  body{background:#fff!important;color:#000!important}
+  .page.active{display:block!important}
+  .tc{break-inside:avoid;border:1px solid #ccc!important}
+  .container{max-width:100%!important;padding:0!important}
+}
 /* ── NOTIF SETTINGS MODAL ── */
 #notif-modal{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9100;display:none;align-items:center;justify-content:center}
 #notif-modal.open{display:flex}
@@ -1120,6 +1173,8 @@ input:checked+.toggle-slider::before{transform:translateX(18px)}
     <div class="hstat"><div class="hstat-num" id="hs-sacs">0</div><div class="hstat-label">Upcoming SACs</div></div>
   </div>
   <div id="h-urgent-sac" style="margin-bottom:1.25rem;display:none"></div>
+  <div id="h-tip-wrap"></div>
+  <div id="h-neglect-home" style="display:none;margin-bottom:1.25rem"></div>
   <div id="h-getstarted" style="display:none;margin-bottom:1.25rem">
     <div class="card" style="margin-bottom:0;border:1.5px dashed var(--border)">
       <div class="sh" style="margin-bottom:.75rem">Get started</div>
@@ -1456,6 +1511,7 @@ input:checked+.toggle-slider::before{transform:translateX(18px)}
       <div></div>
       <div class="fg"><label>&nbsp;</label><button class="abtn green" onclick="addLog()" style="min-width:90px;padding:0 18px">+ Log hours</button></div>
     </div>
+    <div class="fg" style="margin-bottom:.75rem"><label>Session notes (optional)</label><input type="text" id="log-note-inp" placeholder="What did you cover? Topics, chapters, pages…" maxlength="200" style="width:100%"/></div>
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem">
       <div class="sh" style="margin-bottom:0">Recent sessions</div>
       <button class="abtn sm" style="background:var(--border);color:var(--text);font-size:11px" onclick="toggleSessionLog()" id="session-log-btn">Show</button>
@@ -1834,7 +1890,10 @@ function openSubjModal(){
   document.getElementById('subj-modal').classList.add('open');
 }
 function closeSubjModal(){document.getElementById('subj-modal').classList.remove('open');}
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeSubjModal();}});
+document.addEventListener('keydown',e=>{
+  if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();openCmdPalette();return;}
+  if(e.key==='Escape'){closeSubjModal();closeCmdPalette();closeWeeklyReview();}
+});
 
 function renderSubjManageList(){
   const list=document.getElementById('subj-manage-list');
@@ -2073,7 +2132,7 @@ function updateDarkBtn(mode){
 }
 
 // ── TOAST ──
-function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500)}
+function showToast(m){const t=document.getElementById('toast');t.classList.remove('has-action');t.textContent=m;t.classList.add('show');clearTimeout(window._toastT);window._toastT=setTimeout(()=>t.classList.remove('show'),2500)}
 
 // ── CONFETTI ──
 function launchConfetti(){
@@ -2310,7 +2369,8 @@ async function init(){
   renderFilterBtns();
   populateSubjectDropdowns();
 
-  const savedTheme=localStorage.getItem('vce-theme')||'light';
+  const sysPref=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+  const savedTheme=localStorage.getItem('vce-theme')||sysPref;
   document.documentElement.setAttribute('data-theme',savedTheme);
   updateDarkBtn(savedTheme);
   applyPalette(savedTheme==='dark');
@@ -2347,6 +2407,7 @@ async function init(){
   }
   checkShowTour();
   setTimeout(checkSACNotifications, 800);
+  setTimeout(checkWeeklyReview, 1200);
 }
 // ── TASK TIME MODAL ──
 let _ttmTaskId=null,_ttmSubjId=null;
@@ -2390,14 +2451,40 @@ function skipTaskTime(){
   _ttmTaskId=null;_ttmSubjId=null;
 }
 
+const _TASK_MILESTONES={10:'🔥',25:'⭐',50:'🚀',100:'👑',250:'🏆',500:'🌟'};
 function toggleTask(id){
   const t=tasks.find(x=>x.id===id);if(!t)return;t.done=!t.done;
-  if(t.done){const cd=JSON.parse(localStorage.getItem(UID_PREFIX+'cd')||'[]');if(!cd.includes(todayStr()))cd.push(todayStr());localStorage.setItem(UID_PREFIX+'cd',JSON.stringify(cd));addXP(XPL);playSound('complete');const allDone=tasks.filter(x=>!x.done&&x.due===todayStr()).length===0&&tasks.filter(x=>x.due===todayStr()).length>0;if(allDone){launchConfetti();showToast("🎉 All today's tasks done!")}else showToast('+10 XP! 🚀');if(t.subject&&t.subject!=='__other__')queueTimeLog(t.id,t.subject,t.title);}
+  if(t.done){
+    const cd=JSON.parse(localStorage.getItem(UID_PREFIX+'cd')||'[]');if(!cd.includes(todayStr()))cd.push(todayStr());localStorage.setItem(UID_PREFIX+'cd',JSON.stringify(cd));addXP(XPL);playSound('complete');
+    const doneCount=tasks.filter(x=>x.done).length;
+    if(_TASK_MILESTONES[doneCount]){launchConfetti();showToast(`${_TASK_MILESTONES[doneCount]} ${doneCount} tasks done — milestone!`);}
+    else{const allDone=tasks.filter(x=>!x.done&&x.due===todayStr()).length===0&&tasks.filter(x=>x.due===todayStr()).length>0;if(allDone){launchConfetti();showToast("🎉 All today's tasks done!")}else showToast('+10 XP! 🚀');}
+    if(t.subject&&t.subject!=='__other__')queueTimeLog(t.id,t.subject,t.title);
+  }
   saveT();renderTasks();if(document.getElementById('page-home').classList.contains('active'))renderHome();
 }
 function homeToggleTask(id){const t=tasks.find(x=>x.id===id);if(!t)return;t.done=!t.done;if(t.done){const cd=JSON.parse(localStorage.getItem(UID_PREFIX+'cd')||'[]');if(!cd.includes(todayStr()))cd.push(todayStr());localStorage.setItem(UID_PREFIX+'cd',JSON.stringify(cd));addXP(XPL);playSound('complete');showToast('+10 XP! 🚀');if(t.subject&&t.subject!=='__other__')queueTimeLog(t.id,t.subject,t.title);}saveT();renderHome();renderTasks()}
 function toggleUrgent(id){const t=tasks.find(x=>x.id===id);if(t){t.urgent=!t.urgent;saveT();renderTasks()}}
-function removeTask(id){if(confirm('Remove this task?')){tasks=tasks.filter(x=>x.id!==id);saveT();renderTasks()}}
+let _undoTask=null,_undoTimeout=null;
+function _execUndoDelete(){
+  if(!_undoTask)return;
+  const t=_undoTask;_undoTask=null;clearTimeout(_undoTimeout);
+  tasks.push(t);tasks.sort((a,b)=>b.id-a.id);saveT();renderTasks();showToast('Task restored!');
+}
+function removeTask(id){
+  const task=tasks.find(x=>x.id===id);if(!task)return;
+  clearTimeout(_undoTimeout);_undoTask=task;
+  tasks=tasks.filter(x=>x.id!==id);saveT();renderTasks();
+  const toast=document.getElementById('toast');
+  if(toast){
+    toast.classList.remove('show');
+    toast.innerHTML='Task deleted &nbsp;<button onclick="_execUndoDelete()" style="margin-left:6px;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);color:#fff;font-family:inherit;font-size:11.5px;font-weight:700;padding:2px 9px;border-radius:8px;cursor:pointer">Undo</button>';
+    toast.classList.add('show','has-action');
+    clearTimeout(window._toastT);
+    window._toastT=setTimeout(()=>{toast.classList.remove('show','has-action');_undoTask=null;},5500);
+  }
+  _undoTimeout=setTimeout(()=>{_undoTask=null;},6000);
+}
 
 const _openSubPanels=new Set();
 function toggleSubPanel(id){if(_openSubPanels.has(id))_openSubPanels.delete(id);else _openSubPanels.add(id);renderTasks();}
@@ -2635,7 +2722,11 @@ function addLog(){
   const total=hrs+(mins/60);if(total<=0){showToast('Enter at least 1 minute!');return}
   const date=document.getElementById('log-date').value||todayStr();
   const disp=hrs>0&&mins>0?`${hrs}h ${mins}m`:hrs>0?`${hrs}h`:`${mins}m`;
-  studyLog.unshift({id:Date.now(),subject:subj,hours:total,date,note:`Manual (${disp})`});
+  const noteInp=document.getElementById('log-note-inp');
+  const noteVal=noteInp?noteInp.value.trim():'';
+  const note=noteVal?`${noteVal} (${disp})`:`Manual (${disp})`;
+  studyLog.unshift({id:Date.now(),subject:subj,hours:total,date,note});
+  if(noteInp)noteInp.value='';
   saveL();renderHoursBar();showToast(`${disp} logged! 📊`);
 }
 function renderHoursBar(){
@@ -2837,6 +2928,16 @@ function renderHome(){
         <div class="hs-type" style="color:${NC[e.subject]}">${e.type}</div>
       </div>`;
     }).join('');
+  }
+  // daily tip
+  renderHomeTip();
+  // neglect alert on home
+  const neglectEl=document.getElementById('h-neglect-home');
+  if(neglectEl&&studyLog.length>3){
+    const totals={};userSubjects.forEach(s=>{totals[s.id]=0});studyLog.forEach(l=>{if(totals[l.subject]!==undefined)totals[l.subject]+=l.hours});
+    const neg=userSubjects.filter(s=>(totals[s.id]||0)<0.5).map(s=>s.label);
+    if(neg.length){neglectEl.style.display='block';neglectEl.innerHTML=`<div style="background:var(--amber-bg);border:1px solid var(--amber);border-radius:14px;padding:.85rem 1.1rem;display:flex;align-items:center;gap:12px"><span style="font-size:1.2rem">⚠️</span><div><div style="font-size:12.5px;font-weight:600;color:var(--amber)">Low study logged</div><div style="font-size:12px;color:var(--muted);margin-top:.15rem">${neg.join(', ')} — try to log some hours this week.</div></div></div>`;}
+    else neglectEl.style.display='none';
   }
 }
 
@@ -3496,6 +3597,7 @@ function renderScores(){
         <div class="score-subj-avg">${avg!==null?avg+'%':'—'}${g?`<span class="score-grade-badge" style="background:${g.bg};color:${g.col}">${g.text}</span>`:''}</div>
       </div>
       <div class="score-bar-wrap"><div class="score-bar-fill" style="width:${avg||0}%;background:${dot}"></div></div>
+      ${sub.length>=2?`<div class="score-trend">${sub.slice(-6).map(r=>{const p=Math.round(r.score/r.max*100);const h=Math.max(3,Math.round(p/100*28));const c=p>=80?'var(--green)':p>=60?'var(--amber)':'var(--high)';return`<div class="score-trend-bar" style="height:${h}px;background:${c}" title="${p}%"></div>`}).join('')}</div>`:''}
       <div class="score-history">
         ${sub.length?sub.slice(0,5).map(r=>{const pct=Math.round(r.score/r.max*100);const gd=gradeLabel(pct);return`<div class="score-row">
           <div class="score-row-name">${r.name}</div>
@@ -3953,6 +4055,148 @@ function setPwaBtn(installed){
   if(lbl)lbl.textContent=installed?'Open the App':'Get the App';
 }
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js'))}
+
+// ── DAILY STUDY TIPS ─────────────────────────────────────────────────────────
+const VCE_TIPS=[
+  {icon:'📝',text:'Start each study session by writing down the 3 things you want to cover. Specificity beats vague "study" goals.'},
+  {icon:'⏱️',text:'The Pomodoro technique works — 25 minutes of focused work followed by a 5-minute break improves retention.'},
+  {icon:'🔁',text:'Active recall beats re-reading. Close your notes and try to recall what you just learned from memory.'},
+  {icon:'📅',text:'Spread your SAC revision over multiple days. Cramming the night before rarely improves long-term performance.'},
+  {icon:'🧠',text:'Spaced repetition: review new material after 1 day, 3 days, then 1 week. Your brain consolidates memories during sleep.'},
+  {icon:'📊',text:'Track your SAC scores over time. Seeing your improvement (or decline) early lets you adjust your study strategy.'},
+  {icon:'🎯',text:'Work on your most difficult subject first when your energy is highest — not at the end when you\'re tired.'},
+  {icon:'✍️',text:'Writing out answers by hand during revision is more effective than typing — the motor memory aids recall.'},
+  {icon:'🗂️',text:'For English, keep a running document of themes, quotes and character analysis. Re-reading your own notes beats the text.'},
+  {icon:'📖',text:'For each SAC, read the assessment criteria before you start studying — know exactly what you\'ll be marked on.'},
+  {icon:'💤',text:'Sacrificing sleep for study is almost never worth it. Memory consolidation happens during sleep — aim for 8 hours.'},
+  {icon:'🏃',text:'Exercise improves cognitive function. Even a 20-minute walk between study sessions improves focus and mood.'},
+  {icon:'🤝',text:'Teach concepts to someone else (or explain them aloud to yourself). You\'ll quickly find the gaps in your understanding.'},
+  {icon:'📚',text:'For Maths, practice exam conditions matter — timed, no notes, no calculator unless allowed. Simulate the real thing.'},
+  {icon:'🔴',text:'Colour-code your notes by subject. Visual distinction between subjects reduces cognitive switching costs.'},
+  {icon:'📋',text:'Before each exam, make a one-page cheat sheet as if you could bring it in. The act of making it is the studying.'},
+  {icon:'🎵',text:'Instrumental music (no lyrics) at low volume can improve focus for some students. Try it and see if it works for you.'},
+  {icon:'🌅',text:'Morning study sessions work best for most people — the brain is freshest and distractions are lowest.'},
+  {icon:'🔗',text:'Link new concepts to things you already know. Understanding the "why" behind facts makes them far easier to recall.'},
+  {icon:'📝',text:'After each study session, write a 3-sentence summary of what you covered. It reinforces the session in memory.'},
+  {icon:'⚖️',text:'Balance is important — all-nighters and skipping exercise will hurt your performance more than missing one session.'},
+  {icon:'🎤',text:'Record yourself explaining a concept and listen back. You\'ll immediately notice where your explanation breaks down.'},
+  {icon:'✅',text:'Break large tasks into small, specific steps. "Finish English essay" is overwhelming. "Write intro paragraph" is doable.'},
+  {icon:'💡',text:'For Science, work through past exam questions before your SAC — the question styles repeat more than you think.'},
+  {icon:'🗓️',text:'Plan your week every Sunday night. Students who plan weekly consistently outperform those who plan day-by-day.'},
+  {icon:'🚫',text:'Phone in another room during study sessions, not just face-down on the desk. Even the presence of a phone reduces focus.'},
+  {icon:'🧪',text:'For experiments and methodologies, draw diagrams. Visual memory is strong — a labelled diagram beats a paragraph.'},
+  {icon:'📈',text:'Consistent short sessions beat infrequent long ones. 45 minutes daily beats a 5-hour Sunday session every time.'},
+  {icon:'🏆',text:'Log your study hours honestly. Students who track time tend to study significantly more than those who don\'t.'},
+  {icon:'🔄',text:'Mix up subjects during your study block — switching between Maths and English keeps focus sharper than a single subject.'},
+];
+function renderHomeTip(){
+  const el=document.getElementById('h-tip-wrap');if(!el)return;
+  const dayOfYear=Math.floor((TODAY-new Date(TODAY.getFullYear(),0,0))/(1000*60*60*24));
+  const tip=VCE_TIPS[dayOfYear%VCE_TIPS.length];
+  el.innerHTML=`<div class="h-tip"><div class="h-tip-icon">${tip.icon}</div><div class="h-tip-body"><div class="h-tip-label">Study tip</div><div class="h-tip-text">${tip.text}</div></div></div>`;
+}
+
+// ── COMMAND PALETTE ───────────────────────────────────────────────────────────
+const CMD_ITEMS=[
+  {group:'Navigate',icon:'🏠',label:'Home',sub:'Dashboard',action:()=>navTo('home')},
+  {group:'Navigate',icon:'✅',label:'Tasks',sub:'Task list',action:()=>navTo('tasks')},
+  {group:'Navigate',icon:'📅',label:'Day Planner',sub:'Schedule your day',action:()=>navTo('planner')},
+  {group:'Navigate',icon:'🎯',label:'SACs & Exams',sub:'Assessment tracker',action:()=>navTo('sacs')},
+  {group:'Navigate',icon:'📆',label:'Calendar',sub:'Events calendar',action:()=>navTo('calendar')},
+  {group:'Navigate',icon:'📚',label:'Revision',sub:'SAC prep',action:()=>navTo('revision')},
+  {group:'Navigate',icon:'🧠',label:'Study Methods',sub:'Pomodoro & techniques',action:()=>navTo('study')},
+  {group:'Navigate',icon:'📊',label:'Progress & Stats',sub:'Streaks and achievements',action:()=>navTo('stats')},
+  {group:'Navigate',icon:'🎓',label:'ATAR & Scores',sub:'Score tracker',action:()=>navTo('scores')},
+  {group:'Navigate',icon:'💡',label:'Insights',sub:'Study analytics',action:()=>navTo('insights')},
+  {group:'Actions',icon:'➕',label:'Add a task',sub:'Jump to task input',action:()=>{navTo('tasks');setTimeout(()=>document.getElementById('task-input')?.focus(),80);}},
+  {group:'Actions',icon:'🌙',label:'Toggle dark mode',sub:'Switch light / dark',action:toggleDark},
+  {group:'Actions',icon:'🖨️',label:'Print this page',sub:'Print / save as PDF',action:()=>window.print()},
+  {group:'Actions',icon:'⚙️',label:'Manage subjects',sub:'Add, rename, recolour',action:openSubjModal},
+  {group:'Actions',icon:'📅',label:'Weekly review',sub:'Reflect on this week',action:openWeeklyReview},
+];
+let _cmdSelIdx=0;
+function openCmdPalette(){
+  const el=document.getElementById('cmd-palette');if(!el)return;
+  el.classList.add('open');
+  const inp=document.getElementById('cmd-input');if(inp){inp.value='';inp.focus();}
+  _cmdSelIdx=0;renderCmdResults();
+  el.addEventListener('click',e=>{if(e.target===el)closeCmdPalette();},{once:true});
+}
+function closeCmdPalette(){document.getElementById('cmd-palette')?.classList.remove('open');}
+function renderCmdResults(){
+  const q=(document.getElementById('cmd-input')?.value||'').toLowerCase().trim();
+  const filtered=CMD_ITEMS.filter(c=>!q||c.label.toLowerCase().includes(q)||c.sub.toLowerCase().includes(q)||c.group.toLowerCase().includes(q));
+  const el=document.getElementById('cmd-results');if(!el)return;
+  if(!filtered.length){el.innerHTML='<div class="cmd-empty">No results</div>';return;}
+  const groups=[...new Set(filtered.map(c=>c.group))];
+  el.innerHTML=groups.map(g=>{
+    const items=filtered.filter(c=>c.group===g);
+    return`<div class="cmd-group-hdr">${g}</div>${items.map((c,i)=>{
+      const idx=filtered.indexOf(c);
+      return`<div class="cmd-item${idx===_cmdSelIdx?' cmd-sel':''}" onclick="_cmdRun(${CMD_ITEMS.indexOf(c)})" onmouseover="_cmdSelIdx=${idx};renderCmdResults()">
+        <div class="cmd-item-icon">${c.icon}</div>
+        <div class="cmd-item-label">${c.label}</div>
+        <div class="cmd-item-sub">${c.sub}</div>
+      </div>`;
+    }).join('')}`;
+  }).join('');
+  // keyboard nav
+  el.onkeydown=null;
+}
+function _cmdRun(idx){const c=CMD_ITEMS[idx];if(c){closeCmdPalette();c.action();}}
+document.addEventListener('keydown',e=>{
+  const pal=document.getElementById('cmd-palette');
+  if(!pal?.classList.contains('open'))return;
+  const inp=document.getElementById('cmd-input');
+  const q=(inp?.value||'').toLowerCase().trim();
+  const filtered=CMD_ITEMS.filter(c=>!q||c.label.toLowerCase().includes(q)||c.sub.toLowerCase().includes(q)||c.group.toLowerCase().includes(q));
+  if(e.key==='ArrowDown'){e.preventDefault();_cmdSelIdx=Math.min(_cmdSelIdx+1,filtered.length-1);renderCmdResults();}
+  else if(e.key==='ArrowUp'){e.preventDefault();_cmdSelIdx=Math.max(_cmdSelIdx-1,0);renderCmdResults();}
+  else if(e.key==='Enter'){e.preventDefault();const c=filtered[_cmdSelIdx];if(c)_cmdRun(CMD_ITEMS.indexOf(c));}
+});
+
+// ── WEEKLY REVIEW ─────────────────────────────────────────────────────────────
+function checkWeeklyReview(){
+  if(new Date().getDay()!==0)return; // Sunday only
+  const key=UID_PREFIX+'weekly-review-shown';
+  const last=localStorage.getItem(key);
+  const thisWeek=todayStr().slice(0,7); // YYYY-MM
+  const thisWeekKey=todayStr().slice(0,10);
+  if(last===thisWeekKey)return;
+  setTimeout(openWeeklyReview,1500);
+}
+function openWeeklyReview(){
+  const el=document.getElementById('weekly-review-modal');if(!el)return;
+  // populate stats
+  const wkStart=new Date(TODAY);wkStart.setDate(TODAY.getDate()-6);
+  const wkStartStr=localStr(wkStart);
+  const wkTasks=tasks.filter(t=>t.done).length; // total done as proxy
+  const wkHrs=Math.round(studyLog.filter(l=>l.date>=wkStartStr).reduce((a,l)=>a+l.hours,0)*10)/10;
+  const cd=JSON.parse(localStorage.getItem(UID_PREFIX+'cd')||'[]');
+  const wkDays=cd.filter(d=>d>=wkStartStr).length;
+  const grid=document.getElementById('wr-stats-grid');
+  if(grid)grid.innerHTML=`
+    <div class="wr-stat"><div class="wr-stat-num">${tasks.filter(t=>t.done).length}</div><div class="wr-stat-label">Total done</div></div>
+    <div class="wr-stat"><div class="wr-stat-num">${wkHrs}h</div><div class="wr-stat-label">Hrs logged</div></div>
+    <div class="wr-stat"><div class="wr-stat-num">${wkDays}</div><div class="wr-stat-label">Active days</div></div>`;
+  // restore saved reflections
+  const saved=JSON.parse(localStorage.getItem(UID_PREFIX+'wr-last')||'{}');
+  const q1=document.getElementById('wr-q1');const q2=document.getElementById('wr-q2');
+  if(q1)q1.value='';if(q2)q2.value='';
+  el.classList.add('open');
+}
+function closeWeeklyReview(){document.getElementById('weekly-review-modal')?.classList.remove('open');}
+function saveWeeklyReview(){
+  const q1=document.getElementById('wr-q1')?.value.trim();
+  const q2=document.getElementById('wr-q2')?.value.trim();
+  const reflection={date:todayStr(),went_well:q1,focus_next:q2};
+  const history=JSON.parse(localStorage.getItem(UID_PREFIX+'wr-history')||'[]');
+  history.unshift(reflection);
+  if(history.length>12)history.pop();
+  localStorage.setItem(UID_PREFIX+'wr-history',JSON.stringify(history));
+  localStorage.setItem(UID_PREFIX+'weekly-review-shown',todayStr());
+  closeWeeklyReview();showToast('Weekly reflection saved! 📅');
+}
 
 // ── ACHIEVEMENT BADGES ───────────────────────────────────────────────────────
 const BADGE_DEFS=[
@@ -4985,6 +5229,33 @@ init().then(()=>{
     <div id="sac-cel-subj" class="sac-modal-subj"></div>
     <div class="sac-modal-sub" id="sac-cel-body"></div>
     <button class="sac-modal-btn" onclick="closeSACCelebrate()">Let's keep going! 🚀</button>
+  </div>
+</div>
+
+<!-- Command palette -->
+<div id="cmd-palette">
+  <div class="cmd-box">
+    <div class="cmd-inp-wrap">
+      <svg class="cmd-inp-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input class="cmd-inp" id="cmd-input" placeholder="Search pages and actions…" oninput="renderCmdResults()" autocomplete="off"/>
+    </div>
+    <div class="cmd-results" id="cmd-results"></div>
+  </div>
+</div>
+
+<!-- Weekly review modal -->
+<div id="weekly-review-modal">
+  <div class="wr-box">
+    <div class="wr-emoji">📅</div>
+    <div class="wr-title">Weekly Review</div>
+    <div class="wr-sub">How did your study week go?</div>
+    <div class="wr-stats" id="wr-stats-grid"></div>
+    <div class="wr-q"><label>What went well this week?</label><textarea id="wr-q1" placeholder="Tasks completed, concepts understood…"></textarea></div>
+    <div class="wr-q"><label>What do you want to focus on next week?</label><textarea id="wr-q2" placeholder="Subjects to catch up on, upcoming SACs…"></textarea></div>
+    <div style="display:flex;gap:.5rem;justify-content:flex-end">
+      <button class="abtn outline sm" onclick="closeWeeklyReview()">Skip</button>
+      <button class="abtn sm" onclick="saveWeeklyReview()">Save reflection ✓</button>
+    </div>
   </div>
 </div>
 </body>
