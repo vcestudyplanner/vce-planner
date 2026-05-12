@@ -648,11 +648,14 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 .score-add-form{background:var(--surface);border:1.5px solid var(--border);border-radius:16px;padding:1.25rem 1.4rem;margin-bottom:1.5rem}
 .score-grade-badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px;margin-left:.4rem}
 /* revision */
-.rev-event-card{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:1.1rem 1.3rem;margin-bottom:.75rem}
-.rev-event-header{display:flex;align-items:center;gap:.75rem;margin-bottom:.6rem}
-.rev-event-name{font-family:'Fraunces',serif;font-size:1rem;font-weight:700;color:var(--text);flex:1}
-.rev-event-days{font-size:12px;font-weight:700;color:var(--accent);white-space:nowrap}
-.rev-plan-btn{font-size:12px;font-weight:600;padding:5px 14px;border-radius:8px;background:var(--accent);color:#fff;border:none;cursor:pointer;transition:all .15s;white-space:nowrap;display:inline-flex;align-items:center;gap:5px}
+.rev-event-card{background:var(--surface);border:1.5px solid var(--border);border-radius:16px;padding:1.25rem 1.5rem;margin-bottom:1rem;display:flex;align-items:center;gap:1.25rem}
+.rev-event-days-badge{min-width:52px;height:52px;border-radius:12px;background:var(--accent);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;gap:0}
+.rev-event-days-num{font-family:'Fraunces',serif;font-size:1.35rem;font-weight:700;color:#fff;line-height:1}
+.rev-event-days-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.75);margin-top:1px}
+.rev-event-body{flex:1;min-width:0}
+.rev-event-tag{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.2rem}
+.rev-event-name{font-family:'Fraunces',serif;font-size:1rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rev-plan-btn{font-size:12px;font-weight:600;padding:7px 16px;border-radius:10px;background:var(--accent);color:#fff;border:none;cursor:pointer;transition:all .15s;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;flex-shrink:0}
 .rev-plan-btn:hover{filter:brightness(1.1)}
 /* ── REVISION SCHEDULE MODAL ── */
 #rs-modal{position:fixed;inset:0;z-index:5000;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);display:none;align-items:flex-start;justify-content:center;padding:1.5rem 1rem;overflow-y:auto}
@@ -759,9 +762,10 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 .cmd-inp{flex:1;border:none;background:transparent;font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;color:var(--text);outline:none}
 .cmd-inp::placeholder{color:var(--muted)}
 .cmd-results{max-height:340px;overflow-y:auto;padding:.4rem}
-.cmd-item{display:flex;align-items:center;gap:11px;padding:.55rem .75rem;border-radius:10px;cursor:pointer;transition:background .1s}
+.cmd-item{display:flex;align-items:center;gap:11px;padding:.55rem .75rem;border-radius:10px;cursor:pointer;transition:background .1s;user-select:none}
 .cmd-item:hover,.cmd-item.cmd-sel{background:var(--shover)}
-.cmd-item-icon{width:30px;height:30px;border-radius:8px;background:rgba(99,102,241,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.95rem}
+.cmd-item-icon{width:30px;height:30px;border-radius:8px;background:rgba(99,102,241,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--accent)}
+.cmd-item-icon svg{width:15px;height:15px}
 .cmd-item-label{font-size:13.5px;font-weight:500;color:var(--text);flex:1}
 .cmd-item-sub{font-size:11px;color:var(--muted);white-space:nowrap}
 .cmd-group-hdr{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);padding:.5rem .75rem .2rem}
@@ -3633,17 +3637,15 @@ function renderRevision(){
     const days=daysUntil(ev.date);
     const subjName=userSubjects.find(s=>s.id===ev.subject)?.label||ev.subject||'';
     const hasSchedule=!!localStorage.getItem(UID_PREFIX+'rs-'+ev.id);
+    const daysNum=days===0?'!':days===1?'1':String(days);
+    const daysLbl=days===0?'today':days===1?'day':'days';
     return`<div class="rev-event-card">
-      <div class="rev-event-header">
-        <div>
-          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.15rem">${subjName} · ${ev.type||'SAC'}</div>
-          <div class="rev-event-name">${ev.name}</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:.5rem">
-          <div class="rev-event-days">${days===0?'Today!':days===1?'Tomorrow':days+' days'}</div>
-          <button class="rev-plan-btn" onclick="openRevSchedule(${ev.id})"><i data-lucide="calendar-range" style="width:13px;height:13px"></i>${hasSchedule?'View Schedule':'Build Schedule'}</button>
-        </div>
+      <div class="rev-event-days-badge"><div class="rev-event-days-num">${daysNum}</div><div class="rev-event-days-lbl">${daysLbl}</div></div>
+      <div class="rev-event-body">
+        <div class="rev-event-tag">${subjName} · ${ev.type||'SAC'}</div>
+        <div class="rev-event-name">${ev.name}</div>
       </div>
+      <button class="rev-plan-btn" onclick="openRevSchedule(${ev.id})"><i data-lucide="calendar-range" style="width:13px;height:13px"></i>${hasSchedule?'View Schedule':'Plan'}</button>
     </div>`;
   }).join('');
 }
@@ -4060,61 +4062,84 @@ function renderHomeTip(){
 
 // ── COMMAND PALETTE ───────────────────────────────────────────────────────────
 const CMD_ITEMS=[
-  {group:'Navigate',icon:'🏠',label:'Home',sub:'Dashboard',action:()=>navTo('home')},
-  {group:'Navigate',icon:'✅',label:'Tasks',sub:'Task list',action:()=>navTo('tasks')},
-  {group:'Navigate',icon:'📅',label:'Day Planner',sub:'Schedule your day',action:()=>navTo('planner')},
-  {group:'Navigate',icon:'🎯',label:'SACs & Exams',sub:'Assessment tracker',action:()=>navTo('sacs')},
-  {group:'Navigate',icon:'📆',label:'Calendar',sub:'Events calendar',action:()=>navTo('calendar')},
-  {group:'Navigate',icon:'📚',label:'Revision',sub:'SAC prep',action:()=>navTo('revision')},
-  {group:'Navigate',icon:'🧠',label:'Study Methods',sub:'Pomodoro & techniques',action:()=>navTo('study')},
-  {group:'Navigate',icon:'📊',label:'Progress & Stats',sub:'Streaks and achievements',action:()=>navTo('stats')},
-  {group:'Navigate',icon:'🎓',label:'ATAR & Scores',sub:'Score tracker',action:()=>navTo('scores')},
-  {group:'Navigate',icon:'💡',label:'Progress & Badges',sub:'Study analytics',action:()=>navTo('stats')},
-  {group:'Actions',icon:'➕',label:'Add a task',sub:'Jump to task input',action:()=>{navTo('tasks');setTimeout(()=>document.getElementById('task-input')?.focus(),80);}},
-  {group:'Actions',icon:'🌙',label:'Toggle dark mode',sub:'Switch light / dark',action:toggleDark},
-  {group:'Actions',icon:'🖨️',label:'Print this page',sub:'Print / save as PDF',action:()=>window.print()},
-  {group:'Actions',icon:'⚙️',label:'Manage subjects',sub:'Add, rename, recolour',action:openSubjModal},
-  {group:'Actions',icon:'📅',label:'Weekly review',sub:'Reflect on this week',action:openWeeklyReview},
+  {group:'Navigate',icon:'home',label:'Home',sub:'Dashboard',action:()=>navTo('home')},
+  {group:'Navigate',icon:'check-square',label:'Tasks',sub:'Task list',action:()=>navTo('tasks')},
+  {group:'Navigate',icon:'calendar-days',label:'Day Planner',sub:'Schedule your day',action:()=>navTo('planner')},
+  {group:'Navigate',icon:'target',label:'SACs & Exams',sub:'Assessment tracker',action:()=>navTo('sacs')},
+  {group:'Navigate',icon:'calendar',label:'Calendar',sub:'Events calendar',action:()=>navTo('calendar')},
+  {group:'Navigate',icon:'book-open',label:'Revision',sub:'SAC prep',action:()=>navTo('revision')},
+  {group:'Navigate',icon:'brain',label:'Study Methods',sub:'Pomodoro & techniques',action:()=>navTo('study')},
+  {group:'Navigate',icon:'bar-chart-2',label:'Progress & Stats',sub:'Streaks and achievements',action:()=>navTo('stats')},
+  {group:'Navigate',icon:'graduation-cap',label:'ATAR & Scores',sub:'Score tracker',action:()=>navTo('scores')},
+  {group:'Actions',icon:'plus-circle',label:'Add a task',sub:'Jump to task input',action:()=>{navTo('tasks');setTimeout(()=>document.getElementById('task-input')?.focus(),80);}},
+  {group:'Actions',icon:'moon',label:'Toggle dark mode',sub:'Switch light / dark',action:toggleDark},
+  {group:'Actions',icon:'printer',label:'Print this page',sub:'Print / save as PDF',action:()=>window.print()},
+  {group:'Actions',icon:'settings',label:'Manage subjects',sub:'Add, rename, recolour',action:openSubjModal},
+  {group:'Actions',icon:'clipboard-list',label:'Weekly review',sub:'Reflect on this week',action:openWeeklyReview},
 ];
 let _cmdSelIdx=0;
+let _cmdFiltered=[];
 function openCmdPalette(){
   const el=document.getElementById('cmd-palette');if(!el)return;
   el.classList.add('open');
   const inp=document.getElementById('cmd-input');if(inp){inp.value='';inp.focus();}
   _cmdSelIdx=0;renderCmdResults();
-  if(!el._cmdBackdrop){el._cmdBackdrop=true;el.addEventListener('click',e=>{if(e.target===el)closeCmdPalette();});}
+  if(!el._cmdBackdrop){
+    el._cmdBackdrop=true;
+    el.addEventListener('click',e=>{if(e.target===el)closeCmdPalette();});
+    const res=document.getElementById('cmd-results');
+    if(res){
+      res.addEventListener('mousedown',e=>{
+        const item=e.target.closest('.cmd-item');
+        if(!item)return;
+        e.preventDefault();
+        const idx=parseInt(item.dataset.idx,10);
+        if(!isNaN(idx))_cmdRun(idx);
+      });
+      res.addEventListener('mousemove',e=>{
+        const item=e.target.closest('.cmd-item');
+        if(!item)return;
+        const newIdx=parseInt(item.dataset.idx,10);
+        if(!isNaN(newIdx)&&newIdx!==_cmdSelIdx){
+          _cmdSelIdx=newIdx;
+          res.querySelectorAll('.cmd-item').forEach(el=>el.classList.toggle('cmd-sel',parseInt(el.dataset.idx,10)===_cmdSelIdx));
+        }
+      });
+    }
+  }
 }
 function closeCmdPalette(){document.getElementById('cmd-palette')?.classList.remove('open');}
 function renderCmdResults(){
   const q=(document.getElementById('cmd-input')?.value||'').toLowerCase().trim();
-  const filtered=CMD_ITEMS.filter(c=>!q||c.label.toLowerCase().includes(q)||c.sub.toLowerCase().includes(q)||c.group.toLowerCase().includes(q));
+  _cmdFiltered=CMD_ITEMS.filter(c=>!q||c.label.toLowerCase().includes(q)||c.sub.toLowerCase().includes(q)||c.group.toLowerCase().includes(q));
   const el=document.getElementById('cmd-results');if(!el)return;
-  if(!filtered.length){el.innerHTML='<div class="cmd-empty">No results</div>';return;}
-  const groups=[...new Set(filtered.map(c=>c.group))];
+  if(!_cmdFiltered.length){el.innerHTML='<div class="cmd-empty">No results</div>';return;}
+  const groups=[...new Set(_cmdFiltered.map(c=>c.group))];
   el.innerHTML=groups.map(g=>{
-    const items=filtered.filter(c=>c.group===g);
-    return`<div class="cmd-group-hdr">${g}</div>${items.map((c,i)=>{
-      const idx=filtered.indexOf(c);
-      return`<div class="cmd-item${idx===_cmdSelIdx?' cmd-sel':''}" onclick="_cmdRun(${CMD_ITEMS.indexOf(c)})" onmouseover="_cmdSelIdx=${idx};renderCmdResults()">
-        <div class="cmd-item-icon">${c.icon}</div>
+    const items=_cmdFiltered.filter(c=>c.group===g);
+    return`<div class="cmd-group-hdr">${g}</div>${items.map(c=>{
+      const idx=_cmdFiltered.indexOf(c);
+      return`<div class="cmd-item${idx===_cmdSelIdx?' cmd-sel':''}" data-idx="${idx}">
+        <div class="cmd-item-icon"><i data-lucide="${c.icon}"></i></div>
         <div class="cmd-item-label">${c.label}</div>
         <div class="cmd-item-sub">${c.sub}</div>
       </div>`;
     }).join('')}`;
   }).join('');
-  // keyboard nav
-  el.onkeydown=null;
+  if(typeof lucide!=='undefined')lucide.createIcons({scope:el});
 }
-function _cmdRun(idx){const c=CMD_ITEMS[idx];if(c){closeCmdPalette();c.action();}}
+function _cmdRun(filteredIdx){
+  const c=_cmdFiltered[filteredIdx];
+  if(!c)return;
+  closeCmdPalette();
+  setTimeout(()=>c.action(),30);
+}
 document.addEventListener('keydown',e=>{
   const pal=document.getElementById('cmd-palette');
   if(!pal?.classList.contains('open'))return;
-  const inp=document.getElementById('cmd-input');
-  const q=(inp?.value||'').toLowerCase().trim();
-  const filtered=CMD_ITEMS.filter(c=>!q||c.label.toLowerCase().includes(q)||c.sub.toLowerCase().includes(q)||c.group.toLowerCase().includes(q));
-  if(e.key==='ArrowDown'){e.preventDefault();_cmdSelIdx=Math.min(_cmdSelIdx+1,filtered.length-1);renderCmdResults();}
+  if(e.key==='ArrowDown'){e.preventDefault();_cmdSelIdx=Math.min(_cmdSelIdx+1,_cmdFiltered.length-1);renderCmdResults();}
   else if(e.key==='ArrowUp'){e.preventDefault();_cmdSelIdx=Math.max(_cmdSelIdx-1,0);renderCmdResults();}
-  else if(e.key==='Enter'){e.preventDefault();const c=filtered[_cmdSelIdx];if(c)_cmdRun(CMD_ITEMS.indexOf(c));}
+  else if(e.key==='Enter'){e.preventDefault();_cmdRun(_cmdSelIdx);}
 });
 
 // ── WEEKLY REVIEW ─────────────────────────────────────────────────────────────
