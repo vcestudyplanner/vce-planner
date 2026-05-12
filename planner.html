@@ -93,6 +93,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .sba-btn svg{width:14px;height:14px}
 .sba-btn:hover{background:var(--shover);color:var(--stxt)}
 .sba-btn.active{color:var(--accent)}
+.cmd-hint-btn{height:20px;padding:0 7px;border-radius:5px;border:1px solid var(--border);background:var(--bg);cursor:pointer;font-size:10px;font-weight:600;color:var(--smuted);letter-spacing:.02em;white-space:nowrap;transition:all .15s;flex-shrink:0}
+.cmd-hint-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--bg)}
 .tbtn{width:30px;height:30px;border-radius:8px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;padding:0;flex-shrink:0}
 .tbtn svg{width:14px;height:14px;color:var(--smuted)}
 .tbtn:hover{background:var(--shover)}
@@ -1118,6 +1120,7 @@ input:checked+.toggle-slider::before{transform:translateX(18px)}
     </div>
     <div class="sbr-actions">
       <div id="sync-dot" class="sync-dot" title=""></div>
+      <button class="cmd-hint-btn" onclick="openCmdPalette()" title="Open command palette (⌘K)">⌘K</button>
       <button class="tbtn" id="dark-toggle" onclick="toggleDark()" title="Toggle dark mode"><i data-lucide="moon"></i></button>
       <button class="sba-btn" id="sbr-settings-btn" onclick="toggleSbrMenu()" title="More options"><i data-lucide="settings"></i></button>
       <button class="sba-btn" onclick="logout()" title="Sign out"><i data-lucide="log-out"></i></button>
@@ -4107,7 +4110,7 @@ const CMD_ITEMS=[
   {group:'Navigate',icon:'🧠',label:'Study Methods',sub:'Pomodoro & techniques',action:()=>navTo('study')},
   {group:'Navigate',icon:'📊',label:'Progress & Stats',sub:'Streaks and achievements',action:()=>navTo('stats')},
   {group:'Navigate',icon:'🎓',label:'ATAR & Scores',sub:'Score tracker',action:()=>navTo('scores')},
-  {group:'Navigate',icon:'💡',label:'Insights',sub:'Study analytics',action:()=>navTo('insights')},
+  {group:'Navigate',icon:'💡',label:'Progress & Badges',sub:'Study analytics',action:()=>navTo('stats')},
   {group:'Actions',icon:'➕',label:'Add a task',sub:'Jump to task input',action:()=>{navTo('tasks');setTimeout(()=>document.getElementById('task-input')?.focus(),80);}},
   {group:'Actions',icon:'🌙',label:'Toggle dark mode',sub:'Switch light / dark',action:toggleDark},
   {group:'Actions',icon:'🖨️',label:'Print this page',sub:'Print / save as PDF',action:()=>window.print()},
@@ -4120,7 +4123,7 @@ function openCmdPalette(){
   el.classList.add('open');
   const inp=document.getElementById('cmd-input');if(inp){inp.value='';inp.focus();}
   _cmdSelIdx=0;renderCmdResults();
-  el.addEventListener('click',e=>{if(e.target===el)closeCmdPalette();},{once:true});
+  if(!el._cmdBackdrop){el._cmdBackdrop=true;el.addEventListener('click',e=>{if(e.target===el)closeCmdPalette();});}
 }
 function closeCmdPalette(){document.getElementById('cmd-palette')?.classList.remove('open');}
 function renderCmdResults(){
