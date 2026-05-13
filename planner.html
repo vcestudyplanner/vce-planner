@@ -278,6 +278,10 @@ select.subj-sel{font-weight:600;border-width:2px}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
 .tc:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,0,0,.07)}
 .tc.done{opacity:.4}.tc.done .ttitle{text-decoration:line-through}.tc.urgent{outline:1.5px solid var(--high);outline-offset:-1px}
+.tc.missed{opacity:.55;background:var(--amber-bg)!important;border-color:var(--amber)!important}.tc.missed .ttitle{text-decoration:line-through;color:var(--muted)}
+.cw.missed-cw{border-color:var(--amber)!important;background:rgba(184,120,72,.08)!important}.cw.missed-cw::after{content:'×';font-size:14px;font-weight:700;color:var(--amber);line-height:1}
+.b-missed{background:var(--amber-bg);color:var(--amber)}
+.skipbtn{background:transparent;border:1px solid var(--border);cursor:pointer;font-size:11px;padding:2px 7px;border-radius:6px;color:var(--muted);transition:all .15s;white-space:nowrap;font-family:'Plus Jakarta Sans',sans-serif}.skipbtn:hover{border-color:var(--amber);color:var(--amber)}
 .cw{width:26px;height:26px;border-radius:50%;border:2px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:border-color .2s,background .2s,box-shadow .2s,transform .18s cubic-bezier(0.16,1,0.3,1);background:transparent;user-select:none;position:relative}
 .cw:hover{border-color:var(--accent);background:rgba(99,102,241,.08);transform:scale(1.12)}
 .cw:hover::before{content:'✓';font-size:12px;color:var(--accent);font-weight:800;opacity:.45}
@@ -791,7 +795,7 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 /* ── PRINT ── */
 @media print{
   .sidebar,.sidebar-show-tab,.tbtn,.sba-btn,.tf-add-inline,#task-form-expand,.toolbar-wrap,.task-search-wrap,.bulk-bar,
-  button:not(.cw),.nav-item,#tour-overlay,#tour-spotlight,#tour-box,.dbtn,.urgbtn,.sl-del,.badge-new,
+  button:not(.cw),.nav-item,#tour-overlay,#tour-spotlight,#tour-box,.dbtn,.urgbtn,.skipbtn,.sl-del,.badge-new,
   .page:not(.active),#notif-modal,#sac-celebrate-modal,#cmd-palette,#weekly-review-modal{display:none!important}
   body,.main-wrap{margin:0!important;padding:0!important}
   .main-wrap{margin-left:0!important}
@@ -1759,7 +1763,7 @@ function buildSubjMaps(){
 
 function renderSubjOv(){
   const ow=document.getElementById('subj-ov-wrap');if(!ow)return;
-  const rem=tasks.filter(t=>!t.done);
+  const rem=tasks.filter(t=>!t.done&&!t.missed);
   const cols=Math.min(userSubjects.length,6);
   ow.innerHTML=`<div class="subj-ov" style="grid-template-columns:repeat(${cols},1fr)">${
     userSubjects.map(s=>`<div class="sc" style="background:${BG[s.id]};border-color:${BR[s.id]}">
@@ -1771,10 +1775,11 @@ function renderSubjOv(){
 function renderFilterBtns(){
   const fw=document.getElementById('filter-btns-wrap');if(!fw)return;
   const tc=n=>`<span class="fp-count">${n}</span>`;
-  const pending=tasks.filter(t=>!t.done);
+  const pending=tasks.filter(t=>!t.done&&!t.missed);
   const todoN=pending.length;
   const urgentN=pending.filter(t=>t.urgent).length;
-  const doneN=tasks.filter(t=>t.done).length;
+  const doneN=tasks.filter(t=>t.done&&!t.missed).length;
+  const missedN=tasks.filter(t=>!!t.missed).length;
   const otherN=pending.filter(t=>t.subject==='__other__').length;
   fw.innerHTML=`<button class="fp active" data-filter="all">All${todoN?tc(todoN):''}</button>
     <button class="fp" data-filter="todo">To do${todoN?tc(todoN):''}</button>
@@ -1782,6 +1787,7 @@ function renderFilterBtns(){
     ${userSubjects.map(s=>{const n=pending.filter(t=>t.subject===s.id).length;return`<button class="fp" data-filter="${s.id}">${s.label}${n?tc(n):''}</button>`}).join('')}
     ${otherN?`<button class="fp" data-filter="__other__">Other${tc(otherN)}</button>`:''}
     <button class="fp" data-filter="done">Done${doneN?tc(doneN):''}</button>
+    ${missedN?`<button class="fp" data-filter="missed">Skipped${tc(missedN)}</button>`:''}
     <select class="ssort" id="sort-select" onchange="renderTasks()">
       <option value="due">Sort by due date</option>
       <option value="subj">Sort by subject</option>
@@ -2199,7 +2205,7 @@ function renderSchedPanel(){
   const sel=document.getElementById('sched-task-sel');
   const list=document.getElementById('sched-task-list');
   if(!sel||!list)return;
-  const pending=tasks.filter(t=>!t.done);
+  const pending=tasks.filter(t=>!t.done&&!t.missed);
   // get already scheduled task titles for this day
   const dayBlocks=planData[plannerDateStr]||[];
   const scheduledTitles=new Set(dayBlocks.filter(b=>b.taskId).map(b=>b.taskId));
@@ -2472,6 +2478,14 @@ function toggleTask(id){
   }
   saveT();renderTasks();if(document.getElementById('page-home').classList.contains('active'))renderHome();
 }
+function skipTask(id){
+  const t=tasks.find(x=>x.id===id);if(!t)return;
+  t.missed=true;saveT();renderTasks();renderHome();showToast('Task skipped');
+}
+function restoreTask(id){
+  const t=tasks.find(x=>x.id===id);if(!t)return;
+  t.missed=false;saveT();renderTasks();renderHome();showToast('Task restored!');
+}
 function homeToggleTask(id){const t=tasks.find(x=>x.id===id);if(!t)return;t.done=!t.done;if(t.done){const cd=JSON.parse(localStorage.getItem(UID_PREFIX+'cd')||'[]');if(!cd.includes(todayStr()))cd.push(todayStr());localStorage.setItem(UID_PREFIX+'cd',JSON.stringify(cd));addXP(XPL);playSound('complete');showToast('+10 XP');if(t.subject&&t.subject!=='__other__')queueTimeLog(t.id,t.subject,t.title);}saveT();renderHome();renderTasks()}
 function toggleUrgent(id){const t=tasks.find(x=>x.id===id);if(t){t.urgent=!t.urgent;saveT();renderTasks()}}
 let _undoTask=null,_undoTimeout=null;
@@ -2512,19 +2526,24 @@ function renderTasks(){
   const sortEl=document.getElementById('sort-select');
   const sortBy=sortEl?sortEl.value:'due';
   const subjKeys=SUBJ_KEYS_FOR_FILTER();
-  let vis=tasks.filter(t=>{if(tfilter==='done')return t.done;if(tfilter==='todo')return !t.done;if(tfilter==='urgent')return !t.done&&t.urgent;if(tfilter==='__other__')return t.subject==='__other__'&&!t.done;if(subjKeys.includes(tfilter))return t.subject===tfilter&&!t.done;return !t.done});
+  let vis=tasks.filter(t=>{if(tfilter==='done')return t.done&&!t.missed;if(tfilter==='missed')return !!t.missed;if(tfilter==='todo')return !t.done&&!t.missed;if(tfilter==='urgent')return !t.done&&!t.missed&&t.urgent;if(tfilter==='__other__')return t.subject==='__other__'&&!t.done&&!t.missed;if(subjKeys.includes(tfilter))return t.subject===tfilter&&!t.done&&!t.missed;return !t.done&&!t.missed});
   vis.sort((a,b)=>{if(a.urgent&&!b.urgent)return -1;if(!a.urgent&&b.urgent)return 1;if(sortBy==='due'){if(!a.due&&!b.due)return 0;if(!a.due)return 1;if(!b.due)return -1;return a.due.localeCompare(b.due)}if(sortBy==='subj')return a.subject.localeCompare(b.subject);return 0});
   const list=document.getElementById('task-list');
-  if(!vis.length){list.innerHTML=`<div class="empty"><div class="eb">${tfilter==='done'?'No completed tasks yet':tfilter==='urgent'?'No urgent tasks':'No tasks here'}</div><div class="es">${tfilter==='all'||tfilter==='todo'?'Add a task above.':'Switch filter.'}</div></div>`}
+  if(!vis.length){list.innerHTML=`<div class="empty"><div class="eb">${tfilter==='done'?'No completed tasks yet':tfilter==='missed'?'No skipped tasks':tfilter==='urgent'?'No urgent tasks':'No tasks here'}</div><div class="es">${tfilter==='all'||tfilter==='todo'?'Add a task above.':'Switch filter.'}</div></div>`}
   else list.innerHTML=vis.map(t=>{
     const s=SUBJ[t.subject]||{label:t.subject,cls:'eng'};const ds=dueStatus(t.due);const ev=t.evLink?events.find(e=>e.id==t.evLink):null;
-    const timerBtn=!t.done&&t.subject&&t.subject!=='__other__'?`<button class="dbtn" onclick="quickStudyTimer('${t.subject}')" title="Start study timer" style="margin-top:1px"><i data-lucide="timer" style="width:13px;height:13px;pointer-events:none"></i></button>`:`<span></span>`;
+    const missed=!!t.missed;
+    const timerBtn=!t.done&&!missed&&t.subject&&t.subject!=='__other__'?`<button class="dbtn" onclick="quickStudyTimer('${t.subject}')" title="Start study timer" style="margin-top:1px"><i data-lucide="timer" style="width:13px;height:13px;pointer-events:none"></i></button>`:`<span></span>`;
+    const urgBtnHtml=!missed?`<button class="urgbtn ${t.urgent?'on':''}" onclick="toggleUrgent(${t.id})" style="margin-top:1px" aria-label="${t.urgent?'Remove urgent flag':'Mark as urgent'}" title="${t.urgent?'Remove urgent flag':'Mark as urgent'}">${t.urgent?'! Urgent':'Flag'}</button>`:`<span></span>`;
+    const skipOrSpan=!t.done&&!missed?`<button class="skipbtn" onclick="skipTask(${t.id})" title="Skip this task" aria-label="Skip task" style="margin-top:1px">Skip</button>`:`<span></span>`;
     const safeTitle=t.title.replace(/"/g,'&quot;');
-    return`<div class="tc ${t.done?'done':''} ${t.urgent&&!t.done?'urgent':''}" style="background:${BG[t.subject]||''};border-color:${BR[t.subject]||''}"><div class="cw ${t.done?'ck':''}" role="button" tabindex="0" aria-pressed="${t.done}" aria-label="${t.done?'Mark incomplete':'Mark complete'}: ${safeTitle}" onclick="toggleTask(${t.id})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleTask(${t.id})}" style="margin-top:2px"></div><div class="tb"><div class="ttitle">${t.title}</div>${t.note?`<div class="tnote">${t.note}</div>`:''}<div class="ttags"><span class="badge" style="background:${BG[t.subject]};color:${NC[t.subject]}">${s.label}</span>${t.urgent&&!t.done?'<span class="badge b-urgent">! Urgent</span>':''}${ev?`<span class="badge b-sac">${ev.type.toUpperCase()}: ${ev.name}</span>`:''}</div>${renderSubHtml(t)}</div><div class="dinfo" style="padding-top:2px"><div class="${ds.cls}">${ds.label}</div></div>${timerBtn}<button class="urgbtn ${t.urgent?'on':''}" onclick="toggleUrgent(${t.id})" style="margin-top:1px" aria-label="${t.urgent?'Remove urgent flag':'Mark as urgent'}" title="${t.urgent?'Remove urgent flag':'Mark as urgent'}">${t.urgent?'! Urgent':'Flag'}</button><button class="dbtn" style="font-size:13px;padding:0 8px;margin-top:1px" onclick="startTaskEdit(${t.id})" title="Edit task" aria-label="Edit task"><i data-lucide="pencil" style="width:13px;height:13px;pointer-events:none"></i></button><button class="dbtn" onclick="removeTask(${t.id})" style="margin-top:1px" aria-label="Delete task">×</button></div>`;
+    const cwAction=missed?`restoreTask(${t.id})`:`toggleTask(${t.id})`;
+    const cwLabel=missed?'Restore task':t.done?'Mark incomplete':'Mark complete';
+    return`<div class="tc ${t.done?'done':''} ${missed?'missed':''} ${t.urgent&&!t.done&&!missed?'urgent':''}" style="background:${BG[t.subject]||''};border-color:${BR[t.subject]||''}"><div class="cw ${t.done?'ck':''} ${missed?'missed-cw':''}" role="button" tabindex="0" aria-pressed="${t.done||missed}" aria-label="${cwLabel}: ${safeTitle}" onclick="${cwAction}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();${cwAction}}" style="margin-top:2px" title="${missed?'Click to restore':''}"></div><div class="tb"><div class="ttitle">${t.title}</div>${t.note?`<div class="tnote">${t.note}</div>`:''}<div class="ttags"><span class="badge" style="background:${BG[t.subject]};color:${NC[t.subject]}">${s.label}</span>${t.urgent&&!t.done&&!missed?'<span class="badge b-urgent">! Urgent</span>':''}${ev?`<span class="badge b-sac">${ev.type.toUpperCase()}: ${ev.name}</span>`:''}${missed?'<span class="badge b-missed">Skipped</span>':''}</div>${renderSubHtml(t)}</div><div class="dinfo" style="padding-top:2px"><div class="${ds.cls}">${ds.label}</div></div>${timerBtn}${urgBtnHtml}<button class="dbtn" style="font-size:13px;padding:0 8px;margin-top:1px" onclick="startTaskEdit(${t.id})" title="Edit task" aria-label="Edit task"><i data-lucide="pencil" style="width:13px;height:13px;pointer-events:none"></i></button>${skipOrSpan}<button class="dbtn" onclick="removeTask(${t.id})" style="margin-top:1px" aria-label="Delete task">×</button></div>`;
   }).join('');
-  const rem=tasks.filter(t=>!t.done);
+  const rem=tasks.filter(t=>!t.done&&!t.missed);
   document.getElementById('s-total').textContent=rem.length;
-  document.getElementById('s-done').textContent=tasks.filter(t=>t.done).length;
+  document.getElementById('s-done').textContent=tasks.filter(t=>t.done&&!t.missed).length;
   document.getElementById('s-week').textContent=rem.filter(t=>t.due&&t.due>=todayStr()&&t.due<=weekEndStr()).length;
   document.getElementById('s-overdue').textContent=rem.filter(t=>t.due&&t.due<todayStr()).length;
   renderSubjOv();
@@ -2712,7 +2731,7 @@ function renderCal(){
   const firstDay=new Date(calY,calM,1).getDay();const dim=new Date(calY,calM+1,0).getDate();
   const imap={};
   function ai(k,o){if(!imap[k])imap[k]=[];imap[k].push(o)}
-  tasks.filter(t=>t.due&&!t.done).forEach(t=>ai(t.due,{label:SUBJ[t.subject].label.split(' ')[0]+': '+t.title,cls:t.urgent?'urgent':t.subject}));
+  tasks.filter(t=>t.due&&!t.done&&!t.missed).forEach(t=>ai(t.due,{label:SUBJ[t.subject].label.split(' ')[0]+': '+t.title,cls:t.urgent?'urgent':t.subject}));
   events.forEach(e=>ai(e.date,{label:(e.type==='sac'?'SAC: ':'Exam: ')+e.name,cls:e.type}));
   Object.entries(planData).forEach(([ds,blocks])=>blocks.forEach(b=>ai(ds,{label:(PLAN_ICONS[b.type]||'⭐')+' '+b.title,cls:'custom'})));
   expandCEForMonth(calY,calM).forEach(ev=>{
@@ -2865,8 +2884,8 @@ function renderStats(){
   // subject breakdown
   const totals={};userSubjects.forEach(s=>{totals[s.id]=0});studyLog.forEach(l=>{if(totals[l.subject]!==undefined)totals[l.subject]+=l.hours});
   document.getElementById('st-subject-grid').innerHTML=userSubjects.map(s=>{
-    const total=tasks.filter(t=>t.subject===s.id).length,done=tasks.filter(t=>t.subject===s.id&&t.done).length;
-    const overdue=tasks.filter(t=>t.subject===s.id&&!t.done&&t.due&&t.due<ts).length;
+    const total=tasks.filter(t=>t.subject===s.id&&!t.missed).length,done=tasks.filter(t=>t.subject===s.id&&t.done&&!t.missed).length;
+    const overdue=tasks.filter(t=>t.subject===s.id&&!t.done&&!t.missed&&t.due&&t.due<ts).length;
     const hrs=Math.round((totals[s.id]||0)*10)/10,pct2=total?Math.round(done/total*100):0;
     const neglected=(totals[s.id]||0)<0.5&&studyLog.length>14;
     return`<div class="ins-subj-card" style="background:${BG[s.id]};border-color:${BR[s.id]}"><div class="ins-subj-name" style="color:${NC[s.id]}">${s.label}</div><div class="ins-bar-row" style="margin-bottom:.25rem"><div class="ins-bar-label" style="font-size:10px">Tasks done</div><div class="ins-bar-track"><div class="ins-bar-fill" style="width:${pct2}%;background:${NC[s.id]}"></div></div><div class="ins-bar-val">${done}/${total}</div></div><div style="font-size:11px;color:var(--muted);margin-top:.3rem">${hrs}h logged${overdue>0?` · <span style="color:var(--high)">${overdue} overdue</span>`:''}${neglected?` · <span style="color:var(--amber)">low study</span>`:''}</div></div>`;
@@ -2938,16 +2957,16 @@ function renderHome(){
   if(vceExamDate){const d=daysUntil(vceExamDate);const dv=d<=0?'0':d;if(heroPill&&heroNum){heroNum.textContent=dv;heroPill.style.display='inline-flex'}if(heroCd&&heroCdNum){heroCdNum.textContent=dv;heroCd.style.display='block'}}else{if(heroPill)heroPill.style.display='none';if(heroCd)heroCd.style.display='none'}
   // stat tiles
   const ts=todayStr(),ws=weekEndStr();
-  document.getElementById('hs-today').textContent=tasks.filter(t=>!t.done&&t.due&&t.due<=ts).length;
+  document.getElementById('hs-today').textContent=tasks.filter(t=>!t.done&&!t.missed&&t.due&&t.due<=ts).length;
   document.getElementById('hs-sacs').textContent=events.filter(e=>daysUntil(e.date)>=0).length;
   const cd=JSON.parse(localStorage.getItem(UID_PREFIX+'cd')||'[]').sort();
   let streak=0;for(let i=0;i<60;i++){const dd=new Date(TODAY);dd.setDate(dd.getDate()-i);if(cd.includes(localStr(dd)))streak++;else break}
   document.getElementById('hs-streak').textContent=streak;
   // health check
-  const rem=tasks.filter(t=>!t.done);
+  const rem=tasks.filter(t=>!t.done&&!t.missed);
   document.getElementById('h-health').innerHTML=userSubjects.map(s=>{
     const total=tasks.filter(t=>t.subject===s.id).length;
-    const done=tasks.filter(t=>t.subject===s.id&&t.done).length;
+    const done=tasks.filter(t=>t.subject===s.id&&t.done&&!t.missed).length;
     const overdue=rem.filter(t=>t.subject===s.id&&t.due&&t.due<todayStr()).length;
     const remaining=rem.filter(t=>t.subject===s.id).length;
     const pct=total?Math.round(done/total*100):0;
@@ -2960,7 +2979,7 @@ function renderHome(){
   }).join('');
   // today tasks
   const tomorrowStr=()=>{const d=new Date(TODAY);d.setDate(d.getDate()+1);return localStr(d)};
-  const todayTasks=tasks.filter(t=>!t.done&&t.due&&t.due<=tomorrowStr()).sort((a,b)=>{if(a.urgent&&!b.urgent)return -1;if(!a.urgent&&b.urgent)return 1;return a.due.localeCompare(b.due)});
+  const todayTasks=tasks.filter(t=>!t.done&&!t.missed&&t.due&&t.due<=tomorrowStr()).sort((a,b)=>{if(a.urgent&&!b.urgent)return -1;if(!a.urgent&&b.urgent)return 1;return a.due.localeCompare(b.due)});
   const tl=document.getElementById('h-today');
   // urgency SAC banner
   const urgBanner=document.getElementById('h-urgent-sac');
@@ -3887,7 +3906,7 @@ function rsBuildSchedule(ev,data){
   }
   // Task load per day: rough 30 min per task due that day
   const taskLoad={};
-  tasks.forEach(t=>{if(!t.done&&t.due)taskLoad[t.due]=(taskLoad[t.due]||0)+30;});
+  tasks.forEach(t=>{if(!t.done&&!t.missed&&t.due)taskLoad[t.due]=(taskLoad[t.due]||0)+30;});
   // Clear scheduled dates for undone, non-missed items so we reassign
   data.items.forEach(item=>{if(!item.done&&!item.missed)item.scheduledDate=null;});
   const queue=data.items.filter(i=>!i.done&&!i.missed).map(i=>({...i}));
@@ -4000,7 +4019,7 @@ function rsRenderSchedule(evId,data){
   const ev=events.find(e=>e.id==evId);if(!ev)return;
   const today=todayStr();
   const taskLoad={};
-  tasks.forEach(t=>{if(!t.done&&t.due)taskLoad[t.due]=(taskLoad[t.due]||0)+1;});
+  tasks.forEach(t=>{if(!t.done&&!t.missed&&t.due)taskLoad[t.due]=(taskLoad[t.due]||0)+1;});
   // Group items by scheduledDate
   const byDate={};
   data.items.forEach(item=>{
@@ -5033,7 +5052,7 @@ function checkAndSendNotifications(force=false){
 
   // tasks due today
   if(s.tasks){
-    const dueToday=tasks.filter(t=>!t.done&&t.due===todayStr());
+    const dueToday=tasks.filter(t=>!t.done&&!t.missed&&t.due===todayStr());
     if(dueToday.length)notify('tasks-today','📋 Tasks due today',`You have ${dueToday.length} task${dueToday.length>1?'s':''} due today. Stay on top of it!`);
   }
   // SACs approaching
