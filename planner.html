@@ -147,6 +147,7 @@ textarea{height:54px;padding:9px 11px;resize:none;line-height:1.5}
 .abtn.outline:hover{border-color:var(--muted);color:var(--text);filter:none;box-shadow:none}
 .sm-back-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:5px 13px;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;cursor:pointer;transition:border-color .15s,color .15s}
 .sm-back-btn:hover{border-color:var(--accent);color:var(--accent)}
+button:focus-visible,a:focus-visible,[tabindex="0"]:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
 /* ── TASK FORM EXPAND ── */
 .tf-bar{display:flex;align-items:center;gap:.5rem;padding:.85rem 1.25rem}
 #task-form-card.open .tf-bar{padding-bottom:.65rem}
@@ -642,7 +643,7 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 .score-row{display:flex;align-items:center;gap:.5rem;padding:.3rem .5rem;border-radius:7px;background:var(--bg);font-size:12.5px}
 .score-row-name{flex:1;color:var(--text);font-weight:500}
 .score-row-pct{font-weight:700;color:var(--text)}
-.score-row-date{color:var(--muted);font-size:11px}
+.score-row-date{color:var(--muted);font-size:12px}
 .score-row-del{background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:14px;line-height:1;padding:2px 4px;border-radius:4px;transition:color .15s}
 .score-row-del:hover{color:var(--high)}
 .score-add-form{background:var(--surface);border:1.5px solid var(--border);border-radius:16px;padding:1.25rem 1.4rem;margin-bottom:1.5rem}
@@ -839,7 +840,7 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 .notif-row{display:flex;align-items:center;gap:.75rem;padding:.6rem 0;border-bottom:1px solid var(--border)}
 .notif-row:last-of-type{border-bottom:none}
 .notif-row-label{flex:1;font-size:13.5px;color:var(--text);font-weight:500}
-.notif-row-sub{font-size:11.5px;color:var(--muted);margin-top:.15rem}
+.notif-row-sub{font-size:12px;color:var(--muted);margin-top:.15rem}
 .toggle-wrap{position:relative;width:40px;height:22px;flex-shrink:0}
 .toggle-wrap input{opacity:0;width:0;height:0;position:absolute}
 .toggle-slider{position:absolute;inset:0;background:var(--border);border-radius:22px;cursor:pointer;transition:background .2s}
@@ -856,7 +857,7 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 .atar-subj-inp:focus{border-color:var(--accent)}
 .atar-goal-inp{border-color:rgba(99,102,241,.4)!important;background:rgba(99,102,241,.06)!important}
 .atar-goal-inp:focus{border-color:var(--accent)!important}
-.atar-subj-scaled{font-size:11.5px;min-width:46px;text-align:center;font-weight:600;padding:2px 5px;border-radius:6px}
+.atar-subj-scaled{font-size:12px;min-width:46px;text-align:center;font-weight:600;padding:2px 5px;border-radius:6px}
 .atar-col-hdr{font-size:10.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;text-align:center;width:66px;flex-shrink:0}
 .atar-prev-section{margin-top:.9rem;padding-top:.85rem;border-top:1px solid var(--border)}
 .atar-prev-row{display:flex;align-items:center;gap:.5rem;padding:.3rem 0;border-bottom:1px solid var(--border)}
@@ -1247,7 +1248,7 @@ input:checked+.toggle-slider::before{transform:translateX(18px)}
 
 <!-- DAY PLANNER -->
 <div class="page" id="page-planner"><div class="container">
-  <div class="page-hdr"><div class="page-hdr-title">Tasks</div></div>
+  <div class="page-hdr"><div class="page-hdr-title">Day Planner</div></div>
   <div class="pg-tabs"><button class="pg-tab" onclick="navTo('tasks')">Tasks</button><button class="pg-tab active" onclick="navTo('planner')">Day Planner</button></div>
   <div style="display:grid;grid-template-columns:1fr 320px;gap:1.25rem;align-items:start">
     <div class="card" style="margin-bottom:0">
@@ -1606,7 +1607,7 @@ input:checked+.toggle-slider::before{transform:translateX(18px)}
 
 <!-- REVISION PLANNER -->
 <div class="page" id="page-revision"><div class="container">
-  <div class="page-hdr"><div class="page-hdr-title">SACs &amp; Exams</div></div>
+  <div class="page-hdr"><div class="page-hdr-title">Revision</div></div>
   <div class="pg-tabs"><button class="pg-tab" onclick="navTo('sacs')">SACs &amp; Exams</button><button class="pg-tab" onclick="navTo('calendar')">Calendar</button><button class="pg-tab active" onclick="navTo('revision')">Revision</button></div>
   <!-- Today's revision tasks -->
   <div id="rev-today-panel" class="card" style="margin-bottom:1.25rem;display:none">
@@ -2449,7 +2450,7 @@ function logTaskTime(){
   if(total>0&&_ttmSubjId&&_ttmSubjId!=='__other__'){
     const disp=h>0&&m>0?`${h}h ${m}m`:h>0?`${h}h`:`${m}m`;
     studyLog.unshift({id:Date.now(),subject:_ttmSubjId,hours:total,date:todayStr(),note:`Task (${disp})`});
-    saveL();renderHoursBar();showToast(`${disp} logged! 📊`);
+    saveL();renderHoursBar();showToast(`${disp} logged!`);
   }
   document.getElementById('task-time-modal').classList.remove('open');
   _ttmTaskId=null;_ttmSubjId=null;
@@ -2576,7 +2577,26 @@ function addEvent(){
   evFormClose();
   saveE();renderEvents();updateEvLink();showToast('SAC added');
 }
-function removeEvent(id){if(confirm('Remove?')){events=events.filter(x=>x.id!==id);saveE();renderEvents();updateEvLink()}}
+let _undoEvent=null,_undoEventTimeout=null;
+function _execUndoEvent(){
+  if(!_undoEvent)return;
+  const e=_undoEvent;_undoEvent=null;clearTimeout(_undoEventTimeout);
+  events.push(e);events.sort((a,b)=>a.date.localeCompare(b.date));saveE();renderEvents();updateEvLink();showToast('SAC/exam restored!');
+}
+function removeEvent(id){
+  const ev=events.find(x=>x.id===id);if(!ev)return;
+  clearTimeout(_undoEventTimeout);_undoEvent=ev;
+  events=events.filter(x=>x.id!==id);saveE();renderEvents();updateEvLink();
+  const toast=document.getElementById('toast');
+  if(toast){
+    toast.classList.remove('show');
+    toast.innerHTML='Deleted &nbsp;<button onclick="_execUndoEvent()" style="margin-left:6px;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);color:#fff;font-family:inherit;font-size:11.5px;font-weight:700;padding:2px 9px;border-radius:8px;cursor:pointer">Undo</button>';
+    toast.classList.add('show','has-action');
+    clearTimeout(window._toastT);
+    window._toastT=setTimeout(()=>{toast.classList.remove('show','has-action');_undoEvent=null;},5500);
+  }
+  _undoEventTimeout=setTimeout(()=>{_undoEvent=null;},6000);
+}
 function toggleCL(evId,idx){const ev=events.find(e=>e.id===evId);if(!ev)return;ev.checklist[idx].done=!ev.checklist[idx].done;saveE();renderEvents()}
 function addCLItem(evId){const inp=document.getElementById('cl-inp-'+evId);if(!inp)return;const txt=inp.value.trim();if(!txt)return;const ev=events.find(e=>e.id===evId);if(!ev)return;if(!ev.checklist)ev.checklist=[];ev.checklist.push({text:txt,done:false});inp.value='';saveE();renderEvents();setTimeout(()=>{const cl=document.getElementById('cl-'+evId);if(cl)cl.classList.add('open')},50)}
 function toggleCLPanel(evId){const el=document.getElementById('cl-'+evId);if(el)el.classList.toggle('open')}
@@ -2621,14 +2641,33 @@ function addCalEvent(){
   const {rn,ru}=getRepeatFromForm();
   calEvents.push({id:Date.now(),name,date,time,colour,rn,ru});
   calEvents.sort((a,b)=>a.date.localeCompare(b.date));
-  document.getElementById('ce-name').value='';saveCE();renderCal();if(ceListVisible)renderCEList();showToast('Event added! 📆');
+  document.getElementById('ce-name').value='';saveCE();renderCal();if(ceListVisible)renderCEList();showToast('Event added!');
 }
 function toggleCEList(){
   ceListVisible=!ceListVisible;const el=document.getElementById('ce-list');const btn=document.getElementById('ce-toggle-btn');if(!el||!btn)return;
   if(ceListVisible){el.style.display='block';renderCEList();btn.textContent='Hide events'}
   else{el.style.display='none';btn.textContent=`Show events (${calEvents.length})`}
 }
-function removeCalEvent(id){if(confirm('Remove?')){calEvents=calEvents.filter(x=>x.id!==id);saveCE();renderCal();if(ceListVisible)renderCEList()}}
+let _undoCalEvent=null,_undoCalEventTimeout=null;
+function _execUndoCalEvent(){
+  if(!_undoCalEvent)return;
+  const e=_undoCalEvent;_undoCalEvent=null;clearTimeout(_undoCalEventTimeout);
+  calEvents.push(e);calEvents.sort((a,b)=>a.date.localeCompare(b.date));saveCE();renderCal();if(ceListVisible)renderCEList();showToast('Event restored!');
+}
+function removeCalEvent(id){
+  const ev=calEvents.find(x=>x.id===id);if(!ev)return;
+  clearTimeout(_undoCalEventTimeout);_undoCalEvent=ev;
+  calEvents=calEvents.filter(x=>x.id!==id);saveCE();renderCal();if(ceListVisible)renderCEList();
+  const toast=document.getElementById('toast');
+  if(toast){
+    toast.classList.remove('show');
+    toast.innerHTML='Event deleted &nbsp;<button onclick="_execUndoCalEvent()" style="margin-left:6px;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);color:#fff;font-family:inherit;font-size:11.5px;font-weight:700;padding:2px 9px;border-radius:8px;cursor:pointer">Undo</button>';
+    toast.classList.add('show','has-action');
+    clearTimeout(window._toastT);
+    window._toastT=setTimeout(()=>{toast.classList.remove('show','has-action');_undoCalEvent=null;},5500);
+  }
+  _undoCalEventTimeout=setTimeout(()=>{_undoCalEvent=null;},6000);
+}
 function expandCEForMonth(y,m){
   const result=[];const dim=new Date(y,m+1,0).getDate();
   calEvents.forEach(ev=>{
@@ -2713,7 +2752,7 @@ function pomTick(){
       const subj=document.getElementById('pom-subj').value;
       studyLog.unshift({id:Date.now(),subject:subj,hours:25/60,date:todayStr(),note:'Pomodoro session'});
       saveL();renderHoursBar();addXP(25);showToast('Pomodoro done! +25 XP');pomSetMode('short');
-    } else {showToast('Break over! 💪');pomSetMode('work')}
+    } else {showToast('Break over!');pomSetMode('work')}
     return;
   }
   updatePomDisplay();
@@ -2737,7 +2776,7 @@ function addLog(){
   const note=noteVal?`${noteVal} (${disp})`:`Manual (${disp})`;
   studyLog.unshift({id:Date.now(),subject:subj,hours:total,date,note});
   if(noteInp)noteInp.value='';
-  saveL();renderHoursBar();showToast(`${disp} logged! 📊`);
+  saveL();renderHoursBar();showToast(`${disp} logged!`);
 }
 function renderHoursBar(){
   const totals={};
@@ -2757,7 +2796,26 @@ function renderHoursBar(){
     return`<div class="sl-item"><div class="sl-left"><div><span class="badge" style="background:${bg};color:${fg}">${subj.label}</span></div><div class="sl-meta">${l.date} · ${l.note}</div></div><div style="display:flex;align-items:center;gap:8px"><div class="sl-dur">${Math.round(l.hours*10)/10}h</div><button class="sl-del" onclick="removeLog(${l.id})">×</button></div></div>`;
   }).join('');
 }
-function removeLog(id){studyLog=studyLog.filter(x=>x.id!==id);saveL();renderHoursBar()}
+let _undoLog=null,_undoLogTimeout=null;
+function _execUndoLog(){
+  if(!_undoLog)return;
+  const l=_undoLog;_undoLog=null;clearTimeout(_undoLogTimeout);
+  studyLog.push(l);studyLog.sort((a,b)=>b.id-a.id);saveL();renderHoursBar();showToast('Session restored!');
+}
+function removeLog(id){
+  const entry=studyLog.find(x=>x.id===id);if(!entry)return;
+  clearTimeout(_undoLogTimeout);_undoLog=entry;
+  studyLog=studyLog.filter(x=>x.id!==id);saveL();renderHoursBar();
+  const toast=document.getElementById('toast');
+  if(toast){
+    toast.classList.remove('show');
+    toast.innerHTML='Session deleted &nbsp;<button onclick="_execUndoLog()" style="margin-left:6px;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);color:#fff;font-family:inherit;font-size:11.5px;font-weight:700;padding:2px 9px;border-radius:8px;cursor:pointer">Undo</button>';
+    toast.classList.add('show','has-action');
+    clearTimeout(window._toastT);
+    window._toastT=setTimeout(()=>{toast.classList.remove('show','has-action');_undoLog=null;},5500);
+  }
+  _undoLogTimeout=setTimeout(()=>{_undoLog=null;},6000);
+}
 function toggleSessionLog(){const el=document.getElementById('study-log');const btn=document.getElementById('session-log-btn');if(!el||!btn)return;const open=el.style.display!=='none';el.style.display=open?'none':'flex';btn.textContent=open?'Show':'Hide'}
 
 // ── PROGRESS ──
@@ -2810,11 +2868,11 @@ function renderStats(){
     const total=tasks.filter(t=>t.subject===s.id).length,done=tasks.filter(t=>t.subject===s.id&&t.done).length;
     const overdue=tasks.filter(t=>t.subject===s.id&&!t.done&&t.due&&t.due<ts).length;
     const hrs=Math.round((totals[s.id]||0)*10)/10,pct2=total?Math.round(done/total*100):0;
-    const neglected=(totals[s.id]||0)<0.5&&studyLog.length>3;
+    const neglected=(totals[s.id]||0)<0.5&&studyLog.length>14;
     return`<div class="ins-subj-card" style="background:${BG[s.id]};border-color:${BR[s.id]}"><div class="ins-subj-name" style="color:${NC[s.id]}">${s.label}</div><div class="ins-bar-row" style="margin-bottom:.25rem"><div class="ins-bar-label" style="font-size:10px">Tasks done</div><div class="ins-bar-track"><div class="ins-bar-fill" style="width:${pct2}%;background:${NC[s.id]}"></div></div><div class="ins-bar-val">${done}/${total}</div></div><div style="font-size:11px;color:var(--muted);margin-top:.3rem">${hrs}h logged${overdue>0?` · <span style="color:var(--high)">${overdue} overdue</span>`:''}${neglected?` · <span style="color:var(--amber)">low study</span>`:''}</div></div>`;
   }).join('')||'<div style="font-size:13px;color:var(--muted)">No subjects yet.</div>';
   // neglect alert
-  const neglected=userSubjects.filter(s=>(totals[s.id]||0)<0.5&&studyLog.length>3).map(s=>s.label);
+  const neglected=userSubjects.filter(s=>(totals[s.id]||0)<0.5&&studyLog.length>14).map(s=>s.label);
   const nw=document.getElementById('st-neglect-wrap');
   if(neglected.length){nw.innerHTML=`<div class="sh">Heads up</div><div class="ins-neglect" style="background:var(--amber-bg);border:1px solid var(--amber);margin:0"><div style="color:var(--amber)"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg></div><div><div style="font-size:13px;font-weight:600;color:var(--amber)">Neglected subjects</div><div style="font-size:12px;color:var(--muted);margin-top:.2rem">Not much study logged for: <strong>${neglected.join(', ')}</strong>.</div></div></div>`}
   else{nw.innerHTML=`<div class="sh">Looking good</div><div style="font-size:13px;color:var(--muted)">No neglected subjects — balanced workload.</div>`}
@@ -2940,10 +2998,10 @@ function renderHome(){
   renderHomeTip();
   // neglect alert on home
   const neglectEl=document.getElementById('h-neglect-home');
-  if(neglectEl&&studyLog.length>3){
+  if(neglectEl&&studyLog.length>14){
     const totals={};userSubjects.forEach(s=>{totals[s.id]=0});studyLog.forEach(l=>{if(totals[l.subject]!==undefined)totals[l.subject]+=l.hours});
     const neg=userSubjects.filter(s=>(totals[s.id]||0)<0.5).map(s=>s.label);
-    if(neg.length){neglectEl.style.display='block';neglectEl.innerHTML=`<div style="background:var(--amber-bg);border:1px solid var(--amber);border-radius:14px;padding:.85rem 1.1rem;display:flex;align-items:center;gap:12px"><span style="display:flex;align-items:center;color:var(--amber)"><i data-lucide="alert-triangle" style="width:18px;height:18px"></i></span><div><div style="font-size:12.5px;font-weight:600;color:var(--amber)">Low study logged</div><div style="font-size:12px;color:var(--muted);margin-top:.15rem">${neg.join(', ')} — try to log some hours this week.</div></div></div>`;if(typeof lucide!=='undefined')lucide.createIcons({scope:neglectEl});}
+    if(neg.length){neglectEl.style.display='block';neglectEl.innerHTML=`<div style="background:var(--amber-bg);border:1px solid var(--amber);border-radius:14px;padding:.85rem 1.1rem;display:flex;align-items:center;gap:12px"><span style="display:flex;align-items:center;color:var(--amber)"><i data-lucide="alert-triangle" style="width:18px;height:18px"></i></span><div><div style="font-size:12.5px;font-weight:600;color:var(--amber)">Worth a look</div><div style="font-size:12px;color:var(--muted);margin-top:.15rem">${neg.join(', ')} haven't had much study time yet — even a short session helps.</div></div></div>`;if(typeof lucide!=='undefined')lucide.createIcons({scope:neglectEl});}
     else neglectEl.style.display='none';
   }
 }
