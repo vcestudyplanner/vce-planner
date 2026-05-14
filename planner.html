@@ -208,6 +208,7 @@ body.focus-mode #h-focus-exit{display:flex}
 body.focus-mode #h-focus-sac{display:block}
 body.focus-mode #xp-home,
 body.focus-mode #h-subj-chips,
+body.focus-mode #h-sr-due,
 body.focus-mode #h-tip-wrap,
 body.focus-mode #h-neglect-home,
 body.focus-mode #h-getstarted,
@@ -878,6 +879,26 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 #sac-celebrate-modal{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);z-index:9400;display:none;align-items:center;justify-content:center}
 #sac-celebrate-modal.open{display:flex}
 /* ── TASK TIME MODAL ── */
+#sr-modal{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);z-index:9360;display:none;align-items:center;justify-content:center}
+#sr-modal.open{display:flex}
+.sr-box{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:1.75rem 2rem;max-width:380px;width:90%;box-shadow:0 24px 60px rgba(0,0,0,.3);text-align:center}
+.sr-title{font-family:'Fraunces',serif;font-size:1.15rem;font-weight:700;color:var(--text);margin-bottom:.2rem}
+.sr-sub{font-size:12px;color:var(--muted);margin-bottom:1.25rem}
+.sr-btns{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-bottom:1rem}
+.sr-btn{padding:.6rem .3rem;border-radius:12px;border:1.5px solid var(--border);background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:12.5px;font-weight:700;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:3px}
+.sr-btn:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.12)}
+.sr-btn .sr-emoji{font-size:1.3rem}
+.sr-btn .sr-lbl{font-size:10.5px;font-weight:600;color:var(--muted)}
+.sr-btn.again{border-color:#ef4444;background:rgba(239,68,68,.07)}
+.sr-btn.again:hover{background:rgba(239,68,68,.14)}
+.sr-btn.hard{border-color:var(--amber);background:rgba(245,158,11,.07)}
+.sr-btn.hard:hover{background:rgba(245,158,11,.14)}
+.sr-btn.good{border-color:var(--green);background:rgba(22,163,74,.07)}
+.sr-btn.good:hover{background:rgba(22,163,74,.14)}
+.sr-btn.easy{border-color:var(--accent);background:rgba(99,102,241,.07)}
+.sr-btn.easy:hover{background:rgba(99,102,241,.14)}
+.sr-skip-lnk{font-size:12px;color:var(--muted);cursor:pointer;text-decoration:underline}
+.sr-skip-lnk:hover{color:var(--text)}
 #task-time-modal{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);z-index:9350;display:none;align-items:center;justify-content:center}
 #task-time-modal.open{display:flex}
 .ttm-box{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:1.75rem 2rem;max-width:400px;width:90%;box-shadow:0 24px 60px rgba(0,0,0,.3);text-align:center}
@@ -1261,6 +1282,7 @@ input:checked+.toggle-slider::before{transform:translateX(18px)}
       </div>
     </div>
   </div>
+  <div id="h-sr-due" style="display:none"></div>
   <div class="home-grid">
     <div class="card" style="margin-bottom:0">
       <div class="hst">Due soon<a onclick="navTo('tasks')">View all →</a></div>
@@ -3194,6 +3216,8 @@ function renderHome(){
       </div>`;
     }).join('');
   }
+  // spaced repetition due items
+  renderSRHome();
   // focus mode next SAC
   renderFocusSac();
   // daily tip
@@ -4138,10 +4162,71 @@ function rsMoveItem(evId,idx,dir){
   rsRenderItems(evId,data);
   rsRebuild();
 }
+// ── SPACED REPETITION (SM-2) ──
+let _srEvId=null,_srItemId=null;
+function srOpen(evId,itemId,name){
+  _srEvId=evId;_srItemId=itemId;
+  const n=document.getElementById('sr-item-name');
+  if(n)n.textContent=name||'';
+  document.getElementById('sr-modal').classList.add('open');
+}
+function srClose(){document.getElementById('sr-modal').classList.remove('open');_srEvId=null;_srItemId=null;}
+function srRate(quality){
+  if(!_srEvId||!_srItemId)return;
+  const data=rsLoad(_srEvId);if(!data){srClose();return;}
+  const item=data.items.find(i=>i.id==_srItemId);if(!item){srClose();return;}
+  if(!item.sr)item.sr={interval:1,ef:2.5,reps:0,due:null};
+  const sr=item.sr;
+  if(quality<3){
+    sr.reps=0;sr.interval=1;
+  } else {
+    if(sr.reps===0)sr.interval=1;
+    else if(sr.reps===1)sr.interval=6;
+    else sr.interval=Math.round(sr.interval*sr.ef);
+    sr.reps++;
+    sr.ef=Math.max(1.3,sr.ef+(0.1-(5-quality)*(0.08+(5-quality)*0.02)));
+  }
+  const d=new Date(TODAY);d.setDate(d.getDate()+sr.interval);
+  sr.due=localStr(d);
+  rsSave(_srEvId,data);
+  srClose();
+  const dLabel=sr.interval===1?'tomorrow':'in '+sr.interval+' days';
+  showToast('Review scheduled '+dLabel);
+  renderHome();
+}
+function srGetAllDue(){
+  const today=todayStr();
+  const due=[];
+  events.forEach(ev=>{
+    if(ev.done)return;
+    const data=rsLoad(ev.id);if(!data)return;
+    data.items.forEach(item=>{
+      if(!item.sr||!item.sr.due)return;
+      if(item.sr.due<=today)due.push({evId:ev.id,itemId:item.id,name:item.name,subject:ev.subject,evName:ev.name,due:item.sr.due});
+    });
+  });
+  return due;
+}
+function renderSRHome(){
+  const el=document.getElementById('h-sr-due');if(!el)return;
+  const due=srGetAllDue();
+  if(!due.length){el.style.display='none';el.innerHTML='';return;}
+  el.style.display='block';
+  el.innerHTML=`<div class="card" style="margin-bottom:1.25rem">
+    <div class="hst">Due for review <span style="background:var(--accent);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:4px">${due.length}</span><a onclick="navTo('revision')">See all →</a></div>
+    ${due.slice(0,4).map(d=>`<div style="display:flex;align-items:center;gap:10px;padding:.5rem 0;border-bottom:1px solid var(--border)">
+      <span class="badge" style="background:${BG[d.subject]};color:${NC[d.subject]};flex-shrink:0">${(SUBJ[d.subject]?.label||'?').split(' ')[0]}</span>
+      <span style="flex:1;font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${d.name}</span>
+      <button onclick="srOpen(${d.evId},${d.itemId},${JSON.stringify(d.name)})" style="flex-shrink:0;padding:.3rem .8rem;border-radius:8px;border:none;background:var(--accent);color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:11.5px;font-weight:700;cursor:pointer">Rate</button>
+    </div>`).join('')}
+    ${due.length>4?`<div style="font-size:12px;color:var(--muted);padding:.5rem 0 0">+${due.length-4} more</div>`:''}
+  </div>`;
+}
 function rsToggleDone(evId,itemId){
   const data=rsLoad(evId);if(!data)return;
   const item=data.items.find(i=>i.id==itemId);
   if(!item)return;
+  const wasDone=item.done;
   item.done=!item.done;
   item.missed=false;
   rsSave(evId,data);
@@ -4152,6 +4237,8 @@ function rsToggleDone(evId,itemId){
   if(ev)rsSyncToPlanner(ev,data);
   rsRenderItems(evId,data);
   rsRenderSchedule(evId,data);
+  // Trigger SR rating when marking done (not undone)
+  if(!wasDone&&item.done)srOpen(evId,itemId,item.name);
 }
 function rsMissedAction(evId,itemId,action){
   const data=rsLoad(evId);if(!data)return;
@@ -5610,6 +5697,21 @@ init().then(()=>{
     <div class="tour-btns">
       <button class="abtn sm" id="tour-next-btn" onclick="tourNext()" style="width:100%">Next →</button>
     </div>
+  </div>
+</div>
+
+<!-- Spaced repetition rating modal -->
+<div id="sr-modal">
+  <div class="sr-box">
+    <div class="sr-title">How well did you know it?</div>
+    <div class="sr-sub" id="sr-item-name"></div>
+    <div class="sr-btns">
+      <button class="sr-btn again" onclick="srRate(0)"><span class="sr-emoji">😰</span><span class="sr-lbl">Again</span></button>
+      <button class="sr-btn hard"  onclick="srRate(3)"><span class="sr-emoji">😅</span><span class="sr-lbl">Hard</span></button>
+      <button class="sr-btn good"  onclick="srRate(4)"><span class="sr-emoji">😊</span><span class="sr-lbl">Good</span></button>
+      <button class="sr-btn easy"  onclick="srRate(5)"><span class="sr-emoji">😎</span><span class="sr-lbl">Easy</span></button>
+    </div>
+    <div class="sr-skip-lnk" onclick="srClose()">Skip for now</div>
   </div>
 </div>
 
