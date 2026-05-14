@@ -966,6 +966,7 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 .bulk-count{font-size:13px;font-weight:600;color:var(--accent);flex:1}
 .select-mode .tc .sel-chk{display:flex!important}
 .select-mode .tc .cw{display:none!important}
+.select-mode .tc .dbtn,.select-mode .tc .urgbtn,.select-mode .tc .skipbtn{display:none!important}
 .tc .sel-chk{display:none;width:22px;height:22px;border-radius:6px;border:2px solid var(--border);background:var(--bg);cursor:pointer;flex-shrink:0;transition:all .15s;align-items:center;justify-content:center;margin-top:2px}
 .tc .sel-chk.on{background:var(--accent);border-color:var(--accent)}
 .tc .sel-chk.on::after{content:'✓';font-size:11px;color:#fff;font-weight:800}
@@ -1238,6 +1239,7 @@ input:checked+.toggle-slider::before{transform:translateX(18px)}
   <div class="bulk-bar" id="bulk-bar">
     <span class="bulk-count" id="bulk-count">0 selected</span>
     <button class="abtn sm green" onclick="bulkDone()">Mark done</button>
+    <button class="abtn sm" style="background:var(--amber);color:#fff" onclick="bulkSkip()">Skip</button>
     <button class="abtn sm" style="background:var(--high)" onclick="bulkDelete()">Delete</button>
     <button class="abtn sm outline" onclick="exitSelectMode()">Cancel</button>
   </div>
@@ -1347,8 +1349,8 @@ input:checked+.toggle-slider::before{transform:translateX(18px)}
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-top:.75rem">
       <div style="background:var(--high-bg);border:1px solid var(--high);border-radius:12px;padding:.85rem 1rem"><div style="font-size:1.6rem;font-family:'Fraunces',serif;font-weight:800;color:var(--high);line-height:1">+10 XP</div><div style="font-size:13px;font-weight:500;color:var(--text);margin-top:.35rem">Complete a task</div><div style="font-size:11px;color:var(--muted);margin-top:.2rem">Tick off any task</div></div>
       <div style="background:var(--amber-bg);border:1px solid var(--amber);border-radius:12px;padding:.85rem 1rem"><div style="font-size:1.6rem;font-family:'Fraunces',serif;font-weight:800;color:var(--amber);line-height:1">+25 XP</div><div style="font-size:13px;font-weight:500;color:var(--text);margin-top:.35rem">Complete a study method</div><div style="font-size:11px;color:var(--muted);margin-top:.2rem">Per completed session</div></div>
-      <div style="background:var(--sac-bg);border:1px solid var(--sac);border-radius:12px;padding:.85rem 1rem"><div style="font-size:1.6rem;font-family:'Fraunces',serif;font-weight:800;color:var(--sac);line-height:1">+50 XP</div><div style="font-size:13px;font-weight:500;color:var(--text);margin-top:.35rem">SAC completed</div><div style="font-size:11px;color:var(--muted);margin-top:.2rem">Awarded when date passes</div></div>
-      <div style="background:var(--exam-bg);border:1px solid var(--mth-br);border-radius:12px;padding:.85rem 1rem"><div style="font-size:1.6rem;font-family:'Fraunces',serif;font-weight:800;color:var(--exam);line-height:1">+75 XP</div><div style="font-size:13px;font-weight:500;color:var(--text);margin-top:.35rem">Exam completed</div><div style="font-size:11px;color:var(--muted);margin-top:.2rem">Awarded when date passes</div></div>
+      <div style="background:var(--sac-bg);border:1px solid var(--sac);border-radius:12px;padding:.85rem 1rem"><div style="font-size:1.6rem;font-family:'Fraunces',serif;font-weight:800;color:var(--sac);line-height:1">+50 XP</div><div style="font-size:13px;font-weight:500;color:var(--text);margin-top:.35rem">SAC completed</div><div style="font-size:11px;color:var(--muted);margin-top:.2rem">Awarded when you mark done</div></div>
+      <div style="background:var(--exam-bg);border:1px solid var(--mth-br);border-radius:12px;padding:.85rem 1rem"><div style="font-size:1.6rem;font-family:'Fraunces',serif;font-weight:800;color:var(--exam);line-height:1">+75 XP</div><div style="font-size:13px;font-weight:500;color:var(--text);margin-top:.35rem">Exam completed</div><div style="font-size:11px;color:var(--muted);margin-top:.2rem">Awarded when you mark done</div></div>
       <div style="background:var(--green-bg);border:1px solid var(--green);border-radius:12px;padding:.85rem 1rem"><div style="font-size:1.6rem;font-family:'Fraunces',serif;font-weight:800;color:var(--green);line-height:1">75+</div><div style="font-size:13px;font-weight:500;color:var(--text);margin-top:.35rem">XP to level up</div><div style="font-size:11px;color:var(--muted);margin-top:.2rem">Each level needs more XP</div></div>
       <div style="background:var(--eng-bg);border:1px solid var(--eng-br);border-radius:12px;padding:.85rem 1rem"><div style="font-size:1.6rem;font-family:'Fraunces',serif;font-weight:800;color:var(--eng);line-height:1" id="xp-total-display">0 XP</div><div style="font-size:13px;font-weight:500;color:var(--text);margin-top:.35rem">Your total XP</div><div style="font-size:11px;color:var(--muted);margin-top:.2rem">Level <span id="xp-level-display">1</span> · <span id="xp-title-display">Rookie</span></div></div>
     </div>
@@ -1393,7 +1395,7 @@ input:checked+.toggle-slider::before{transform:translateX(18px)}
 
 <!-- CALENDAR -->
 <div class="page" id="page-calendar"><div class="container">
-  <div class="page-hdr"><div class="page-hdr-title">SACs &amp; Exams</div></div>
+  <div class="page-hdr"><div class="page-hdr-title">Calendar</div></div>
   <div class="pg-tabs"><button class="pg-tab" onclick="navTo('sacs')">SACs &amp; Exams</button><button class="pg-tab active" onclick="navTo('calendar')">Calendar</button><button class="pg-tab" onclick="navTo('revision')">Revision</button></div>
   <div class="card">
     <div class="cal-hdr">
@@ -2325,7 +2327,7 @@ function updateEvLink(){
   const s=document.getElementById('task-ev-link');if(!s)return;
   const c=s.value;
   const subjFilter=document.getElementById('subj-input')?.value;
-  const upcoming=events.filter(e=>daysUntil(e.date)>=0);
+  const upcoming=events.filter(e=>daysUntil(e.date)>=0&&!e.done);
   const matched=subjFilter?upcoming.filter(e=>e.subject===subjFilter):[];
   const rest=subjFilter?upcoming.filter(e=>e.subject!==subjFilter):upcoming;
   s.innerHTML='<option value="">None</option>'+
@@ -2519,6 +2521,50 @@ function renderSubHtml(t){
   return`<button class="sub-toggle" onclick="toggleSubPanel(${t.id})">${open?'▾':'▸'} Subtasks ${prog}</button>${panel}`;
 }
 
+// ── BULK SELECT ──
+let _selMode=false;
+const _selIds=new Set();
+function enterSelectMode(){
+  _selMode=true;
+  document.getElementById('task-list').classList.add('select-mode');
+  document.getElementById('bulk-bar').classList.add('show');
+  updateBulkCount();
+}
+function exitSelectMode(){
+  _selMode=false;_selIds.clear();
+  document.getElementById('task-list').classList.remove('select-mode');
+  document.getElementById('bulk-bar').classList.remove('show');
+  renderTasks();
+}
+function toggleSelChk(id){
+  if(!_selMode)enterSelectMode();
+  if(_selIds.has(id))_selIds.delete(id);else _selIds.add(id);
+  const card=document.querySelector(`#task-list .tc[data-tid="${id}"] .sel-chk`);
+  if(card)card.classList.toggle('on',_selIds.has(id));
+  updateBulkCount();
+}
+function updateBulkCount(){
+  document.getElementById('bulk-count').textContent=`${_selIds.size} selected`;
+}
+function bulkDone(){
+  if(!_selIds.size)return;
+  const n=_selIds.size;
+  tasks.forEach(t=>{if(_selIds.has(t.id)&&!t.done){t.done=true;t.missed=false;addXP(XPL);}});
+  saveT();exitSelectMode();showToast(`${n} task${n>1?'s':''} marked done`);renderHome();
+}
+function bulkSkip(){
+  if(!_selIds.size)return;
+  const n=_selIds.size;
+  tasks.forEach(t=>{if(_selIds.has(t.id)&&!t.done){t.missed=true;}});
+  saveT();exitSelectMode();showToast(`${n} task${n>1?'s':''} skipped`);renderHome();
+}
+function bulkDelete(){
+  if(!_selIds.size)return;
+  const n=_selIds.size;
+  tasks=tasks.filter(t=>!_selIds.has(t.id));
+  saveT();exitSelectMode();showToast(`${n} task${n>1?'s':''} deleted`);renderHome();
+}
+
 function renderTasks(){
   const sortEl=document.getElementById('sort-select');
   const sortBy=sortEl?sortEl.value:'due';
@@ -2536,8 +2582,16 @@ function renderTasks(){
     const safeTitle=t.title.replace(/"/g,'&quot;');
     const cwAction=missed?`restoreTask(${t.id})`:`toggleTask(${t.id})`;
     const cwLabel=missed?'Restore task':t.done?'Mark incomplete':'Mark complete';
-    return`<div class="tc ${t.done?'done':''} ${missed?'missed':''} ${t.urgent&&!t.done&&!missed?'urgent':''}" style="background:${BG[t.subject]||''};border-color:${BR[t.subject]||''}"><div class="cw ${t.done?'ck':''} ${missed?'missed-cw':''}" role="button" tabindex="0" aria-pressed="${t.done||missed}" aria-label="${cwLabel}: ${safeTitle}" onclick="${cwAction}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();${cwAction}}" style="margin-top:2px" title="${missed?'Click to restore':''}"></div><div class="tb"><div class="ttitle">${t.title}</div>${t.note?`<div class="tnote">${t.note}</div>`:''}<div class="ttags"><span class="badge" style="background:${BG[t.subject]};color:${NC[t.subject]}">${s.label}</span>${t.urgent&&!t.done&&!missed?'<span class="badge b-urgent">! Urgent</span>':''}${ev?`<span class="badge b-sac">${ev.type.toUpperCase()}: ${ev.name}</span>`:''}${missed?'<span class="badge b-missed">Skipped</span>':''}</div>${renderSubHtml(t)}</div><div class="dinfo" style="padding-top:2px"><div class="${ds.cls}">${ds.label}</div></div>${timerBtn}${urgBtnHtml}<button class="dbtn" style="font-size:13px;padding:0 8px;margin-top:1px" onclick="startTaskEdit(${t.id})" title="Edit task" aria-label="Edit task"><i data-lucide="pencil" style="width:13px;height:13px;pointer-events:none"></i></button>${skipOrSpan}<button class="dbtn" onclick="removeTask(${t.id})" style="margin-top:1px" aria-label="Delete task">×</button></div>`;
+    return`<div class="tc ${t.done?'done':''} ${missed?'missed':''} ${t.urgent&&!t.done&&!missed?'urgent':''}" data-tid="${t.id}" style="background:${BG[t.subject]||''};border-color:${BR[t.subject]||''}"><div class="sel-chk ${_selIds.has(t.id)?'on':''}" onclick="toggleSelChk(${t.id})" aria-label="Select task" title="Select task"></div><div class="cw ${t.done?'ck':''} ${missed?'missed-cw':''}" role="button" tabindex="0" aria-pressed="${t.done||missed}" aria-label="${cwLabel}: ${safeTitle}" onclick="${cwAction}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();${cwAction}}" style="margin-top:2px" title="${missed?'Click to restore':''}"></div><div class="tb"><div class="ttitle">${t.title}</div>${t.note?`<div class="tnote">${t.note}</div>`:''}<div class="ttags"><span class="badge" style="background:${BG[t.subject]};color:${NC[t.subject]}">${s.label}</span>${t.urgent&&!t.done&&!missed?'<span class="badge b-urgent">! Urgent</span>':''}${ev?`<span class="badge b-sac">${ev.type.toUpperCase()}: ${ev.name}</span>`:''}${missed?'<span class="badge b-missed">Skipped</span>':''}</div>${renderSubHtml(t)}</div><div class="dinfo" style="padding-top:2px"><div class="${ds.cls}">${ds.label}</div></div>${timerBtn}${urgBtnHtml}<button class="dbtn" style="font-size:13px;padding:0 8px;margin-top:1px" onclick="startTaskEdit(${t.id})" title="Edit task" aria-label="Edit task"><i data-lucide="pencil" style="width:13px;height:13px;pointer-events:none"></i></button>${skipOrSpan}<button class="dbtn" onclick="removeTask(${t.id})" style="margin-top:1px" aria-label="Delete task">×</button></div>`;
   }).join('');
+  // long-press to enter select mode
+  list.querySelectorAll('.tc').forEach(card=>{
+    let lpt=null;
+    card.addEventListener('touchstart',()=>{lpt=setTimeout(()=>{const id=parseInt(card.dataset.tid);if(!_selMode)enterSelectMode();toggleSelChk(id);},500)},{passive:true});
+    card.addEventListener('touchend',()=>clearTimeout(lpt),{passive:true});
+    card.addEventListener('touchmove',()=>clearTimeout(lpt),{passive:true});
+  });
+  if(_selMode)list.classList.add('select-mode');
   const rem=tasks.filter(t=>!t.done&&!t.missed);
   document.getElementById('s-total').textContent=rem.length;
   document.getElementById('s-done').textContent=tasks.filter(t=>t.done&&!t.missed).length;
@@ -2952,7 +3006,7 @@ function renderHome(){
   // stat tiles
   const ts=todayStr(),ws=weekEndStr();
   document.getElementById('hs-today').textContent=tasks.filter(t=>!t.done&&!t.missed&&t.due&&t.due<=ts).length;
-  document.getElementById('hs-sacs').textContent=events.filter(e=>daysUntil(e.date)>=0).length;
+  document.getElementById('hs-sacs').textContent=events.filter(e=>daysUntil(e.date)>=0&&!e.done).length;
   const cd=JSON.parse(localStorage.getItem(UID_PREFIX+'cd')||'[]').sort();
   let streak=0;for(let i=0;i<60;i++){const dd=new Date(TODAY);dd.setDate(dd.getDate()-i);if(cd.includes(localStr(dd)))streak++;else break}
   document.getElementById('hs-streak').textContent=streak;
@@ -2977,7 +3031,7 @@ function renderHome(){
   const tl=document.getElementById('h-today');
   // urgency SAC banner
   const urgBanner=document.getElementById('h-urgent-sac');
-  const imminent=events.filter(e=>daysUntil(e.date)>=0&&daysUntil(e.date)<=2).sort((a,b)=>daysUntil(a.date)-daysUntil(b.date));
+  const imminent=events.filter(e=>daysUntil(e.date)>=0&&daysUntil(e.date)<=2&&!e.done).sort((a,b)=>daysUntil(a.date)-daysUntil(b.date));
   if(urgBanner){if(imminent.length){const e=imminent[0];const d=daysUntil(e.date);const dLabel=d===0?'Today':d===1?'Tomorrow':'In 2 days';const ds=new Date(e.date+'T00:00:00').toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short'});urgBanner.style.display='block';urgBanner.innerHTML=`<div style="background:${BG[e.subject]||'var(--surface)'};border:1.5px solid ${BR[e.subject]||'var(--border)'};border-radius:14px;padding:1rem 1.25rem;display:flex;align-items:center;gap:14px"><div style="font-family:'Fraunces',serif;font-size:2.2rem;font-weight:700;color:${NC[e.subject]||'var(--accent)'};line-height:1;flex-shrink:0">${d===0?'!':d}</div><div style="flex:1;min-width:0"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:${NC[e.subject]||'var(--accent)'};margin-bottom:.15rem">${dLabel} &mdash; ${e.type.toUpperCase()}</div><div style="font-size:15px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${e.name}</div><div style="font-size:12px;color:var(--muted);margin-top:.1rem">${SUBJ[e.subject]?.label||''} &middot; ${ds}</div></div><button onclick="navTo('revision')" style="flex-shrink:0;padding:.5rem 1rem;border-radius:10px;border:none;background:${NC[e.subject]||'var(--accent)'};color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer">Revise &rarr;</button></div>`;}else{urgBanner.style.display='none';urgBanner.innerHTML='';}}
   if(!todayTasks.length){tl.innerHTML='<div class="h-empty">Nothing due today or tomorrow — you\'re all good!</div>'}
   else{
@@ -2993,7 +3047,7 @@ function renderHome(){
     if(todayTasks.length>8)tl.innerHTML+=`<div class="h-empty" style="padding:.4rem 0">+${todayTasks.length-8} more</div>`;
   }
   // upcoming SACs
-  const upcoming=events.filter(e=>daysUntil(e.date)>=0).slice(0,5);
+  const upcoming=events.filter(e=>daysUntil(e.date)>=0&&!e.done).slice(0,5);
   const sl=document.getElementById('h-sacs');
   if(!upcoming.length){sl.innerHTML='<div class="h-empty">No upcoming SACs or exams yet.</div>'}
   else{
@@ -3708,7 +3762,7 @@ function renderRevision(){
   const list=document.getElementById('rev-list');
   const empty=document.getElementById('rev-empty');
   if(!list)return;
-  const upcoming=events.filter(e=>daysUntil(e.date)>=0).sort((a,b)=>a.date.localeCompare(b.date));
+  const upcoming=events.filter(e=>daysUntil(e.date)>=0&&!e.done).sort((a,b)=>a.date.localeCompare(b.date));
   if(!upcoming.length){list.innerHTML='';if(empty)empty.style.display='block';return;}
   if(empty)empty.style.display='none';
   list.innerHTML=upcoming.map(ev=>{
