@@ -188,6 +188,12 @@ select.subj-sel{font-weight:600;border-width:2px}
 .hstat.accent .hstat-label{color:var(--muted)}
 [data-theme=dark] .hstat.accent{background:var(--surface);border-color:var(--accent)}
 
+/* ── SUBJECT COUNTDOWN CHIPS ── */
+.subj-chip{display:inline-flex;align-items:center;gap:6px;padding:5px 11px 5px 8px;border-radius:20px;font-size:12px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;transition:opacity .15s,transform .15s;white-space:nowrap;border:1px solid transparent}
+.subj-chip:hover{opacity:.82;transform:translateY(-1px)}
+.subj-chip-num{font-family:'Fraunces',serif;font-size:14px;font-weight:700;min-width:1.1em;text-align:center}
+.subj-chip-lbl{font-size:11px;font-weight:600}
+
 /* ── HOME GRID ── */
 .home-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.5rem}
 
@@ -201,6 +207,7 @@ select.subj-sel{font-weight:600;border-width:2px}
 body.focus-mode #h-focus-exit{display:flex}
 body.focus-mode #h-focus-sac{display:block}
 body.focus-mode #xp-home,
+body.focus-mode #h-subj-chips,
 body.focus-mode #h-tip-wrap,
 body.focus-mode #h-neglect-home,
 body.focus-mode #h-getstarted,
@@ -1237,6 +1244,7 @@ input:checked+.toggle-slider::before{transform:translateX(18px)}
     <div class="hstat"><div class="hstat-num" id="hs-sacs">0</div><div class="hstat-label">Upcoming SACs</div></div>
     <div class="hstat accent"><div class="hstat-num" id="hs-streak">0</div><div class="hstat-label">Day streak <i data-lucide="flame" style="width:11px;height:11px;color:var(--accent);vertical-align:-1px"></i></div></div>
   </div>
+  <div id="h-subj-chips" style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:1rem"></div>
   <div id="h-focus-exit" onclick="toggleFocusMode()"><i data-lucide="minimize-2" style="width:14px;height:14px"></i> Exit Focus Mode</div>
   <div id="h-focus-sac"></div>
   <div id="h-urgent-sac" style="margin-bottom:1.25rem;display:none"></div>
@@ -2567,6 +2575,19 @@ function restoreTask(id){
   const t=tasks.find(x=>x.id===id);if(!t)return;
   t.missed=false;saveT();renderTasks();renderHome();showToast('Task restored!');
 }
+function renderSubjChips(){
+  const el=document.getElementById('h-subj-chips');
+  if(!el||!userSubjects.length)return;
+  el.innerHTML=userSubjects.map(s=>{
+    const next=events.filter(e=>e.subject===s.id&&!e.done&&daysUntil(e.date)>=0).sort((a,b)=>a.date.localeCompare(b.date))[0];
+    const d=next?daysUntil(next.date):null;
+    const label=d===null?'No SACs':d===0?'Today!':d===1?'Tomorrow':''+d+' days';
+    return`<div class="subj-chip" style="background:${BG[s.id]};border-color:${BR[s.id]};color:${NC[s.id]}" onclick="navTo('sacs')" title="${next?next.name:'No upcoming SACs'}">
+      <span class="subj-chip-num">${d===null?'—':d===0?'!':d}</span>
+      <span class="subj-chip-lbl">${s.label.split(' ')[0]}</span>
+    </div>`;
+  }).join('');
+}
 function toggleFocusMode(){
   const on=document.body.classList.toggle('focus-mode');
   localStorage.setItem('vce-focus',on?'1':'0');
@@ -3120,6 +3141,8 @@ function renderHome(){
   const cd=JSON.parse(localStorage.getItem(UID_PREFIX+'cd')||'[]').sort();
   let streak=0;for(let i=0;i<60;i++){const dd=new Date(TODAY);dd.setDate(dd.getDate()-i);if(cd.includes(localStr(dd)))streak++;else break}
   document.getElementById('hs-streak').textContent=streak;
+  // subject countdown chips
+  renderSubjChips();
   // health check
   const rem=tasks.filter(t=>!t.done&&!t.missed);
   document.getElementById('h-health').innerHTML=userSubjects.map(s=>{
