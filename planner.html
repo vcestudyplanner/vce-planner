@@ -631,6 +631,44 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 .mm-add-sub{background:transparent;border:none;color:var(--muted);font-size:12px;cursor:pointer;padding:.2rem 0;font-family:'Plus Jakarta Sans',sans-serif}
 .mm-add-sub:hover{color:var(--accent)}
 
+/* ── STUDY METHOD CARD STATS ── */
+.sm-card-stats{font-size:11px;color:var(--muted);margin-top:.5rem;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+.sm-card-stat{display:flex;align-items:center;gap:.2rem}
+.sm-card-stat svg{width:10px;height:10px;opacity:.7}
+
+/* ── RECOMMENDATION STRIP ── */
+.sm-rec-strip{background:rgba(99,102,241,.06);border:1.5px solid rgba(99,102,241,.18);border-radius:14px;padding:.9rem 1.1rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:.85rem}
+.sm-rec-body{flex:1;min-width:0}
+.sm-rec-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:.15rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sm-rec-sub{font-size:12px;color:var(--muted)}
+.sm-rec-btn{font-size:12px;font-weight:600;padding:6px 16px;border-radius:9px;background:var(--accent);color:#fff;border:none;cursor:pointer;transition:all .15s;white-space:nowrap;flex-shrink:0}
+.sm-rec-btn:hover{filter:brightness(1.1)}
+
+/* ── POMODORO SESSION DOTS ── */
+.pom-dots{display:flex;gap:7px;justify-content:center;margin:.6rem 0 .25rem}
+.pom-dot{width:11px;height:11px;border-radius:50%;background:var(--border);border:1.5px solid var(--border);transition:all .4s}
+.pom-dot.done{background:var(--accent);border-color:var(--accent)}
+.pom-dot.active{background:transparent;border-color:var(--accent);animation:pom-pulse 1.2s ease infinite}
+@keyframes pom-pulse{0%,100%{opacity:.4}50%{opacity:1}}
+
+/* ── SAVED FLASHCARD DECKS ── */
+.fc-saved-section{margin-bottom:1rem}
+.fc-saved-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.4rem}
+.fc-deck-chips{display:flex;flex-wrap:wrap;gap:6px}
+.fc-deck-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;background:var(--bg);border:1.5px solid var(--border);font-size:12px;font-weight:500;color:var(--text);cursor:pointer;transition:all .15s;max-width:200px}
+.fc-deck-chip:hover{border-color:var(--accent);color:var(--accent)}
+.fc-deck-chip-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fc-chip-del{background:none;border:none;color:var(--muted);font-size:14px;line-height:1;cursor:pointer;padding:0;flex-shrink:0;transition:color .15s}
+.fc-chip-del:hover{color:var(--high)}
+.fc-missed-banner{background:rgba(184,120,72,.08);border:1.5px solid var(--amber);border-radius:10px;padding:.65rem 1rem;font-size:13px;color:var(--amber);font-weight:600;display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin-bottom:.75rem}
+.fc-missed-review-btn{font-size:12px;font-weight:700;padding:4px 14px;border-radius:8px;background:var(--amber);color:#fff;border:none;cursor:pointer;white-space:nowrap;transition:filter .15s}
+.fc-missed-review-btn:hover{filter:brightness(1.1)}
+.fc-save-row{display:flex;gap:8px;align-items:flex-end;margin-top:.5rem;margin-bottom:.25rem}
+.fc-save-inp{flex:1;padding:7px 11px;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;color:var(--text);outline:none;transition:border-color .15s}
+.fc-save-inp:focus{border-color:var(--accent)}
+.fc-save-btn{height:34px;padding:0 16px;border-radius:8px;background:var(--surface);border:1.5px solid var(--border);font-family:'Plus Jakarta Sans',sans-serif;font-size:12.5px;font-weight:600;color:var(--text);cursor:pointer;white-space:nowrap;transition:all .15s;flex-shrink:0}
+.fc-save-btn:hover{border-color:var(--accent);color:var(--accent)}
+
 /* ── SCORES ── */
 .scores-subj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin-bottom:1.5rem}
 .score-subj-card{background:var(--surface);border:1.5px solid var(--border);border-radius:16px;padding:1.25rem 1.4rem}
@@ -1484,6 +1522,7 @@ input:checked+.toggle-slider::before{transform:translateX(18px)}
 
   <!-- method picker (default view) -->
   <div id="sm-picker">
+    <div id="sm-rec-wrap"></div>
     <div class="sm-grid" id="sm-grid"></div>
   </div>
 
@@ -2815,10 +2854,10 @@ function pomTick(){
     clearInterval(pomInterval);pomRunning=false;playSound('bell');
     if(pomMode==='work'){
       pomSessions++;localStorage.setItem(UID_PREFIX+'pomsessions',pomSessions);
-      document.getElementById('pom-sessions').textContent=pomSessions;
+      const pse=document.getElementById('pom-sessions');if(pse)pse.innerHTML=`Sessions: ${pomSessions} &nbsp;&middot;&nbsp; Cycle: ${pomSessions%4}/4`;
       const subj=document.getElementById('pom-subj').value;
       studyLog.unshift({id:Date.now(),subject:subj,hours:25/60,date:todayStr(),note:'Pomodoro session'});
-      saveL();renderHoursBar();addXP(25);showToast('Pomodoro done! +25 XP');pomSetMode('short');
+      saveL();renderHoursBar();addXP(25);smTrackMethod('pomodoro');showToast('Pomodoro done! +25 XP');pomSetMode('short');
     } else {showToast('Break over!');pomSetMode('work')}
     return;
   }
@@ -2830,6 +2869,17 @@ function updatePomDisplay(){
   const offset=CIRC*(1-pomRem/POM[pomMode].secs);
   const ring=document.getElementById('pom-ring');ring.style.strokeDashoffset=offset;ring.style.stroke=POM[pomMode].color;
   const ml=document.getElementById('pom-mode-label');ml.textContent=POM[pomMode].label;ml.className='pom-mode '+(pomMode==='work'?'work':'brk');
+  updatePomDots();
+}
+function updatePomDots(){
+  const dots=document.querySelectorAll('.pom-dot');
+  if(!dots.length)return;
+  const pos=pomSessions%4;
+  dots.forEach((d,i)=>{
+    d.classList.remove('done','active');
+    if(i<pos)d.classList.add('done');
+    else if(i===pos&&pomMode==='work')d.classList.add('active');
+  });
 }
 function addLog(){
   const subj=document.getElementById('log-subj').value;
@@ -3196,8 +3246,8 @@ function endTour(){
 const SM_METHODS=[
   {id:'pomodoro', icon:'timer', name:'Pomodoro Timer',      time:'25 min focus', xpLabel:'+25 XP / session',
    desc:'25 minutes of focused work followed by a short break. After 4 rounds take a longer break. The most popular study technique for a reason.'},
-  {id:'general',  icon:'clock', name:'General Timer',       time:'Any duration',  xpLabel:'Logs to stats',
-   desc:'A simple stopwatch for open-ended study sessions. Pick your subject, start the clock, stop when you\'re done — the hours are automatically logged to your stats.'},
+  {id:'general',  icon:'clock', name:'General Timer',       time:'Any duration',  xpLabel:'+25 XP',
+   desc:'A simple stopwatch for open-ended study sessions. Pick your subject, start the clock, stop when you\'re done — hours are logged and XP awarded.'},
   {id:'recall',   icon:'layers', name:'Active Recall',       time:'10–20 min',     xpLabel:'+25 XP',
    desc:'Build a set of flashcard Q&A pairs from your notes, then test yourself. Seeing the question before the answer is far more effective than re-reading.'},
   {id:'blurt',    icon:'pencil-line', name:'Blurting',            time:'5–15 min',      xpLabel:'+25 XP',
@@ -3206,8 +3256,8 @@ const SM_METHODS=[
    desc:'Explain a concept in the simplest possible language. If you can\'t explain it simply, you don\'t know it yet. Identify the gaps and go back to your notes.'},
   {id:'timed',    icon:'clipboard-list', name:'Timed Exam Practice', time:'15–90 min',     xpLabel:'+25 XP',
    desc:'Simulate exam conditions. Set a timer, pick a subject, and work through past questions or practice problems without opening your notes.'},
-  {id:'mindmap',  icon:'git-branch', name:'Mind Map Builder',    time:'10–20 min',     xpLabel:'+25 XP',
-   desc:'Start with a central concept and branch out to related ideas. Connecting ideas visually helps reveal relationships and gaps in your understanding.'},
+  {id:'mindmap',  icon:'git-branch', name:'Concept Outline',     time:'10–20 min',     xpLabel:'+25 XP',
+   desc:'Start with a core idea and build out branches of related concepts. Great for mapping a full topic before an exam to check your understanding of how ideas connect.'},
 ];
 
 let _smActive=null,_smTimer=null,_smElapsed=0,_smRunning=false;
@@ -3219,7 +3269,6 @@ function quickStudyTimer(subjId){
     if(ps){ps.value=subjId;colourSel(ps);}
   },120);
 }
-let _fcCards=[],_fcIdx=0,_fcGot=0,_fcMiss=0,_fcFlipped=false;
 let _mmBranches=[];
 let _genInterval=null,_genSecs=0,_genRunning=false;
 
@@ -3255,7 +3304,18 @@ function smExitSession(){
   document.getElementById('sm-session').style.display='none';
 }
 
+function smGetStats(){return JSON.parse(localStorage.getItem(UID_PREFIX+'sm-stats')||'{}')}
+function smTrackMethod(id){
+  const stats=smGetStats();
+  if(!stats[id])stats[id]={count:0,last:null};
+  stats[id].count++;stats[id].last=todayStr();
+  localStorage.setItem(UID_PREFIX+'sm-stats',JSON.stringify(stats));
+  const set=new Set(JSON.parse(localStorage.getItem(UID_PREFIX+'methods-set')||'[]'));
+  set.add(id);localStorage.setItem(UID_PREFIX+'methods-set',JSON.stringify([...set]));
+  localStorage.setItem(UID_PREFIX+'methods-done',String(parseInt(localStorage.getItem(UID_PREFIX+'methods-done')||'0')+1));
+}
 function smAward(){
+  if(_smActive)smTrackMethod(_smActive.id);
   addXP(25);
   showToast('Method complete! +25 XP');
   smExitSession();
@@ -3274,7 +3334,8 @@ function smBuildPomodoro(){
           </svg>
           <div class="pom-time" id="pom-time">25:00</div>
         </div>
-        <div class="pom-sessions">Sessions today: <span id="pom-sessions">${pomSessions}</span></div>
+        <div class="pom-dots"><div class="pom-dot"></div><div class="pom-dot"></div><div class="pom-dot"></div><div class="pom-dot"></div></div>
+        <div class="pom-sessions"><span id="pom-sessions">Sessions: ${pomSessions} &nbsp;·&nbsp; Cycle: ${pomSessions%4}/4</span></div>
         <div style="display:flex;gap:8px;justify-content:center;margin-top:.75rem">
           <button class="abtn" id="pom-start" onclick="pomToggle()">Start</button>
           <button class="abtn" style="background:var(--border);color:var(--text)" onclick="pomReset()">Reset</button>
@@ -3332,9 +3393,8 @@ function genToggle(){
     const subj=document.getElementById('gen-subj')?.value||'';
     const hrs=Math.round(_genSecs/36)/100;
     studyLog.unshift({id:Date.now(),subject:subj,hours:hrs,date:todayStr(),note:`General timer (${fmtDuration(_genSecs)})`});
-    saveL();renderHoursBar();
-    const h=Math.floor(_genSecs/3600),m=Math.floor((_genSecs%3600)/60),sec=_genSecs%60;
-    document.getElementById('gen-result').textContent=`✅ Logged ${fmtDuration(_genSecs)} of study!`;
+    saveL();renderHoursBar();addXP(25);smTrackMethod('general');
+    document.getElementById('gen-result').textContent=`Logged ${fmtDuration(_genSecs)} — +25 XP!`;
     document.getElementById('gen-log-wrap').style.display='block';
     document.getElementById('gen-start-btn').style.display='none';
     document.querySelector('#gen-setup').style.display='none';
@@ -3350,23 +3410,58 @@ function genReset(){
 function fmtDuration(secs){const h=Math.floor(secs/3600),m=Math.floor((secs%3600)/60),s=secs%60;return h>0?`${h}h ${m}m`:`${m}m ${s}s`;}
 
 // ── ACTIVE RECALL ──
+let _fcCards=[],_fcIdx=0,_fcGot=0,_fcMiss=0,_fcFlipped=false;
+let _fcDecks=[],_fcCurrentDeckId=null,_fcMissedIndices=[];
+function fcLoadDecks(){_fcDecks=JSON.parse(localStorage.getItem(UID_PREFIX+'fc-decks')||'[]')}
+function fcSaveDecks(){localStorage.setItem(UID_PREFIX+'fc-decks',JSON.stringify(_fcDecks))}
+
 function smBuildRecall(){
-  _fcCards=[];_fcIdx=0;_fcGot=0;_fcMiss=0;_fcFlipped=false;
-  return `
-    <div class="sm-step" id="fc-builder">
-      <div class="sm-step-num">Step 1 — Build your deck</div>
-      <div class="sm-step-title">Add flashcard pairs</div>
-      <div class="sm-step-hint">Type a question and its answer, then click Add. Build at least 5 cards.</div>
-      <div class="frow" style="grid-template-columns:1fr 1fr auto;gap:8px;margin-bottom:.5rem">
-        <div class="fg"><label>Question</label><input type="text" id="fc-q" placeholder="e.g. Define osmosis"/></div>
-        <div class="fg"><label>Answer</label><input type="text" id="fc-a" placeholder="e.g. Movement of water…"/></div>
-        <div class="fg"><label>&nbsp;</label><button class="abtn" onclick="fcAddCard()" style="height:38px;padding:0 16px">Add</button></div>
+  fcLoadDecks();
+  _fcCards=[];_fcIdx=0;_fcGot=0;_fcMiss=0;_fcFlipped=false;_fcCurrentDeckId=null;_fcMissedIndices=[];
+  const missedDecks=_fcDecks.filter(d=>d.missed&&d.missed.length>0);
+  const savedSection=_fcDecks.length?`
+    <div class="fc-saved-section">
+      <div class="fc-saved-label">Saved decks</div>
+      <div class="fc-deck-chips">${_fcDecks.map(d=>`
+        <div class="fc-deck-chip" onclick="fcLoadDeck(${d.id})">
+          <span class="fc-deck-chip-name" title="${d.name}">${d.name}</span>
+          <span style="color:var(--muted);font-size:11px;flex-shrink:0">${d.cards.length}q</span>
+          <button class="fc-chip-del" onclick="event.stopPropagation();fcDeleteDeck(${d.id})" title="Delete deck">×</button>
+        </div>`).join('')}
       </div>
-      <div id="fc-deck-list" style="display:flex;flex-wrap:wrap;gap:6px;min-height:28px;margin-bottom:.75rem"></div>
-      <button class="sm-done-btn" id="fc-quiz-btn" onclick="fcStartQuiz()" disabled>Start Quiz →</button>
+    </div>`:'';
+  const missedBanner=missedDecks.length?`
+    <div class="fc-missed-banner">
+      <span>${missedDecks[0].missed.length} card${missedDecks[0].missed.length>1?'s':''} to review from "${missedDecks[0].name}"</span>
+      <button class="fc-missed-review-btn" onclick="fcStartMissedReview(${missedDecks[0].id})">Review now →</button>
+    </div>`:'';
+  return `
+    <div id="fc-builder">
+      ${savedSection}
+      ${missedBanner}
+      <div class="sm-step">
+        <div class="sm-step-num">Build your deck</div>
+        <div class="sm-step-title">Add flashcard pairs</div>
+        <div class="sm-step-hint">Question and answer — add at least 5 cards, then start the quiz.</div>
+        <div class="frow" style="grid-template-columns:1fr 1fr auto;gap:8px;margin-bottom:.5rem">
+          <div class="fg"><label>Question</label><input type="text" id="fc-q" placeholder="e.g. Define osmosis" onkeydown="if(event.key==='Enter')fcAddCard()"/></div>
+          <div class="fg"><label>Answer</label><input type="text" id="fc-a" placeholder="e.g. Movement of water…" onkeydown="if(event.key==='Enter')fcAddCard()"/></div>
+          <div class="fg"><label>&nbsp;</label><button class="abtn" onclick="fcAddCard()" style="height:38px;padding:0 16px">Add</button></div>
+        </div>
+        <div id="fc-deck-list" style="display:flex;flex-wrap:wrap;gap:6px;min-height:24px;margin-bottom:.65rem"></div>
+        <div class="fc-save-row">
+          <input class="fc-save-inp" type="text" id="fc-deck-name" placeholder="Deck name (e.g. Biology Unit 3)" maxlength="50"/>
+          <button class="fc-save-btn" onclick="fcSaveDeck()">Save deck</button>
+        </div>
+        <div id="fc-save-feedback" style="font-size:12px;color:var(--green);min-height:16px;margin-bottom:.4rem"></div>
+        <button class="sm-done-btn" id="fc-quiz-btn" onclick="fcStartQuiz(false)" disabled>Start Quiz →</button>
+      </div>
     </div>
     <div id="fc-quiz" style="display:none">
-      <div class="sm-step-hint" id="fc-progress" style="text-align:center;margin-bottom:.25rem"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.25rem">
+        <div class="sm-step-hint" id="fc-progress" style="margin-bottom:0"></div>
+        <div id="fc-deck-label" style="font-size:11px;color:var(--muted)"></div>
+      </div>
       <div class="fc-hint">Tap the card to reveal the answer</div>
       <div class="fc-card" id="fc-card" onclick="fcFlip()">
         <div class="fc-card-inner">
@@ -3378,27 +3473,91 @@ function smBuildRecall(){
         <button class="fc-btn got" onclick="fcAnswer(true)">✓ Got it</button>
         <button class="fc-btn miss" onclick="fcAnswer(false)">✗ Review again</button>
       </div>
-      <div id="fc-result" style="display:none;text-align:center;padding:1.5rem 0">
-        <div style="margin-bottom:.75rem;color:var(--accent)"><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
-        <div style="font-family:'Fraunces',serif;font-size:1.15rem;font-weight:700;color:var(--text);margin-bottom:.3rem" id="fc-score"></div>
-        <div style="font-size:13px;color:var(--muted)">Well done — your recall is improving!</div>
+      <div id="fc-result" style="display:none;text-align:center;padding:1.25rem 0">
+        <div style="font-family:'Fraunces',serif;font-size:1.6rem;font-weight:700;color:var(--accent);line-height:1;margin-bottom:.35rem" id="fc-score"></div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:.25rem" id="fc-result-sub"></div>
+        <div id="fc-missed-action" style="display:none;margin:.75rem 0">
+          <button class="fc-missed-review-btn" onclick="fcRetryMissed()">Review missed cards →</button>
+        </div>
         <button class="sm-done-btn" style="margin:1rem auto 0" onclick="smAward()">Claim +25 XP ✓</button>
       </div>
     </div>`;
 }
+
 function fcAddCard(){
   const q=document.getElementById('fc-q').value.trim(),a=document.getElementById('fc-a').value.trim();
   if(!q||!a)return;
-  _fcCards.push({q,a});
+  _fcCards.push({q,a,id:Date.now()+(Math.random()*100|0)});
   document.getElementById('fc-q').value='';document.getElementById('fc-a').value='';
-  document.getElementById('fc-deck-list').innerHTML=_fcCards.map((c,i)=>
-    `<span style="background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:3px 9px;font-size:12px;color:var(--text)">${i+1}. ${c.q}</span>`).join('');
+  document.getElementById('fc-q').focus();
+  fcRenderDeckList();
   if(_fcCards.length>=5)document.getElementById('fc-quiz-btn').disabled=false;
 }
-function fcStartQuiz(){
-  _fcIdx=0;_fcGot=0;_fcMiss=0;
+function fcRenderDeckList(){
+  const el=document.getElementById('fc-deck-list');if(!el)return;
+  el.innerHTML=_fcCards.map((c,i)=>
+    `<span style="background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:3px 9px 3px 7px;font-size:12px;color:var(--text);display:inline-flex;align-items:center;gap:5px">
+      ${i+1}. ${c.q.length>30?c.q.slice(0,30)+'…':c.q}
+      <button onclick="_fcCards.splice(${i},1);fcRenderDeckList();if(_fcCards.length<5){const b=document.getElementById('fc-quiz-btn');if(b)b.disabled=true;}" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;line-height:1;padding:0">×</button>
+    </span>`).join('');
+}
+function fcSaveDeck(){
+  if(_fcCards.length<2){showToast('Add at least 2 cards before saving');return;}
+  const name=document.getElementById('fc-deck-name')?.value.trim()||'Untitled deck';
+  if(_fcCurrentDeckId){
+    const d=_fcDecks.find(x=>x.id===_fcCurrentDeckId);
+    if(d){d.cards=_fcCards.slice();d.name=name;d.lastUsed=todayStr();}
+  } else {
+    const deck={id:Date.now(),name,cards:_fcCards.slice(),lastUsed:todayStr(),missed:[]};
+    _fcDecks.unshift(deck);_fcCurrentDeckId=deck.id;
+  }
+  fcSaveDecks();
+  const fb=document.getElementById('fc-save-feedback');if(fb){fb.textContent='Deck saved!';setTimeout(()=>{fb.textContent=''},2000);}
+}
+function fcLoadDeck(id){
+  fcLoadDecks();
+  const d=_fcDecks.find(x=>x.id===id);if(!d)return;
+  _fcCards=d.cards.slice();_fcCurrentDeckId=id;
+  const nameInp=document.getElementById('fc-deck-name');if(nameInp)nameInp.value=d.name;
+  fcRenderDeckList();
+  const btn=document.getElementById('fc-quiz-btn');if(btn)btn.disabled=_fcCards.length<5;
+  const fb=document.getElementById('fc-save-feedback');if(fb){fb.textContent=`"${d.name}" loaded — ${d.cards.length} cards`;setTimeout(()=>{fb.textContent=''},2500);}
+}
+function fcDeleteDeck(id){
+  _fcDecks=_fcDecks.filter(x=>x.id!==id);fcSaveDecks();
+  if(_fcCurrentDeckId===id){_fcCurrentDeckId=null;_fcCards=[];}
+  // rebuild the builder section
+  const builder=document.getElementById('fc-builder');
+  if(builder){
+    fcLoadDecks();
+    const saved=_fcDecks.length?`<div class="fc-saved-section"><div class="fc-saved-label">Saved decks</div><div class="fc-deck-chips">${_fcDecks.map(d=>`<div class="fc-deck-chip" onclick="fcLoadDeck(${d.id})"><span class="fc-deck-chip-name">${d.name}</span><span style="color:var(--muted);font-size:11px;flex-shrink:0">${d.cards.length}q</span><button class="fc-chip-del" onclick="event.stopPropagation();fcDeleteDeck(${d.id})">×</button></div>`).join('')}</div></div>`:'';
+    const existing=builder.querySelector('.fc-saved-section');
+    if(existing)existing.outerHTML=saved;
+    else if(saved&&builder.firstElementChild)builder.insertAdjacentHTML('afterbegin',saved);
+  }
+}
+function fcStartQuiz(missedOnly){
+  _fcIdx=0;_fcGot=0;_fcMiss=0;_fcMissedIndices=[];
+  if(missedOnly&&_fcCurrentDeckId){
+    const d=_fcDecks.find(x=>x.id===_fcCurrentDeckId);
+    if(d&&d.missed&&d.missed.length){
+      _fcCards=d.cards.filter(c=>d.missed.includes(c.id));
+    }
+  }
   document.getElementById('fc-builder').style.display='none';
   document.getElementById('fc-quiz').style.display='block';
+  const dl=document.getElementById('fc-deck-label');
+  if(dl&&_fcCurrentDeckId){const d=_fcDecks.find(x=>x.id===_fcCurrentDeckId);if(d)dl.textContent=missedOnly?`Reviewing missed · ${d.name}`:d.name;}
+  fcShowCard();
+}
+function fcStartMissedReview(id){
+  fcLoadDecks();
+  const d=_fcDecks.find(x=>x.id===id);if(!d)return;
+  _fcCards=d.cards.filter(c=>d.missed&&d.missed.includes(c.id));
+  _fcCurrentDeckId=id;_fcIdx=0;_fcGot=0;_fcMiss=0;_fcMissedIndices=[];
+  document.getElementById('fc-builder').style.display='none';
+  document.getElementById('fc-quiz').style.display='block';
+  const dl=document.getElementById('fc-deck-label');if(dl)dl.textContent=`Reviewing missed · ${d.name}`;
   fcShowCard();
 }
 function fcShowCard(){
@@ -3406,7 +3565,16 @@ function fcShowCard(){
     document.getElementById('fc-card').style.display='none';
     document.getElementById('fc-actions').style.display='none';
     document.getElementById('fc-result').style.display='block';
-    document.getElementById('fc-score').textContent=`${_fcGot} / ${_fcCards.length} correct`;
+    const pct=_fcCards.length?Math.round(_fcGot/_fcCards.length*100):0;
+    document.getElementById('fc-score').textContent=`${_fcGot}/${_fcCards.length} correct`;
+    document.getElementById('fc-result-sub').textContent=pct>=80?'Excellent recall!':pct>=60?'Good — keep practising the ones you missed.':'Keep going — repetition builds memory.';
+    // save missed cards to deck
+    if(_fcCurrentDeckId){
+      const d=_fcDecks.find(x=>x.id===_fcCurrentDeckId);
+      if(d){d.missed=_fcMissedIndices;d.lastUsed=todayStr();fcSaveDecks();}
+    }
+    const ma=document.getElementById('fc-missed-action');
+    if(ma)ma.style.display=_fcMissedIndices.length?'block':'none';
     return;
   }
   _fcFlipped=false;
@@ -3414,10 +3582,22 @@ function fcShowCard(){
   document.getElementById('fc-front').textContent=_fcCards[_fcIdx].q;
   document.getElementById('fc-back').textContent=_fcCards[_fcIdx].a;
   document.getElementById('fc-actions').style.display='none';
-  document.getElementById('fc-progress').textContent=`Card ${_fcIdx+1} of ${_fcCards.length} · Got: ${_fcGot} · Missed: ${_fcMiss}`;
+  document.getElementById('fc-progress').textContent=`Card ${_fcIdx+1} of ${_fcCards.length} · ${_fcGot} correct · ${_fcMiss} missed`;
 }
 function fcFlip(){if(_fcFlipped)return;_fcFlipped=true;document.getElementById('fc-card').classList.add('flipped');setTimeout(()=>{document.getElementById('fc-actions').style.display='flex'},220)}
-function fcAnswer(got){if(got)_fcGot++;else _fcMiss++;_fcIdx++;fcShowCard()}
+function fcAnswer(got){
+  if(got)_fcGot++;
+  else{_fcMiss++;if(_fcCards[_fcIdx]?.id)_fcMissedIndices.push(_fcCards[_fcIdx].id);}
+  _fcIdx++;fcShowCard();
+}
+function fcRetryMissed(){
+  if(!_fcMissedIndices.length)return;
+  const missed=_fcCards.filter(c=>_fcMissedIndices.includes(c.id));
+  _fcCards=missed;_fcIdx=0;_fcGot=0;_fcMiss=0;_fcMissedIndices=[];
+  document.getElementById('fc-result').style.display='none';
+  document.getElementById('fc-card').style.display='';
+  fcShowCard();
+}
 
 // ── BLURTING ──
 function smBuildBlurt(){
@@ -3504,7 +3684,15 @@ function smBuildFeynman(){
 function feynCheck(){
   const filled=['feyn-0','feyn-1','feyn-2','feyn-3'].filter(id=>document.getElementById(id)?.value.trim().length>20);
   if(filled.length<4){showToast('Complete all 4 steps before finishing');return;}
-  smAward();
+  const btn=document.getElementById('feyn-done');
+  if(btn){
+    const concept=document.getElementById('feyn-0')?.value.trim()||'';
+    const explanation=document.getElementById('feyn-3')?.value.trim()||document.getElementById('feyn-1')?.value.trim()||'';
+    btn.outerHTML=`<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:1.25rem">
+      <button class="sm-done-btn" style="margin:0" onclick="smAward()">Claim +25 XP ✓</button>
+      <button class="sm-done-btn" style="margin:0;background:var(--surface);color:var(--text);border:1.5px solid var(--border)" onclick="navigator.clipboard.writeText(${JSON.stringify(concept+'\n\n'+explanation)}).then(()=>showToast('Copied to clipboard!'))">Copy explanation</button>
+    </div>`;
+  }
 }
 
 // ── TIMED EXAM PRACTICE ──
@@ -3618,12 +3806,40 @@ function mmCheckDone(){
 }
 function mmCheck(){smAward();}
 
+function smBuildRec(){
+  const upcoming=events.filter(e=>!e.done&&daysUntil(e.date)>=0&&daysUntil(e.date)<=7)
+    .sort((a,b)=>daysUntil(a.date)-daysUntil(b.date));
+  if(!upcoming.length)return'';
+  const e=upcoming[0];const d=daysUntil(e.date);
+  const s=SUBJ[e.subject]||{label:e.subject||''};
+  const urgent=d<=3;
+  const methods=urgent?['Blurting','Active Recall']:['Feynman Technique','Timed Exam Practice'];
+  const methodIds=urgent?['blurt','recall']:['feynman','timed'];
+  const dLabel=d===0?'Today':d===1?'Tomorrow':`In ${d} days`;
+  return`<div class="sm-rec-strip">
+    <div style="font-size:1.3rem;flex-shrink:0">${urgent?'⚡':'📅'}</div>
+    <div class="sm-rec-body">
+      <div class="sm-rec-title">${dLabel}: ${s.label} ${e.type.toUpperCase()} — ${e.name}</div>
+      <div class="sm-rec-sub">Recommended for this: ${methods.join(' or ')}</div>
+    </div>
+    <button class="sm-rec-btn" onclick="smStart('${methodIds[0]}')">Start →</button>
+  </div>`;
+}
+function smStatLabel(id){
+  const stats=smGetStats();const s=stats[id];
+  if(!s||!s.count)return'';
+  const days=s.last?Math.round((new Date(todayStr())-new Date(s.last))/(864e5)):null;
+  const ago=days===0?'today':days===1?'yesterday':`${days}d ago`;
+  return`<div class="sm-card-stats"><span class="sm-card-stat">${s.count} session${s.count>1?'s':''}</span><span style="color:var(--border)">·</span><span class="sm-card-stat">last used ${ago}</span></div>`;
+}
 function renderStudy(){
   const g=document.getElementById('sm-grid');
   if(!g)return;
-  // make sure session is hidden and picker is visible
   document.getElementById('sm-picker').style.display='block';
   document.getElementById('sm-session').style.display='none';
+  const recHTML=smBuildRec();
+  const recEl=document.getElementById('sm-rec-wrap');
+  if(recEl)recEl.innerHTML=recHTML;
   g.innerHTML=SM_METHODS.map(m=>`
     <div class="sm-card" onclick="smStart('${m.id}')">
       <div class="sm-card-icon"><i data-lucide="${m.icon}"></i></div>
@@ -3634,6 +3850,7 @@ function renderStudy(){
         <span class="sm-badge xp">${m.xpLabel}</span>
         <button class="sm-start-btn" onclick="event.stopPropagation();smStart('${m.id}')">Start →</button>
       </div>
+      ${smStatLabel(m.id)}
     </div>`).join('');
   populateSubjectDropdowns();
   renderHoursBar();
@@ -4438,17 +4655,6 @@ function renderBadges(){
   }
 }
 
-// track which study methods have been used
-const _origSmAward=window.smAward;
-function smAwardWithTracking(){
-  if(_smActive){
-    const set=new Set(JSON.parse(localStorage.getItem(UID_PREFIX+'methods-set')||'[]'));
-    set.add(_smActive.id);
-    localStorage.setItem(UID_PREFIX+'methods-set',JSON.stringify([...set]));
-    localStorage.setItem(UID_PREFIX+'methods-done',String(parseInt(localStorage.getItem(UID_PREFIX+'methods-done')||'0')+1));
-  }
-  smAward();
-}
 
 // ── ATAR ESTIMATOR ───────────────────────────────────────────────────────────
 // Aggregate → ATAR lookup table — calibrated to 2024 VTAC data
