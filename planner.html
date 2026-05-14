@@ -233,7 +233,7 @@ body.focus-mode .mob-nav-btn:not([data-page="home"]){display:none!important}
 .h-saclist{display:flex;flex-direction:column;gap:8px}
 .h-sac{border-radius:10px;padding:.65rem 1rem;display:flex;align-items:center;gap:12px;transition:transform .15s;min-width:0;border:1px solid}
 .h-sac:hover{transform:translateX(2px)}
-.hs-count{font-family:'Fraunces',serif;font-size:1.4rem;font-weight:700;line-height:1;flex-shrink:0;min-width:42px;text-align:center}
+.hs-count{font-family:'Fraunces',serif;font-size:1.3rem;font-weight:700;line-height:1;flex-shrink:0;min-width:52px;text-align:center}
 .hs-body{min-width:0;flex:1;overflow:hidden}
 .hs-name{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
 .hs-meta{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -885,10 +885,8 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 .sr-title{font-family:'Fraunces',serif;font-size:1.15rem;font-weight:700;color:var(--text);margin-bottom:.2rem}
 .sr-sub{font-size:12px;color:var(--muted);margin-bottom:1.25rem}
 .sr-btns{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-bottom:1rem}
-.sr-btn{padding:.6rem .3rem;border-radius:12px;border:1.5px solid var(--border);background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:12.5px;font-weight:700;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:3px}
+.sr-btn{padding:.65rem .5rem;border-radius:12px;border:1.5px solid var(--border);background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s}
 .sr-btn:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.12)}
-.sr-btn .sr-emoji{font-size:1.3rem}
-.sr-btn .sr-lbl{font-size:10.5px;font-weight:600;color:var(--muted)}
 .sr-btn.again{border-color:#ef4444;background:rgba(239,68,68,.07)}
 .sr-btn.again:hover{background:rgba(239,68,68,.14)}
 .sr-btn.hard{border-color:var(--amber);background:rgba(245,158,11,.07)}
@@ -918,7 +916,7 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 .ttm-skip-btn{padding:.6rem 1.2rem;border-radius:12px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .15s}
 .ttm-skip-btn:hover{border-color:var(--muted);color:var(--text)}
 .sac-modal-box{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:2rem 2.25rem;max-width:420px;width:90%;box-shadow:0 24px 60px rgba(0,0,0,.3);text-align:center}
-.sac-modal-emoji{font-size:3rem;margin-bottom:.75rem}
+.sac-modal-emoji{display:flex;justify-content:center;margin-bottom:.75rem}
 .sac-modal-title{font-family:'Fraunces',serif;font-size:1.4rem;font-weight:700;color:var(--text);margin-bottom:.4rem}
 .sac-modal-sub{font-size:13.5px;color:var(--muted);margin-bottom:1.4rem;line-height:1.6}
 .sac-modal-subj{display:inline-block;font-size:13px;font-weight:700;padding:4px 14px;border-radius:20px;background:rgba(99,102,241,.1);color:var(--accent);margin-bottom:1rem}
@@ -1529,9 +1527,9 @@ input:checked+.toggle-slider::before{transform:translateX(18px)}
     <div class="frow" style="grid-template-columns:1fr auto;gap:10px;margin-bottom:.65rem">
       <div class="fg"><label>Colour</label>
         <select id="ce-colour">
-          <option value="blue">🔵 Blue</option><option value="purple">🟣 Purple</option>
-          <option value="green">🟢 Green</option><option value="orange">🟠 Orange</option>
-          <option value="red">🔴 Red</option>
+          <option value="blue">Blue</option><option value="purple">Purple</option>
+          <option value="green">Green</option><option value="orange">Orange</option>
+          <option value="red">Red</option>
         </select>
       </div>
       <div class="fg"><label>&nbsp;</label><button class="abtn" onclick="addCalEvent()">+ Add</button></div>
@@ -2584,7 +2582,7 @@ function skipTaskTime(){
   _ttmTaskId=null;_ttmSubjId=null;
 }
 
-const _TASK_MILESTONES={10:'🔥',25:'⭐',50:'🚀',100:'👑',250:'🏆',500:'🌟'};
+const _TASK_MILESTONES={10:true,25:true,50:true,100:true,250:true,500:true};
 function toggleTask(id){
   const t=tasks.find(x=>x.id===id);if(!t)return;t.done=!t.done;
   // Sync revision task back to revision schedule
@@ -2595,7 +2593,7 @@ function toggleTask(id){
   if(t.done){
     const cd=JSON.parse(localStorage.getItem(UID_PREFIX+'cd')||'[]');if(!cd.includes(todayStr()))cd.push(todayStr());localStorage.setItem(UID_PREFIX+'cd',JSON.stringify(cd));addXP(XPL);playSound('complete');
     const doneCount=tasks.filter(x=>x.done).length;
-    if(_TASK_MILESTONES[doneCount]){launchConfetti();showToast(`${_TASK_MILESTONES[doneCount]} ${doneCount} tasks done — milestone!`);}
+    if(_TASK_MILESTONES[doneCount]){launchConfetti();showToast(`${doneCount} tasks done — milestone!`);}
     else{const allDone=tasks.filter(x=>!x.done&&x.due===todayStr()).length===0&&tasks.filter(x=>x.due===todayStr()).length>0;if(allDone){launchConfetti();showToast("All today's tasks done!")}else showToast('+10 XP');}
     if(t.subject&&t.subject!=='__other__')queueTimeLog(t.id,t.subject,t.title);
   }
@@ -2620,10 +2618,11 @@ function renderSubjChips(){
   el.innerHTML=userSubjects.map(s=>{
     const next=events.filter(e=>e.subject===s.id&&!e.done&&daysUntil(e.date)>=0).sort((a,b)=>a.date.localeCompare(b.date))[0];
     const d=next?daysUntil(next.date):null;
-    const label=d===null?'No SACs':d===0?'Today!':d===1?'Tomorrow':''+d+' days';
+    const chipNum=d===null?'—':d===0?'Today':d===1?'Tmrw':String(d);
+    const chipSub=d!==null&&d>=2?'days':'';
     return`<div class="subj-chip" style="background:${BG[s.id]};border-color:${BR[s.id]};color:${NC[s.id]}" onclick="navTo('sacs')" title="${next?next.name:'No upcoming SACs'}">
-      <span class="subj-chip-num">${d===null?'—':d===0?'!':d}</span>
-      <span class="subj-chip-lbl">${s.label.split(' ')[0]}</span>
+      <span class="subj-chip-num" style="font-size:${d!==null&&d<=1?'11px':'14px'}">${chipNum}</span>
+      <span class="subj-chip-lbl">${s.label.split(' ')[0]}${chipSub?` · ${chipSub}`:''}</span>
     </div>`;
   }).join('');
 }
@@ -2781,7 +2780,7 @@ function renderPlanner(){
   const slots=planData[plannerDateStr]||[];
   const el=document.getElementById('plan-slots');
   if(!slots.length)el.innerHTML='<div class="plan-empty">No blocks planned — add one below!</div>';
-  else el.innerHTML=slots.map(b=>{const icon=PLAN_ICONS[b.type]||'⭐';const sb=b.subj&&SUBJ[b.subj]?`<span class="badge b-${b.subj}" style="font-size:10px">${SUBJ[b.subj].label}</span>`:'';const bg=b.subj&&BG[b.subj]?`background:${BG[b.subj]};border-color:${BR[b.subj]}`:'';const revTag=b.revSacId?'<span style="font-size:10px;color:var(--rel);margin-left:6px;font-weight:600">revision</span>':'';return`<div class="plan-slot ${b.type==='gym'||b.type==='sport'?'custom-block':''}" style="${bg}"><div class="plan-slot-time">${b.time||'—'}</div><div class="plan-slot-body"><div class="plan-slot-title">${icon} ${b.title}${b.taskId?'<span style="font-size:10px;color:var(--muted);margin-left:6px">📋 from tasks</span>':''}${revTag}</div><div class="plan-slot-meta">${b.type.charAt(0).toUpperCase()+b.type.slice(1)} ${sb}</div></div><button class="plan-slot-del" onclick="removePlanBlock('${plannerDateStr}',${b.id})">×</button></div>`}).join('');
+  else el.innerHTML=slots.map(b=>{const icon=PLAN_ICONS[b.type]||'';const sb=b.subj&&SUBJ[b.subj]?`<span class="badge b-${b.subj}" style="font-size:10px">${SUBJ[b.subj].label}</span>`:'';const bg=b.subj&&BG[b.subj]?`background:${BG[b.subj]};border-color:${BR[b.subj]}`:'';const revTag=b.revSacId?'<span style="font-size:10px;color:var(--rel);margin-left:6px;font-weight:600">revision</span>':'';const fromTaskTag=b.taskId?'<span style="font-size:10px;color:var(--muted);margin-left:6px">from tasks</span>':'';return`<div class="plan-slot ${b.type==='gym'||b.type==='sport'?'custom-block':''}" style="${bg}"><div class="plan-slot-time">${b.time||'—'}</div><div class="plan-slot-body"><div class="plan-slot-title">${icon?icon+' ':''}${b.title}${fromTaskTag}${revTag}</div><div class="plan-slot-meta">${b.type.charAt(0).toUpperCase()+b.type.slice(1)} ${sb}</div></div><button class="plan-slot-del" onclick="removePlanBlock('${plannerDateStr}',${b.id})">×</button></div>`}).join('');
   renderSchedPanel();
 }
 
@@ -2967,7 +2966,7 @@ function renderCal(){
   function ai(k,o){if(!imap[k])imap[k]=[];imap[k].push(o)}
   tasks.filter(t=>t.due&&!t.done&&!t.missed).forEach(t=>ai(t.due,{label:SUBJ[t.subject].label.split(' ')[0]+': '+t.title,cls:t.urgent?'urgent':t.subject}));
   events.forEach(e=>ai(e.date,{label:(e.type==='sac'?'SAC: ':'Exam: ')+e.name,cls:e.type}));
-  Object.entries(planData).forEach(([ds,blocks])=>blocks.forEach(b=>ai(ds,{label:(PLAN_ICONS[b.type]||'⭐')+' '+b.title,cls:'custom'})));
+  Object.entries(planData).forEach(([ds,blocks])=>blocks.forEach(b=>ai(ds,{label:b.title,cls:'custom'})));
   expandCEForMonth(calY,calM).forEach(ev=>{
     const c=CE_COLS[ev.colour]||CE_COLS.blue;
     const hour=ev.time?ev.time.split(':')[0]:'';const min=ev.time?ev.time.split(':')[1]:'00';
@@ -3231,7 +3230,7 @@ function renderHome(){
   // urgency SAC banner
   const urgBanner=document.getElementById('h-urgent-sac');
   const imminent=events.filter(e=>daysUntil(e.date)>=0&&daysUntil(e.date)<=2&&!e.done).sort((a,b)=>daysUntil(a.date)-daysUntil(b.date));
-  if(urgBanner){if(imminent.length){const e=imminent[0];const d=daysUntil(e.date);const dLabel=d===0?'Today':d===1?'Tomorrow':'In 2 days';const ds=new Date(e.date+'T00:00:00').toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short'});urgBanner.style.display='block';urgBanner.innerHTML=`<div style="background:${BG[e.subject]||'var(--surface)'};border:1.5px solid ${BR[e.subject]||'var(--border)'};border-radius:14px;padding:1rem 1.25rem;display:flex;align-items:center;gap:14px"><div style="font-family:'Fraunces',serif;font-size:2.2rem;font-weight:700;color:${NC[e.subject]||'var(--accent)'};line-height:1;flex-shrink:0">${d===0?'!':d}</div><div style="flex:1;min-width:0"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:${NC[e.subject]||'var(--accent)'};margin-bottom:.15rem">${dLabel} &mdash; ${e.type.toUpperCase()}</div><div style="font-size:15px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${e.name}</div><div style="font-size:12px;color:var(--muted);margin-top:.1rem">${SUBJ[e.subject]?.label||''} &middot; ${ds}</div></div><button onclick="navTo('revision')" style="flex-shrink:0;padding:.5rem 1rem;border-radius:10px;border:none;background:${NC[e.subject]||'var(--accent)'};color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer">Revise &rarr;</button></div>`;}else{urgBanner.style.display='none';urgBanner.innerHTML='';}}
+  if(urgBanner){if(imminent.length){const e=imminent[0];const d=daysUntil(e.date);const dLabel=d===0?'Today':d===1?'Tomorrow':'In 2 days';const ds=new Date(e.date+'T00:00:00').toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short'});urgBanner.style.display='block';urgBanner.innerHTML=`<div style="background:${BG[e.subject]||'var(--surface)'};border:1.5px solid ${BR[e.subject]||'var(--border)'};border-radius:14px;padding:1rem 1.25rem;display:flex;align-items:center;gap:14px"><div style="font-family:'Fraunces',serif;font-size:${d===0?'1.1rem':'2rem'};font-weight:700;color:${NC[e.subject]||'var(--accent)'};line-height:1;flex-shrink:0;text-align:center;min-width:52px">${d===0?'Today':d===1?'Tmrw':d}<div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;opacity:.7;margin-top:2px">${d>=2?'days':''}</div></div><div style="flex:1;min-width:0"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:${NC[e.subject]||'var(--accent)'};margin-bottom:.15rem">${dLabel} &mdash; ${e.type.toUpperCase()}</div><div style="font-size:15px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${e.name}</div><div style="font-size:12px;color:var(--muted);margin-top:.1rem">${SUBJ[e.subject]?.label||''} &middot; ${ds}</div></div><button onclick="navTo('revision')" style="flex-shrink:0;padding:.5rem 1rem;border-radius:10px;border:none;background:${NC[e.subject]||'var(--accent)'};color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer">Revise &rarr;</button></div>`;}else{urgBanner.style.display='none';urgBanner.innerHTML='';}}
   if(!todayTasks.length){tl.innerHTML='<div class="h-empty">Nothing due today or tomorrow — you\'re all good!</div>'}
   else{
     tl.innerHTML=todayTasks.slice(0,8).map(t=>{
@@ -3253,10 +3252,12 @@ function renderHome(){
     sl.innerHTML=upcoming.map(e=>{
       const d=daysUntil(e.date);
       const ds=new Date(e.date+'T00:00:00').toLocaleDateString('en-AU',{day:'numeric',month:'short'});
+      const countNum=d===0?'Today':d===1?'Tmrw':d;
+      const countSub=d>=2?'days':'';
       return`<div class="h-sac" style="background:${BG[e.subject]};border:1px solid ${BR[e.subject]}">
-        <div class="hs-count" style="color:${NC[e.subject]}">${d===0?'!':d}</div>
+        <div class="hs-count" style="color:${NC[e.subject]}">${countNum}${countSub?`<div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;opacity:.7;margin-top:1px">${countSub}</div>`:''}</div>
         <div class="hs-body"><div class="hs-name">${e.name}</div><div class="hs-meta">${SUBJ[e.subject].label} · ${ds}</div></div>
-        <div class="hs-type" style="color:${NC[e.subject]}">${e.type}</div>
+        <div class="hs-type" style="color:${NC[e.subject]}">${e.type.toUpperCase()}</div>
       </div>`;
     }).join('');
   }
@@ -3837,12 +3838,12 @@ function smBuildTimed(){
       <div class="sm-timer-display" id="timed-time">30:00</div>
       <div style="text-align:center;color:var(--muted);font-size:13.5px;margin-bottom:1.25rem" id="timed-label"></div>
       <div class="sm-step" style="background:rgba(79,70,229,.05);border-color:var(--accent)">
-        <div class="sm-step-title">📚 Exam mode active</div>
+        <div class="sm-step-title">Exam mode active</div>
         <div class="sm-step-hint">Notes closed. Work through your practice questions until the timer finishes. Stay focused — you've got this.</div>
       </div>
       <div id="timed-done-wrap" style="display:none">
         <div class="sm-step" style="background:rgba(22,163,74,.07);border-color:rgba(22,163,74,.3)">
-          <div class="sm-step-title">✅ Session complete!</div>
+          <div class="sm-step-title">Session complete</div>
           <div class="sm-step-hint">Mark your answers and note which question types tripped you up — those are your revision targets.</div>
         </div>
         <button class="sm-done-btn" onclick="timedClaim()">Claim +25 XP ✓</button>
@@ -3934,7 +3935,7 @@ function smBuildRec(){
   const methodIds=urgent?['blurt','recall']:['feynman','timed'];
   const dLabel=d===0?'Today':d===1?'Tomorrow':`In ${d} days`;
   return`<div class="sm-rec-strip">
-    <div style="font-size:1.3rem;flex-shrink:0">${urgent?'⚡':'📅'}</div>
+    <div style="flex-shrink:0;display:flex;align-items:center;color:${urgent?'#dc2626':'var(--accent)'}">${urgent?`<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`:`<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`}</div>
     <div class="sm-rec-body">
       <div class="sm-rec-title">${dLabel}: ${s.label} ${e.type.toUpperCase()} — ${e.name}</div>
       <div class="sm-rec-sub">Recommended for this: ${methods.join(' or ')}</div>
@@ -4442,7 +4443,7 @@ function rsSyncToPlanner(ev,data){
   data.items.forEach(item=>{
     if(!item.scheduledDate||item.done||item.missed)return;
     const ds=item.scheduledDate;
-    const label=`📚 ${item.name} (${formatDur(item.dur)})`;
+    const label=`${item.name} (${formatDur(item.dur)})`;
     if(!planData[ds])planData[ds]=[];
     planData[ds].push({id:Date.now()+Math.random(),time:'',title:label,type:'study',subj:ev.subject,revSacId:sacId,revItemId:item.id});
   });
@@ -4588,42 +4589,42 @@ if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.se
 
 // ── DAILY STUDY TIPS ─────────────────────────────────────────────────────────
 const VCE_TIPS=[
-  {icon:'📝',text:'Start each study session by writing down the 3 things you want to cover. Specificity beats vague "study" goals.'},
-  {icon:'⏱️',text:'The Pomodoro technique works — 25 minutes of focused work followed by a 5-minute break improves retention.'},
-  {icon:'🔁',text:'Active recall beats re-reading. Close your notes and try to recall what you just learned from memory.'},
-  {icon:'📅',text:'Spread your SAC revision over multiple days. Cramming the night before rarely improves long-term performance.'},
-  {icon:'🧠',text:'Spaced repetition: review new material after 1 day, 3 days, then 1 week. Your brain consolidates memories during sleep.'},
-  {icon:'📊',text:'Track your SAC scores over time. Seeing your improvement (or decline) early lets you adjust your study strategy.'},
-  {icon:'🎯',text:'Work on your most difficult subject first when your energy is highest — not at the end when you\'re tired.'},
-  {icon:'✍️',text:'Writing out answers by hand during revision is more effective than typing — the motor memory aids recall.'},
-  {icon:'🗂️',text:'For English, keep a running document of themes, quotes and character analysis. Re-reading your own notes beats the text.'},
-  {icon:'📖',text:'For each SAC, read the assessment criteria before you start studying — know exactly what you\'ll be marked on.'},
-  {icon:'💤',text:'Sacrificing sleep for study is almost never worth it. Memory consolidation happens during sleep — aim for 8 hours.'},
-  {icon:'🏃',text:'Exercise improves cognitive function. Even a 20-minute walk between study sessions improves focus and mood.'},
-  {icon:'🤝',text:'Teach concepts to someone else (or explain them aloud to yourself). You\'ll quickly find the gaps in your understanding.'},
-  {icon:'📚',text:'For Maths, practice exam conditions matter — timed, no notes, no calculator unless allowed. Simulate the real thing.'},
-  {icon:'🔴',text:'Colour-code your notes by subject. Visual distinction between subjects reduces cognitive switching costs.'},
-  {icon:'📋',text:'Before each exam, make a one-page cheat sheet as if you could bring it in. The act of making it is the studying.'},
-  {icon:'🎵',text:'Instrumental music (no lyrics) at low volume can improve focus for some students. Try it and see if it works for you.'},
-  {icon:'🌅',text:'Morning study sessions work best for most people — the brain is freshest and distractions are lowest.'},
-  {icon:'🔗',text:'Link new concepts to things you already know. Understanding the "why" behind facts makes them far easier to recall.'},
-  {icon:'📝',text:'After each study session, write a 3-sentence summary of what you covered. It reinforces the session in memory.'},
-  {icon:'⚖️',text:'Balance is important — all-nighters and skipping exercise will hurt your performance more than missing one session.'},
-  {icon:'🎤',text:'Record yourself explaining a concept and listen back. You\'ll immediately notice where your explanation breaks down.'},
-  {icon:'✅',text:'Break large tasks into small, specific steps. "Finish English essay" is overwhelming. "Write intro paragraph" is doable.'},
-  {icon:'💡',text:'For Science, work through past exam questions before your SAC — the question styles repeat more than you think.'},
-  {icon:'🗓️',text:'Plan your week every Sunday night. Students who plan weekly consistently outperform those who plan day-by-day.'},
-  {icon:'🚫',text:'Phone in another room during study sessions, not just face-down on the desk. Even the presence of a phone reduces focus.'},
-  {icon:'🧪',text:'For experiments and methodologies, draw diagrams. Visual memory is strong — a labelled diagram beats a paragraph.'},
-  {icon:'📈',text:'Consistent short sessions beat infrequent long ones. 45 minutes daily beats a 5-hour Sunday session every time.'},
-  {icon:'🏆',text:'Log your study hours honestly. Students who track time tend to study significantly more than those who don\'t.'},
-  {icon:'🔄',text:'Mix up subjects during your study block — switching between Maths and English keeps focus sharper than a single subject.'},
+  'Start each study session by writing down the 3 things you want to cover. Specificity beats vague "study" goals.',
+  'The Pomodoro technique works — 25 minutes of focused work followed by a 5-minute break improves retention.',
+  'Active recall beats re-reading. Close your notes and try to recall what you just learned from memory.',
+  'Spread your SAC revision over multiple days. Cramming the night before rarely improves long-term performance.',
+  'Spaced repetition: review new material after 1 day, 3 days, then 1 week. Your brain consolidates memories during sleep.',
+  'Track your SAC scores over time. Seeing your improvement (or decline) early lets you adjust your study strategy.',
+  'Work on your most difficult subject first when your energy is highest — not at the end when you\'re tired.',
+  'Writing out answers by hand during revision is more effective than typing — the motor memory aids recall.',
+  'For English, keep a running document of themes, quotes and character analysis. Re-reading your own notes beats the text.',
+  'For each SAC, read the assessment criteria before you start studying — know exactly what you\'ll be marked on.',
+  'Sacrificing sleep for study is almost never worth it. Memory consolidation happens during sleep — aim for 8 hours.',
+  'Exercise improves cognitive function. Even a 20-minute walk between study sessions improves focus and mood.',
+  'Teach concepts to someone else (or explain them aloud to yourself). You\'ll quickly find the gaps in your understanding.',
+  'For Maths, practice exam conditions matter — timed, no notes, no calculator unless allowed. Simulate the real thing.',
+  'Colour-code your notes by subject. Visual distinction between subjects reduces cognitive switching costs.',
+  'Before each exam, make a one-page cheat sheet as if you could bring it in. The act of making it is the studying.',
+  'Instrumental music (no lyrics) at low volume can improve focus for some students. Try it and see if it works for you.',
+  'Morning study sessions work best for most people — the brain is freshest and distractions are lowest.',
+  'Link new concepts to things you already know. Understanding the "why" behind facts makes them far easier to recall.',
+  'After each study session, write a 3-sentence summary of what you covered. It reinforces the session in memory.',
+  'Balance is important — all-nighters and skipping exercise will hurt your performance more than missing one session.',
+  'Record yourself explaining a concept and listen back. You\'ll immediately notice where your explanation breaks down.',
+  'Break large tasks into small, specific steps. "Finish English essay" is overwhelming. "Write intro paragraph" is doable.',
+  'For Science, work through past exam questions before your SAC — the question styles repeat more than you think.',
+  'Plan your week every Sunday night. Students who plan weekly consistently outperform those who plan day-by-day.',
+  'Phone in another room during study sessions, not just face-down on the desk. Even the presence of a phone reduces focus.',
+  'For experiments and methodologies, draw diagrams. Visual memory is strong — a labelled diagram beats a paragraph.',
+  'Consistent short sessions beat infrequent long ones. 45 minutes daily beats a 5-hour Sunday session every time.',
+  'Log your study hours honestly. Students who track time tend to study significantly more than those who don\'t.',
+  'Mix up subjects during your study block — switching between Maths and English keeps focus sharper than a single subject.',
 ];
 function renderHomeTip(){
   const el=document.getElementById('h-tip-wrap');if(!el)return;
   const dayOfYear=Math.floor((TODAY-new Date(TODAY.getFullYear(),0,0))/(1000*60*60*24));
   const tip=VCE_TIPS[dayOfYear%VCE_TIPS.length];
-  el.innerHTML=`<div class="h-tip"><div class="h-tip-icon">${tip.icon}</div><div class="h-tip-body"><div class="h-tip-label">Study tip</div><div class="h-tip-text">${tip.text}</div></div></div>`;
+  el.innerHTML=`<div class="h-tip"><div class="h-tip-body"><div class="h-tip-label">Study tip</div><div class="h-tip-text">${tip}</div></div></div>`;
 }
 
 // ── COMMAND PALETTE ───────────────────────────────────────────────────────────
@@ -4868,7 +4869,7 @@ function renderBadges(){
   if(cnt)cnt.textContent=`${earned} / ${BADGE_DEFS.length} unlocked`;
   if(newlyEarned.length){
     localStorage.setItem(seenKey,JSON.stringify([...seen]));
-    newlyEarned.forEach(id=>{const b=BADGE_DEFS.find(x=>x.id===id);if(b)showToast(`🏅 Achievement unlocked: ${b.name}!`);});
+    newlyEarned.forEach(id=>{const b=BADGE_DEFS.find(x=>x.id===id);if(b)showToast(`Achievement unlocked: ${b.name}`);});
   }
 }
 
@@ -5415,17 +5416,17 @@ function calcATAR(){
 // ── NOTIFICATIONS ─────────────────────────────────────────────────────────────
 // ── SAC REMINDER & CELEBRATION ──────────────────────────────────────────────
 const SAC_CEL_MSGS=[
-  'You put in the work — now it\'s done. Take a breath, you\'ve earned it! 🌟',
-  'Another one ticked off. You\'re building momentum — keep it up! 🔥',
-  'Hard work pays off. Celebrate the small wins, they add up. ✨',
-  'One SAC down. You\'re making it happen — proud of you! 💪',
-  'That one\'s behind you now. Onwards and upwards! 🚀',
+  'You put in the work — now it\'s done. Take a breath, you\'ve earned it.',
+  'Another one ticked off. You\'re building momentum — keep it up.',
+  'Hard work pays off. Celebrate the small wins, they add up.',
+  'One SAC down. You\'re making it happen.',
+  'That one\'s behind you now. Onwards and upwards.',
 ];
 const SAC_PREP_MSGS=[
-  'Make sure you\'ve reviewed your notes and got a good night\'s sleep. You\'ve got this! 💪',
-  'Trust your preparation. Go in confident — you know this material! 🌟',
-  'Rest up tonight, eat a good breakfast tomorrow, and show up ready! 🔥',
-  'You\'ve been putting in the work. Time to show what you know! ✨',
+  'Make sure you\'ve reviewed your notes and got a good night\'s sleep. You\'ve got this.',
+  'Trust your preparation. Go in confident — you know this material.',
+  'Rest up tonight, eat a good breakfast tomorrow, and show up ready.',
+  'You\'ve been putting in the work. Time to show what you know.',
 ];
 function checkSACNotifications(){
   if(!events||!events.length)return;
@@ -5543,18 +5544,18 @@ function checkAndSendNotifications(force=false){
   // tasks due today
   if(s.tasks){
     const dueToday=tasks.filter(t=>!t.done&&!t.missed&&t.due===todayStr());
-    if(dueToday.length)notify('tasks-today','📋 Tasks due today',`You have ${dueToday.length} task${dueToday.length>1?'s':''} due today. Stay on top of it!`);
+    if(dueToday.length)notify('tasks-today','Tasks due today',`You have ${dueToday.length} task${dueToday.length>1?'s':''} due today.`);
   }
   // SACs approaching
   if(s.sacs){
-    events.filter(e=>daysUntil(e.date)===3).forEach(e=>notify('sac-3-'+e.id,`📝 SAC in 3 days: ${e.name}`,`${e.name} is on ${e.date}. Time to start revising!`));
-    events.filter(e=>daysUntil(e.date)===1).forEach(e=>notify('sac-1-'+e.id,`⚠️ SAC tomorrow: ${e.name}`,`${e.name} is tomorrow. Final review time!`));
+    events.filter(e=>daysUntil(e.date)===3).forEach(e=>notify('sac-3-'+e.id,`SAC in 3 days: ${e.name}`,`${e.name} is on ${e.date}. Time to start revising.`));
+    events.filter(e=>daysUntil(e.date)===1).forEach(e=>notify('sac-1-'+e.id,`SAC tomorrow: ${e.name}`,`${e.name} is tomorrow. Final review time.`));
   }
   // daily nudge handled by comparing current time
   if(s.daily){
     const[h,m]=(s.time||'19:00').split(':').map(Number);
     const now=new Date();
-    if(now.getHours()===h&&now.getMinutes()===m)notify('daily-nudge','📚 Time to study!','Your daily study reminder. Open VCE Planner and get started.');
+    if(now.getHours()===h&&now.getMinutes()===m)notify('daily-nudge','Time to study','Your daily study reminder. Open VCE Planner and get started.');
   }
 }
 
@@ -5599,7 +5600,7 @@ init().then(()=>{
 
 <div id="notif-modal">
   <div class="notif-modal-box">
-    <div class="notif-modal-title">🔔 Notifications</div>
+    <div class="notif-modal-title">Notifications</div>
     <div class="notif-modal-sub">Get reminders so nothing slips through the cracks. Your browser will ask for permission the first time.</div>
     <div class="notif-row">
       <div><div class="notif-row-label">Enable notifications</div><div class="notif-row-sub">Master switch — controls all reminders below</div></div>
@@ -5750,10 +5751,10 @@ init().then(()=>{
     <div class="sr-title">How well did you know it?</div>
     <div class="sr-sub" id="sr-item-name"></div>
     <div class="sr-btns">
-      <button class="sr-btn again" onclick="srRate(0)"><span class="sr-emoji">😰</span><span class="sr-lbl">Again</span></button>
-      <button class="sr-btn hard"  onclick="srRate(3)"><span class="sr-emoji">😅</span><span class="sr-lbl">Hard</span></button>
-      <button class="sr-btn good"  onclick="srRate(4)"><span class="sr-emoji">😊</span><span class="sr-lbl">Good</span></button>
-      <button class="sr-btn easy"  onclick="srRate(5)"><span class="sr-emoji">😎</span><span class="sr-lbl">Easy</span></button>
+      <button class="sr-btn again" onclick="srRate(0)">Again</button>
+      <button class="sr-btn hard"  onclick="srRate(3)">Hard</button>
+      <button class="sr-btn good"  onclick="srRate(4)">Good</button>
+      <button class="sr-btn easy"  onclick="srRate(5)">Easy</button>
     </div>
     <div class="sr-skip-lnk" onclick="srClose()">Skip for now</div>
   </div>
@@ -5780,7 +5781,7 @@ init().then(()=>{
     </div>
     <div class="ttm-btns">
       <button class="ttm-skip-btn" onclick="skipTaskTime()">Skip</button>
-      <button class="ttm-log-btn" onclick="logTaskTime()">Log it 📊</button>
+      <button class="ttm-log-btn" onclick="logTaskTime()">Log it</button>
     </div>
   </div>
 </div>
@@ -5788,13 +5789,13 @@ init().then(()=>{
 <!-- SAC day-before reminder modal -->
 <div id="sac-remind-modal">
   <div class="sac-modal-box">
-    <div class="sac-modal-emoji">📚</div>
-    <div class="sac-modal-title">SAC Tomorrow!</div>
+    <div class="sac-modal-emoji"><i data-lucide="book-open" style="width:40px;height:40px;color:var(--accent)"></i></div>
+    <div class="sac-modal-title">SAC Tomorrow</div>
     <div id="sac-remind-subj" class="sac-modal-subj"></div>
     <div class="sac-modal-sub" id="sac-remind-body"></div>
     <div style="display:flex;justify-content:center;gap:.6rem;flex-wrap:wrap">
       <button class="sac-modal-btn outline" onclick="dismissSACRemind()">Dismiss</button>
-      <button class="sac-modal-btn" onclick="dismissSACRemind()">I'm ready! 💪</button>
+      <button class="sac-modal-btn" onclick="dismissSACRemind()">I'm ready</button>
     </div>
   </div>
 </div>
@@ -5802,8 +5803,8 @@ init().then(()=>{
 <!-- SAC celebration modal -->
 <div id="sac-celebrate-modal">
   <div class="sac-modal-box">
-    <div class="sac-modal-emoji">🎉</div>
-    <div class="sac-modal-title">SAC Complete!</div>
+    <div class="sac-modal-emoji"><i data-lucide="check-circle-2" style="width:40px;height:40px;color:var(--green)"></i></div>
+    <div class="sac-modal-title">SAC Complete</div>
     <div id="sac-cel-subj" class="sac-modal-subj"></div>
     <div class="sac-modal-sub" id="sac-cel-body"></div>
     <div id="sac-cel-xp" style="display:inline-block;font-size:13px;font-weight:700;padding:4px 14px;border-radius:20px;background:rgba(99,102,241,.1);color:var(--accent);margin-bottom:1.1rem"></div>
