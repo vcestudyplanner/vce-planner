@@ -3187,65 +3187,29 @@ function renderHome(){
 
 // ── TOUR ──
 const TOUR_STEPS=[
-  // ── Home ──────────────────────────────────────────────────────────
-  {page:'home',   title:'Welcome — your Home screen',
-   body:'This is your dashboard. At a glance you can see how many tasks are due today, what\'s coming this week, your current study streak, and upcoming SACs. Everything updates automatically as you work.',
+  {page:'home',    title:'Your dashboard',
+   body:'Everything at a glance — tasks due today, study streak, and upcoming SACs. Tick tasks off right from here and toggle Focus Mode to strip the UI to just what matters.',
    target:'.home-hero',pos:'right'},
-  {page:null,     title:'4 live stat tiles',
-   body:'Due Today counts overdue + tasks due by end of today. This Week shows what\'s due in the next 7 days. Streak tracks consecutive days you\'ve logged study. SACs & Exams counts events still ahead of you.',
-   target:'.home-stats',pos:'right'},
-  {page:null,     title:'Quick-view cards',
-   body:'Your most urgent tasks and nearest SACs are listed right here on Home. You can tick a task off directly from this card without leaving the Home screen — it\'ll disappear once marked done.',
-   target:'.home-grid',pos:'right'},
-  // ── Tasks ──────────────────────────────────────────────────────────
-  {page:'tasks',  title:'Adding a task',
-   body:'Type any task name here and press Enter (or tap Add). You can optionally pick a subject colour, set a due date with the calendar icon, mark it as urgent with the flag, and add a note. Tasks with a due date show a countdown.',
+  {page:'tasks',   title:'Add and manage tasks',
+   body:'Type a task and press Enter. Set a subject, due date, urgency flag, and note. Tap the circle to complete and earn XP. Long-press on mobile to select multiple tasks for bulk actions.',
    target:'#task-input',pos:'right'},
-  {page:null,     title:'Filter & sort your list',
-   body:'Use these buttons to show All, Active, or Done tasks. You can also sort by due date, subject, or urgency. Combine filters to focus on exactly what needs doing right now.',
-   target:'#filter-btns-wrap',pos:'right'},
-  {page:null,     title:'Task cards',
-   body:'Tap the circle on the left to complete a task and earn XP. A 🔥 icon means it\'s marked urgent — keep an eye on those first. Tasks past their due date turn red so nothing slips through.',
-   target:'#page-tasks .task-list',pos:'right'},
-  // ── SACs & Exams ───────────────────────────────────────────────────
-  {page:'sacs',   title:'Logging a SAC or exam',
-   body:'Fill in the event name, pick a subject and date, then hit Add. You can also choose a type (SAC, Exam, Prac, etc.) and attach notes about what the assessment covers.',
+  {page:'sacs',    title:'Log SACs and exams',
+   body:'Add an assessment, pick its date, and build a revision checklist. Each event shows a live countdown and auto-schedules revision sessions across your available days.',
    target:'#ev-name',pos:'right'},
-  {page:null,     title:'Event cards with countdown',
-   body:'Each card shows a live "X days away" countdown. Expand an event to reveal its revision checklist — tick off topics as you study them so you know exactly what\'s left to cover before the day.',
-   target:'#ev-upcoming',pos:'right'},
-  // ── Day Planner ────────────────────────────────────────────────────
-  {page:'planner',title:'Day Planner — navigate days',
-   body:'Use the arrows to flick between days. The planner shows an hourly timeline for the selected date. Your existing tasks with due dates appear in the sidebar so you can drag or click them into a time slot.',
+  {page:'planner', title:'Plan your study blocks',
+   body:'Navigate days with the arrows and click any time slot to schedule a study block. Colour-code by subject and see all your revision tasks alongside your plan.',
    target:'.planner-nav',pos:'right'},
-  {page:null,     title:'Scheduling a block',
-   body:'Click any empty time slot — or use this form — to add a study block. Give it a name, pick a subject colour, and set start/end times. You can layer multiple subjects across a single day to plan realistic study sessions.',
-   target:'.plan-add-form',pos:'right'},
-  // ── Calendar ───────────────────────────────────────────────────────
-  {page:'calendar',title:'Monthly calendar',
-   body:'Every task, SAC, exam, and planned block appears here as a colour-coded dot. Click any date to see everything scheduled for that day. Switch months with the arrows at the top.',
+  {page:'calendar',title:'Monthly overview',
+   body:'Every task, SAC, and planned block appears as a colour-coded dot. Tap any date to see what\'s on.',
    target:'#page-calendar .card',pos:'right'},
-  // ── Study Methods ──────────────────────────────────────────────────
-  {page:'study',  title:'Study Methods',
-   body:'Pick from 7 research-backed techniques — Pomodoro, General Timer, Active Recall, Blurting, Feynman, Timed Exam Practice, and Mind Map. Each method is fully interactive and earns XP.',
+  {page:'study',   title:'7 study methods',
+   body:'Pomodoro, Active Recall, Blurting, Feynman, Timed Practice, General Timer, and Concept Outline — each is fully interactive and earns XP. Sessions are logged automatically.',
    target:'.sm-grid',pos:'right'},
-  {page:null,     title:'Study log',
-   body:'Every session you complete is logged here. You can also manually log hours. All study data feeds your heatmap, subject breakdown, and weekly goal on the Stats page.',
-   target:'#sm-log-card',pos:'right'},
-  // ── Stats ──────────────────────────────────────────────────────────
-  {page:'stats',  title:'Activity heatmap',
-   body:'Each square is one day — darker means more hours studied. Hover (or tap) any square to see exactly how many hours you logged that day. The heatmap covers the last 26 weeks so you can spot habits over a whole semester.',
+  {page:'stats',   title:'Track your progress',
+   body:'The heatmap shows daily study hours over 26 weeks. The subject breakdown shows where your time goes versus your weekly goal.',
    target:'#st-grid',pos:'right'},
-  {page:null,     title:'Subject breakdown',
-   body:'These bars show how many hours you\'ve put into each subject this week versus your goal. A subject flagged "neglected" hasn\'t had any study logged in the last 7 days — a nudge to balance your revision.',
-   target:'#st-subject-grid',pos:'right'},
-  // ── Theme ──────────────────────────────────────────────────────────
-  {page:null,     title:'Themes & dark mode',
-   body:'Tap any colour swatch to instantly retheme the whole app — accent colour, buttons, highlights, everything. The moon button toggles dark mode. Your choice is saved automatically so it persists across sessions.',
-   target:'.sidebar-theme',pos:'right'},
-  // ── Done ───────────────────────────────────────────────────────────
-  {page:null,     title:"You're all set!",
-   body:'You now know every feature in VCE Planner. Start by adding a subject in Settings, then drop in your first task. You can replay this tour any time from the sidebar. Good luck with your VCE!',
+  {page:null,      title:"You're set — good luck!",
+   body:'Add your subjects in Settings, drop in your SACs, and you\'re off. You can replay this tour any time from the sidebar.',
    target:null,pos:'center'},
 ];
 let _tourIdx=0,_tourBusy=false;
@@ -5600,7 +5564,7 @@ init().then(()=>{
   <div class="tour-wb">
     <div class="tour-wb-icon"><i data-lucide="graduation-cap" style="width:40px;height:40px;color:var(--accent)"></i></div>
     <div class="tour-wb-title">Welcome to VCE Planner!</div>
-    <div class="tour-wb-sub">Want a 2-minute tour? I'll walk you through every feature so you can hit the ground running.</div>
+    <div class="tour-wb-sub">Want a quick 8-step tour? I'll show you the key features so you can hit the ground running.</div>
     <div class="tour-wb-btns">
       <button class="abtn" onclick="startTour()">Show me around →</button>
       <button class="tour-wb-skip" onclick="skipTour()">Skip for now</button>
@@ -5612,14 +5576,16 @@ init().then(()=>{
 <div id="tour-overlay" onclick="tourNext()"></div>
 <div id="tour-spotlight"></div>
 <div id="tour-box">
-  <div class="tour-step-lbl" id="tour-step-lbl">Step 1 of 17</div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem">
+    <div class="tour-step-lbl" id="tour-step-lbl">Step 1 of 8</div>
+    <button class="tour-skip-sm" onclick="endTour()" style="font-size:12px;padding:3px 10px;border-radius:6px;background:transparent;border:1px solid var(--border);color:var(--muted);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif">Skip</button>
+  </div>
   <div class="tour-box-title" id="tour-title"></div>
   <div class="tour-box-body" id="tour-body"></div>
   <div class="tour-footer">
     <div class="tour-dots" id="tour-dots"></div>
     <div class="tour-btns">
-      <button class="tour-skip-sm" onclick="endTour()">Skip tour</button>
-      <button class="abtn sm" id="tour-next-btn" onclick="tourNext()">Next →</button>
+      <button class="abtn sm" id="tour-next-btn" onclick="tourNext()" style="width:100%">Next →</button>
     </div>
   </div>
 </div>
