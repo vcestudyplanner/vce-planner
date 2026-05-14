@@ -64,7 +64,7 @@
   --amber:#e0c080;--amber-bg:#201c08;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;font-size:15px;transition:background .3s,color .3s}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;font-size:15px;transition:background .3s,color .3s;overflow-x:hidden}
 
 /* ── SIDEBAR ── */
 .sidebar{width:230px;background:var(--sbg);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:200;overflow-y:auto;scrollbar-width:none;transition:transform .3s}
@@ -1030,7 +1030,7 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 
 /* ── MOBILE BOTTOM NAV ── */
 .mob-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:300;background:var(--sbg);border-top:1px solid var(--ssep);padding:5px 4px max(5px,env(safe-area-inset-bottom));flex-direction:row;align-items:center}
-.mob-nav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 4px;border:none;background:transparent;color:var(--smuted);font-size:10.5px;font-weight:600;cursor:pointer;transition:color .15s;border-radius:10px;flex:1;font-family:'Plus Jakarta Sans',sans-serif}
+.mob-nav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 4px;min-height:48px;border:none;background:transparent;color:var(--smuted);font-size:11px;font-weight:600;cursor:pointer;transition:color .15s;border-radius:10px;flex:1;font-family:'Plus Jakarta Sans',sans-serif}
 .mob-nav-btn svg{width:21px;height:21px}
 .mob-nav-btn.active{color:var(--accent)}
 [data-theme=dark] .mob-nav-btn.active{color:var(--accent-light)}
@@ -1128,6 +1128,7 @@ input:checked+.toggle-slider::before{transform:translateX(18px)}
 /* Modal + panel entrances — scale up from 97% + 10px below, 200ms ease-out-expo */
 @keyframes modal-in{from{opacity:0;transform:scale(.97) translateY(10px)}to{opacity:1;transform:none}}
 #rs-modal.open .rs-box,
+#sr-modal.open .sr-box,
 #task-time-modal.open .ttm-box,
 #notif-modal.open .notif-modal-box,
 #subj-modal.open .subj-modal-box,
@@ -1157,16 +1158,28 @@ input:checked+.toggle-slider::before{transform:translateX(18px)}
   .vce-cd{flex-direction:column;gap:.75rem;padding:1rem 1.25rem}
   .vce-cd-num{font-size:2.6rem}
   .vce-cd::after{display:none}
+  /* Home stats: 3 equal chips at small widths */
+  .home-stats{grid-template-columns:repeat(3,1fr)!important;gap:6px}
+  .hstat{padding:.75rem .6rem}
+  .hstat-num{font-size:1.8rem}
+  /* Subject chips wrap and shrink labels */
+  #h-subj-chips{gap:5px}
+  .subj-chip{font-size:11px;padding:4px 8px 4px 6px}
+  /* Day Planner: stack form fields */
+  .plan-add-form .frow{grid-template-columns:1fr!important}
 }
 
 /* ── STANDARD IPHONE VIEWPORT (≤390px) ── */
 @media(max-width:390px){
   .home-greeting{font-size:1.3rem}
-  .hstat-num{font-size:2rem}
+  .hstat-num{font-size:1.7rem}
   .home-hero{padding:1.25rem 1rem}
   .vce-cd-num{font-size:2.2rem}
   .container{padding-left:1rem!important;padding-right:1rem!important}
   .page-hdr-title{font-size:1.25rem}
+  /* Prevent any horizontal overflow at smallest breakpoint */
+  .card,.hstat{min-width:0}
+  .tc{min-width:0}
 }
 </style>
 
