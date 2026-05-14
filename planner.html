@@ -281,6 +281,7 @@ select.subj-sel{font-weight:600;border-width:2px}
 .tc.missed{opacity:.55;background:var(--amber-bg)!important;border-color:var(--amber)!important}.tc.missed .ttitle{text-decoration:line-through;color:var(--muted)}
 .cw.missed-cw{border-color:var(--amber)!important;background:rgba(184,120,72,.08)!important}.cw.missed-cw::after{content:'×';font-size:14px;font-weight:700;color:var(--amber);line-height:1}
 .b-missed{background:var(--amber-bg);color:var(--amber)}
+.b-rev{background:rgba(94,154,124,.15);color:var(--green);border:1px solid rgba(94,154,124,.3)}
 .skipbtn{background:transparent;border:1px solid var(--border);cursor:pointer;font-size:11px;padding:2px 7px;border-radius:6px;color:var(--muted);transition:all .15s;white-space:nowrap;font-family:'Plus Jakarta Sans',sans-serif}.skipbtn:hover{border-color:var(--amber);color:var(--amber)}
 .cw{width:26px;height:26px;border-radius:50%;border:2px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:border-color .2s,background .2s,box-shadow .2s,transform .18s cubic-bezier(0.16,1,0.3,1);background:transparent;user-select:none;position:relative}
 .cw:hover{border-color:var(--accent);background:rgba(99,102,241,.08);transform:scale(1.12)}
@@ -2418,6 +2419,7 @@ async function init(){
   loadUserData();
   const _pulled=await syncPull();
   if(_pulled){loadUserData();loadScores();}
+  syncAllRevisionTasks();
   renderSubjOv();
   renderFilterBtns();
   populateSubjectDropdowns();
@@ -2448,7 +2450,7 @@ async function init(){
   renderHome();
   renderHoursBar();
   checkEventXP();
-  document.getElementById('pom-sessions').textContent=pomSessions;
+  const _pse=document.getElementById('pom-sessions');if(_pse)_pse.innerHTML=`Sessions: ${pomSessions} &nbsp;&middot;&nbsp; Cycle: ${pomSessions%4}/4`;
   updatePomDisplay();
   renderXP();
   if(typeof lucide!=='undefined')lucide.createIcons();
@@ -2507,6 +2509,11 @@ function skipTaskTime(){
 const _TASK_MILESTONES={10:'🔥',25:'⭐',50:'🚀',100:'👑',250:'🏆',500:'🌟'};
 function toggleTask(id){
   const t=tasks.find(x=>x.id===id);if(!t)return;t.done=!t.done;
+  // Sync revision task back to revision schedule
+  if(t.revSacId&&t.revItemId){
+    const data=rsLoad(t.revSacId);
+    if(data){const item=data.items.find(i=>i.id==t.revItemId);if(item){item.done=t.done;item.missed=false;rsSave(t.revSacId,data);}}
+  }
   if(t.done){
     const cd=JSON.parse(localStorage.getItem(UID_PREFIX+'cd')||'[]');if(!cd.includes(todayStr()))cd.push(todayStr());localStorage.setItem(UID_PREFIX+'cd',JSON.stringify(cd));addXP(XPL);playSound('complete');
     const doneCount=tasks.filter(x=>x.done).length;
@@ -2518,7 +2525,12 @@ function toggleTask(id){
 }
 function skipTask(id){
   const t=tasks.find(x=>x.id===id);if(!t)return;
-  t.missed=true;saveT();renderTasks();renderHome();showToast('Task skipped');
+  t.missed=true;
+  if(t.revSacId&&t.revItemId){
+    const data=rsLoad(t.revSacId);
+    if(data){const item=data.items.find(i=>i.id==t.revItemId);if(item){item.missed=true;rsSave(t.revSacId,data);}}
+  }
+  saveT();renderTasks();renderHome();showToast('Task skipped');
 }
 function restoreTask(id){
   const t=tasks.find(x=>x.id===id);if(!t)return;
@@ -2621,7 +2633,7 @@ function renderTasks(){
     const safeTitle=t.title.replace(/"/g,'&quot;');
     const cwAction=missed?`restoreTask(${t.id})`:`toggleTask(${t.id})`;
     const cwLabel=missed?'Restore task':t.done?'Mark incomplete':'Mark complete';
-    return`<div class="tc ${t.done?'done':''} ${missed?'missed':''} ${t.urgent&&!t.done&&!missed?'urgent':''}" data-tid="${t.id}" style="background:${BG[t.subject]||''};border-color:${BR[t.subject]||''}"><div class="sel-chk ${_selIds.has(t.id)?'on':''}" onclick="toggleSelChk(${t.id})" aria-label="Select task" title="Select task"></div><div class="cw ${t.done?'ck':''} ${missed?'missed-cw':''}" role="button" tabindex="0" aria-pressed="${t.done||missed}" aria-label="${cwLabel}: ${safeTitle}" onclick="${cwAction}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();${cwAction}}" style="margin-top:2px" title="${missed?'Click to restore':''}"></div><div class="tb"><div class="ttitle">${t.title}</div>${t.note?`<div class="tnote">${t.note}</div>`:''}<div class="ttags"><span class="badge" style="background:${BG[t.subject]};color:${NC[t.subject]}">${s.label}</span>${t.urgent&&!t.done&&!missed?'<span class="badge b-urgent">! Urgent</span>':''}${ev?`<span class="badge b-sac">${ev.type.toUpperCase()}: ${ev.name}</span>`:''}${missed?'<span class="badge b-missed">Skipped</span>':''}</div>${renderSubHtml(t)}</div><div class="dinfo" style="padding-top:2px"><div class="${ds.cls}">${ds.label}</div></div>${timerBtn}${urgBtnHtml}<button class="dbtn" style="font-size:13px;padding:0 8px;margin-top:1px" onclick="startTaskEdit(${t.id})" title="Edit task" aria-label="Edit task"><i data-lucide="pencil" style="width:13px;height:13px;pointer-events:none"></i></button>${skipOrSpan}<button class="dbtn" onclick="removeTask(${t.id})" style="margin-top:1px" aria-label="Delete task">×</button></div>`;
+    return`<div class="tc ${t.done?'done':''} ${missed?'missed':''} ${t.urgent&&!t.done&&!missed?'urgent':''}" data-tid="${t.id}" style="background:${BG[t.subject]||''};border-color:${BR[t.subject]||''}"><div class="sel-chk ${_selIds.has(t.id)?'on':''}" onclick="toggleSelChk(${t.id})" aria-label="Select task" title="Select task"></div><div class="cw ${t.done?'ck':''} ${missed?'missed-cw':''}" role="button" tabindex="0" aria-pressed="${t.done||missed}" aria-label="${cwLabel}: ${safeTitle}" onclick="${cwAction}" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();${cwAction}}" style="margin-top:2px" title="${missed?'Click to restore':''}"></div><div class="tb"><div class="ttitle">${t.title}</div>${t.note?`<div class="tnote">${t.note}</div>`:''}<div class="ttags"><span class="badge" style="background:${BG[t.subject]};color:${NC[t.subject]}">${s.label}</span>${t.urgent&&!t.done&&!missed?'<span class="badge b-urgent">! Urgent</span>':''}${t.revSacId?'<span class="badge b-rev">Revision</span>':(ev?`<span class="badge b-sac">${ev.type.toUpperCase()}: ${ev.name}</span>`:'')}${missed?'<span class="badge b-missed">Skipped</span>':''}</div>${renderSubHtml(t)}</div><div class="dinfo" style="padding-top:2px"><div class="${ds.cls}">${ds.label}</div></div>${timerBtn}${urgBtnHtml}${!t.revSacId?`<button class="dbtn" style="font-size:13px;padding:0 8px;margin-top:1px" onclick="startTaskEdit(${t.id})" title="Edit task" aria-label="Edit task"><i data-lucide="pencil" style="width:13px;height:13px;pointer-events:none"></i></button>`:''}${skipOrSpan}<button class="dbtn" onclick="removeTask(${t.id})" style="margin-top:1px" aria-label="Delete task">×</button></div>`;
   }).join('');
   // long-press to enter select mode
   list.querySelectorAll('.tc').forEach(card=>{
@@ -4096,6 +4108,9 @@ function rsToggleDone(evId,itemId){
   item.done=!item.done;
   item.missed=false;
   rsSave(evId,data);
+  // Sync to linked task
+  const linked=tasks.find(t=>t.revSacId==evId&&t.revItemId==itemId);
+  if(linked){linked.done=item.done;linked.missed=false;saveT();if(document.getElementById('page-tasks').classList.contains('active'))renderTasks();}
   const ev=events.find(e=>e.id==evId);
   if(ev)rsSyncToPlanner(ev,data);
   rsRenderItems(evId,data);
@@ -4201,6 +4216,38 @@ function rsBuildSchedule(ev,data){
   return data;
 }
 
+// ── sync revision schedule → tasks ──────────────────────────────────────────
+function syncAllRevisionTasks(){
+  // Remove all undone+unmissed revision tasks — rebuild fresh from schedules
+  tasks=tasks.filter(t=>!t.revSacId||(t.done||t.missed));
+  const today=todayStr();
+  events.forEach(ev=>{
+    if(ev.done)return;
+    const data=rsLoad(ev.id);
+    if(!data||!data.items.length)return;
+    data.items.forEach(item=>{
+      if(!item.scheduledDate||item.missed)return;
+      if(item.done)return; // already preserved above if previously done
+      if(item.scheduledDate<today)return; // past undone = handled as missed in revision modal
+      // avoid duplicate (revision task already exists and is done — preserved above)
+      const alreadyExists=tasks.find(t=>t.revSacId==ev.id&&t.revItemId==item.id);
+      if(alreadyExists)return;
+      tasks.push({
+        id:Date.now()+(Math.random()*1000|0),
+        title:item.name,
+        subject:ev.subject,
+        due:item.scheduledDate,
+        note:`Revision · ${ev.name}`,
+        evLink:String(ev.id),
+        revSacId:ev.id,
+        revItemId:item.id,
+        done:false,missed:false,urgent:false,pinned:false
+      });
+    });
+  });
+  saveT();
+}
+
 function rsRebuild(){
   if(!_rsEvId)return;
   const ev=events.find(e=>e.id==_rsEvId);if(!ev)return;
@@ -4208,8 +4255,10 @@ function rsRebuild(){
   data=rsBuildSchedule(ev,data);
   rsSave(_rsEvId,data);
   rsSyncToPlanner(ev,data);
+  syncAllRevisionTasks();
   rsRenderItems(_rsEvId,data);
   rsRenderSchedule(_rsEvId,data);
+  if(document.getElementById('page-tasks').classList.contains('active'))renderTasks();
   showToast('Schedule updated and synced to planner!');
 }
 
