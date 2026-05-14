@@ -163,7 +163,7 @@ button:focus-visible,a:focus-visible,[tabindex="0"]:focus-visible{outline:2px so
 select.subj-sel{font-weight:600;border-width:2px}
 
 /* ── HOME HERO ── */
-.home-hero{background:var(--hbg);border:none;border-radius:20px;padding:2.5rem;margin-bottom:1.75rem;position:relative;overflow:hidden;display:grid;grid-template-columns:1fr auto;gap:1.5rem;align-items:center}
+.home-hero{background:#1e1b4b;border:none;border-radius:20px;padding:2.5rem;margin-bottom:1.75rem;position:relative;overflow:hidden;display:grid;grid-template-columns:1fr auto;gap:1.5rem;align-items:center}
 .home-greeting{font-family:'Fraunces',serif;font-size:2.4rem;font-weight:700;color:#fff;line-height:1.15;margin-bottom:.4rem}
 .home-greeting em{font-style:italic;color:var(--accent-light)}
 .home-date{font-size:13px;color:rgba(255,255,255,.45);margin-bottom:1.1rem}
@@ -173,7 +173,7 @@ select.subj-sel{font-weight:600;border-width:2px}
 .home-hero-cd{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:1.4rem 1.75rem;text-align:center;flex-shrink:0;position:relative;z-index:1}
 .home-hero-cd-num{font-family:'Fraunces',serif;font-size:3.5rem;font-weight:700;color:#fff;line-height:1;margin-bottom:.3rem}
 .home-hero-cd-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.4)}
-[data-theme=dark] .home-hero{background:var(--hbg)}
+[data-theme=dark] .home-hero{background:#100e2e}
 [data-theme=dark] .home-hero-cd{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.09)}
 
 /* ── HOME STATS ── */
@@ -2624,7 +2624,7 @@ function addCLItem(evId){const inp=document.getElementById('cl-inp-'+evId);if(!i
 function toggleCLPanel(evId){const el=document.getElementById('cl-'+evId);if(el)el.classList.toggle('open')}
 function renderEvents(){
   checkEventXP();
-  const upcoming=events.filter(e=>daysUntil(e.date)>=0);const past=events.filter(e=>daysUntil(e.date)<0);
+  const upcoming=events.filter(e=>daysUntil(e.date)>=0&&!e.done);const past=events.filter(e=>daysUntil(e.date)<0||!!e.done);
   const nub=document.getElementById('nub-wrap');const next=upcoming[0];
   if(next){const d=daysUntil(next.date);const ds=new Date(next.date+'T00:00:00').toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long'});nub.innerHTML=`<div class="nub"><div class="nub-l"><div class="nub-tag">${next.type==='sac'?'Next SAC':'Next Exam'}</div><div class="nub-title">${next.name}</div><div class="nub-meta">${SUBJ[next.subject].label} · ${ds}</div></div><div class="nub-r"><div class="nub-count">${d===0?'TODAY':d}</div><div class="nub-clabel">${d===0?'':d===1?'day to go':'days to go'}</div></div></div>`}else nub.innerHTML='';
   function ecard(e){const d=daysUntil(e.date);const ip=d<0;const done=!!e.done;const dl=done?'Done!':ip?`${Math.abs(d)} days ago`:d===0?'Today':d===1?'Tomorrow':`${d} days to go`;const ds=new Date(e.date+'T00:00:00').toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short',year:'numeric'});const cl=e.checklist||[];const cld=cl.filter(x=>x.done).length;const clH=cl.map((item,i)=>`<label class="cl-item"><input type="checkbox" ${item.done?'checked':''} onchange="toggleCL(${e.id},${i})"/><span ${item.done?'class="dt"':''}>${item.text}</span></label>`).join('');const se=e.type==='sac'?`<button class="ev-cl-toggle" onclick="toggleCLPanel(${e.id})">Revision checklist ${cl.length?`(${cld}/${cl.length})`:'— add topics'}</button><div class="ev-checklist" id="cl-${e.id}">${clH}<div class="cl-add-row"><input type="text" id="cl-inp-${e.id}" placeholder="Add revision topic…"/><button class="abtn sm" onclick="addCLItem(${e.id})">+</button></div></div>`:'';const doneEl=done?`<div class="ev-done-chip"><i data-lucide="check" style="width:11px;height:11px;pointer-events:none"></i> Completed</div>`:`<button class="ev-done-btn" onclick="markEventDone(${e.id})"><i data-lucide="check" style="width:12px;height:12px;pointer-events:none"></i> Mark done</button>`;return`<div class="ecard${ip&&!done?' past':''}${done?' done-ev':''}" style="background:${BG[e.subject]};border-color:${BR[e.subject]}"><button class="evdel" onclick="removeEvent(${e.id})">×</button><button class="evdel" onclick="startEvEdit(${e.id})" style="right:2.2rem" title="Edit"><i data-lucide="pencil" style="width:13px;height:13px;pointer-events:none"></i></button><div class="ev-type" style="color:${NC[e.subject]}">${e.type==='sac'?'SAC':'EXAM'}</div><div class="ev-title">${e.name}</div><div class="ev-subj">${SUBJ[e.subject].label}</div><div class="ev-num" style="color:${done?'var(--green)':NC[e.subject]}">${done||ip?'✓':d===0?'0':d}</div><div class="ev-dl" style="${done?'color:var(--green);font-weight:600':''}">${dl}</div><div class="ev-date">${ds}</div>${se}${doneEl}</div>`}
