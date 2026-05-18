@@ -1252,6 +1252,7 @@ input:checked+.toggle-slider::before{transform:translateX(18px)}
   </div>
   <div id="h-subj-chips" style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:1rem"></div>
   <div id="h-urgent-sac" style="margin-bottom:1.25rem;display:none"></div>
+  <div id="h-past-sac-nudge" style="display:none;margin-bottom:1.25rem"></div>
   <div id="h-tip-wrap"></div>
   <div id="h-neglect-home" style="display:none;margin-bottom:1.25rem"></div>
   <div id="h-getstarted" style="display:none;margin-bottom:1.25rem"></div>
@@ -1387,6 +1388,7 @@ input:checked+.toggle-slider::before{transform:translateX(18px)}
     <div class="act-hdr"><div class="sh" style="margin-bottom:0">Completion history — last 6 months</div><div class="act-legend"><span class="act-leg-label">Less</span><span class="act-leg-cell" style="opacity:.15"></span><span class="act-leg-cell" style="opacity:.4"></span><span class="act-leg-cell" style="opacity:.7"></span><span class="act-leg-cell" style="opacity:1"></span><span class="act-leg-label">More</span></div></div>
     <div class="act-months" id="st-months"></div>
     <div class="act-grid-wrap"><div class="act-dow-labels"><div>M</div><div></div><div>W</div><div></div><div>F</div><div></div><div>S</div></div><div class="act-grid" id="st-grid"></div></div>
+    <div id="st-heatmap-hint" style="display:none;font-size:12.5px;color:var(--muted);margin-top:.75rem;text-align:center">Complete tasks and log study sessions — they'll appear here.</div>
   </div>
   <div class="home-grid">
     <div class="card" style="margin-bottom:0">
@@ -1983,10 +1985,15 @@ function renderSubjManageList(){
   const list=document.getElementById('subj-manage-list');
   if(!list)return;
   if(!userSubjects.length){list.innerHTML='<div style="font-size:13px;color:var(--muted);padding:.5rem 0">No subjects yet. Add one below.</div>';return;}
-  list.innerHTML=userSubjects.map(s=>{
+  list.innerHTML=userSubjects.map((s,i)=>{
     const col=subjDotColor(s);
     const hexVal=/^#[0-9a-f]{6}$/i.test(col)?col:'#6366f1';
+    const first=i===0,last=i===userSubjects.length-1;
     return`<div class="subj-manage-row">
+      <div style="display:flex;flex-direction:column;gap:1px;flex-shrink:0">
+        <button onclick="moveSubject('${s.id}',-1)" title="Move up" style="width:20px;height:18px;border:1px solid var(--border);border-radius:4px 4px 0 0;background:var(--bg);color:${first?'var(--border)':'var(--muted)'};cursor:${first?'default':'pointer'};font-size:9px;display:flex;align-items:center;justify-content:center;padding:0;line-height:1" ${first?'disabled':''}>▲</button>
+        <button onclick="moveSubject('${s.id}',1)" title="Move down" style="width:20px;height:18px;border:1px solid var(--border);border-top:none;border-radius:0 0 4px 4px;background:var(--bg);color:${last?'var(--border)':'var(--muted)'};cursor:${last?'default':'pointer'};font-size:9px;display:flex;align-items:center;justify-content:center;padding:0;line-height:1" ${last?'disabled':''}>▼</button>
+      </div>
       <label class="subj-color-btn" style="background:${hexVal};cursor:pointer" title="Pick colour">
         <input type="color" value="${hexVal}" style="position:absolute;opacity:0;width:0;height:0;pointer-events:none" onchange="changeSubjectColor('${s.id}',this.value)"/>
       </label>
@@ -2058,6 +2065,22 @@ function changeSubjectColor(id,hex){
   if(typeof renderSubjOv==='function')renderSubjOv();
   if(typeof renderTasks==='function')renderTasks();
   showToast('Colour updated!');
+}
+async function moveSubject(id,dir){
+  const idx=userSubjects.findIndex(s=>String(s.id)===String(id));
+  if(idx<0)return;
+  const target=idx+dir;
+  if(target<0||target>=userSubjects.length)return;
+  const a=userSubjects[idx],b=userSubjects[target];
+  [userSubjects[idx],userSubjects[target]]=[b,a];
+  buildSubjMaps();
+  populateSubjectDropdowns();
+  renderSubjManageList();
+  renderHome();
+  await Promise.all([
+    sb.from('subjects').update({display_order:target}).eq('id',a.id),
+    sb.from('subjects').update({display_order:idx}).eq('id',b.id),
+  ]);
 }
 
 function openSubjNewDrop(){filterSubjNewDrop(document.getElementById('subj-new-name')?.value||'');}
@@ -2580,10 +2603,11 @@ function renderSubjChips(){
   el.innerHTML=userSubjects.map(s=>{
     const next=events.filter(e=>e.subject===s.id&&!e.done&&daysUntil(e.date)>=0).sort((a,b)=>a.date.localeCompare(b.date))[0];
     const d=next?daysUntil(next.date):null;
-    const chipNum=d===null?'—':d===0?'Today':d===1?'Tmrw':String(d);
-    const chipSub=d!==null&&d>=2?'days':'';
-    return`<div class="subj-chip" style="background:${BG[s.id]};border-color:${BR[s.id]};color:${NC[s.id]}" onclick="navTo('sacs')" title="${next?next.name:'No upcoming SACs'}">
-      <span class="subj-chip-num" style="font-size:${d!==null&&d<=1?'11px':'14px'}">${chipNum}</span>
+    const hasOverdue=!next&&events.some(e=>e.subject===s.id&&!e.done&&daysUntil(e.date)<0);
+    const chipNum=d===null?(hasOverdue?'Past':'—'):d===0?'Today':d===1?'Tmrw':String(d);
+    const chipSub=d!==null&&d>=2?'days':hasOverdue?'SAC':'';
+    return`<div class="subj-chip" style="background:${BG[s.id]};border-color:${BR[s.id]};color:${NC[s.id]}${hasOverdue?';opacity:.7':''}" onclick="navTo('sacs')" title="${next?next.name:hasOverdue?'Past SAC — mark done':'No upcoming SACs'}">
+      <span class="subj-chip-num" style="font-size:${d!==null&&d<=1?'11px':hasOverdue?'11px':'14px'}">${chipNum}</span>
       <span class="subj-chip-lbl">${s.label.split(' ')[0]}${chipSub?` · ${chipSub}`:''}</span>
     </div>`;
   }).join('');
@@ -3056,6 +3080,8 @@ function renderStats(){
   let cells='';
   for(let w=0;w<WEEKS;w++){for(let dow=0;dow<7;dow++){const d=new Date(gridStart);d.setDate(gridStart.getDate()+w*7+dow);const ds=localStr(d);const future=ds>ts;const hrs=studyLog.filter(l=>l.date===ds).reduce((s,l)=>s+l.hours,0);const active=cdSet.has(ds);let lv=0;if(active||hrs>0){lv=hrs===0?1:hrs<1?2:hrs<2?3:4;if(active&&lv<2)lv=2}const cls=future?'':lv>0?`lv${lv}`:'';const isToday=ds===ts;const label=d.toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short'});const tip=future?'':`${label}: ${active?'tasks done':'no tasks'}${hrs>0?`, ${hrs}h`:''}`;cells+=`<div class="act-cell${cls?' '+cls:''}${isToday?' today':''}"${future?' style="opacity:.18"':''}><div class="act-tooltip">${tip}</div></div>`}}
   document.getElementById('st-grid').innerHTML=cells;
+  const heatHint=document.getElementById('st-heatmap-hint');
+  if(heatHint)heatHint.style.display=(studyLog.length===0&&cdSet.size===0)?'block':'none';
   // 14-day task chart
   const counts={};for(let i=13;i>=0;i--){const d=new Date(TODAY);d.setDate(d.getDate()-i);counts[localStr(d)]=0}
   tasks.filter(t=>t.done&&t.due).forEach(t=>{if(counts[t.due]!==undefined)counts[t.due]++});
@@ -3237,6 +3263,17 @@ function renderHome(){
   const urgBanner=document.getElementById('h-urgent-sac');
   const imminent=events.filter(e=>daysUntil(e.date)>=0&&daysUntil(e.date)<=2&&!e.done).sort((a,b)=>daysUntil(a.date)-daysUntil(b.date));
   if(urgBanner){if(imminent.length){const e=imminent[0];const d=daysUntil(e.date);const dLabel=d===0?'Today':d===1?'Tomorrow':'In 2 days';const ds=new Date(e.date+'T00:00:00').toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short'});urgBanner.style.display='block';urgBanner.innerHTML=`<div style="background:${BG[e.subject]||'var(--surface)'};border:1.5px solid ${BR[e.subject]||'var(--border)'};border-radius:14px;padding:1rem 1.25rem;display:flex;align-items:center;gap:14px"><div style="font-family:'Fraunces',serif;font-size:${d===0?'1.1rem':'2rem'};font-weight:700;color:${NC[e.subject]||'var(--accent)'};line-height:1;flex-shrink:0;text-align:center;min-width:52px">${d===0?'Today':d===1?'Tmrw':d}<div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;opacity:.7;margin-top:2px">${d>=2?'days':''}</div></div><div style="flex:1;min-width:0"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:${NC[e.subject]||'var(--accent)'};margin-bottom:.15rem">${dLabel} &mdash; ${e.type.toUpperCase()}</div><div style="font-size:15px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${e.name}</div><div style="font-size:12px;color:var(--muted);margin-top:.1rem">${SUBJ[e.subject]?.label||''} &middot; ${ds}</div></div><button onclick="navTo('revision')" style="flex-shrink:0;padding:.5rem 1rem;border-radius:10px;border:none;background:${NC[e.subject]||'var(--accent)'};color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer">Revise &rarr;</button></div>`;}else{urgBanner.style.display='none';urgBanner.innerHTML='';}}
+  // past SAC nudge — prompt to mark done
+  const pastNudge=document.getElementById('h-past-sac-nudge');
+  if(pastNudge){
+    const pastUndone=events.filter(e=>!e.done&&daysUntil(e.date)<0).sort((a,b)=>b.date.localeCompare(a.date));
+    if(pastUndone.length){
+      const names=pastUndone.slice(0,2).map(e=>e.name).join(', ')+(pastUndone.length>2?` +${pastUndone.length-2} more`:'');
+      pastNudge.style.display='block';
+      pastNudge.innerHTML=`<div style="background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:.85rem 1.1rem;display:flex;align-items:center;gap:12px"><span style="display:flex;align-items:center;color:var(--muted);flex-shrink:0"><i data-lucide="check-circle" style="width:18px;height:18px"></i></span><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;color:var(--text)">${pastUndone.length===1?`"${pastUndone[0].name}" has passed — mark it done?`:`${pastUndone.length} SACs have passed — mark them done?`}</div><div style="font-size:12px;color:var(--muted);margin-top:.1rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${names}</div></div><button onclick="navTo('sacs')" style="flex-shrink:0;padding:.4rem .85rem;border-radius:10px;border:1.5px solid var(--border);background:transparent;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer">Review</button></div>`;
+      if(typeof lucide!=='undefined')lucide.createIcons({scope:pastNudge});
+    }else{pastNudge.style.display='none';}
+  }
   if(!todayTasks.length){tl.innerHTML='<div class="h-empty">Nothing due today or tomorrow — you\'re all good!</div>'}
   else{
     tl.innerHTML=todayTasks.slice(0,8).map(t=>{
@@ -3284,7 +3321,7 @@ function renderHome(){
 // ── TOUR ──
 const TOUR_STEPS=[
   {page:'home',    title:'Your dashboard',
-   body:'Everything at a glance — tasks due today, study streak, and upcoming SACs. Tick tasks off right from here and toggle Focus Mode to strip the UI to just what matters.',
+   body:'Everything at a glance — tasks due today, study streak, and upcoming SACs. Tick tasks off right from here to log progress and earn XP.',
    target:'.home-hero',pos:'right'},
   {page:'tasks',   title:'Add and manage tasks',
    body:'Type a task and press Enter. Set a subject, due date, urgency flag, and note. Tap the circle to complete and earn XP. Long-press on mobile to select multiple tasks for bulk actions.',
@@ -4108,10 +4145,10 @@ function renderRevision(){
     const days=daysUntil(ev.date);
     const subjName=userSubjects.find(s=>s.id===ev.subject)?.label||ev.subject||'';
     const hasSchedule=!!localStorage.getItem(UID_PREFIX+'rs-'+ev.id);
-    const daysNum=days===0?'!':days===1?'1':String(days);
-    const daysLbl=days===0?'today':days===1?'day':'days';
+    const daysNum=days===0?'Today':String(days);
+    const daysLbl=days===0?'':days===1?'day':'days';
     return`<div class="rev-event-card">
-      <div class="rev-event-days-badge"><div class="rev-event-days-num">${daysNum}</div><div class="rev-event-days-lbl">${daysLbl}</div></div>
+      <div class="rev-event-days-badge"><div class="rev-event-days-num" style="${days===0?'font-size:11px':''}">${daysNum}</div><div class="rev-event-days-lbl">${daysLbl}</div></div>
       <div class="rev-event-body">
         <div class="rev-event-tag">${subjName} · ${ev.type||'SAC'}</div>
         <div class="rev-event-name">${ev.name}</div>
