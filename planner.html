@@ -41,7 +41,7 @@
   --sac:#c07898;--sac-bg:#fcf0f5;
   --exam:#5880c0;--exam-bg:#eef4fc;
   --high:#c84848;--high-bg:#fceeee;
-  --green:#5e9a7c;--green-bg:#f1f8f4;
+  --green:#3d7a5c;--green-bg:#f1f8f4;
   --amber:#b87848;--amber-bg:#faf4ec;
 }
 [data-theme=dark]{
@@ -76,7 +76,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .logo-user{font-size:11px;color:var(--smuted);margin-top:2px}
 .sidebar-nav{flex:1;padding:.5rem .75rem;display:flex;flex-direction:column;gap:3px}
 .sidebar-sep{height:1px;background:var(--ssep);margin:.6rem .5rem}
-.nav-item{display:flex;align-items:center;gap:12px;padding:10px 13px;border-radius:10px;border:none;background:transparent;color:var(--smuted);font-family:'Plus Jakarta Sans',sans-serif;font-size:13.5px;font-weight:500;cursor:pointer;transition:all .15s;width:100%;text-align:left;white-space:nowrap}
+.nav-item{display:flex;align-items:center;gap:12px;padding:10px 13px;border-radius:10px;border:none;background:transparent;color:var(--smuted);font-family:'Plus Jakarta Sans',sans-serif;font-size:13.5px;font-weight:500;cursor:pointer;transition:color .15s,background .15s;width:100%;text-align:left;white-space:nowrap}
 .nav-item svg{width:15px;height:15px;flex-shrink:0}
 .nav-item:hover{background:var(--shover);color:var(--stxt)}
 .nav-item.active{background:rgba(99,102,241,.15);color:var(--accent);font-weight:600}
@@ -150,7 +150,6 @@ textarea{height:54px;padding:9px 11px;resize:none;line-height:1.5}
 button:focus-visible,a:focus-visible,[tabindex="0"]:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
 /* ── TASK FORM EXPAND ── */
 .tf-bar{display:flex;align-items:center;gap:.5rem;padding:.85rem 1.25rem}
-#task-form-card.open .tf-bar{padding-bottom:.65rem}
 .tf-inp{flex:1;height:42px;font-size:15px;font-weight:500;border:none;background:transparent;outline:none;color:var(--text);padding:0;font-family:'Plus Jakarta Sans',sans-serif}
 .tf-inp::placeholder{color:var(--muted);font-weight:400}
 .tf-inp:focus{border:none;background:transparent}
@@ -209,6 +208,8 @@ body.focus-mode #h-focus-sac{display:block}
 body.focus-mode #xp-home,
 body.focus-mode #h-subj-chips,
 body.focus-mode #h-sr-due,
+body.focus-mode #h-rev-today-home,
+body.focus-mode #h-health-wrap,
 body.focus-mode #h-tip-wrap,
 body.focus-mode #h-neglect-home,
 body.focus-mode #h-getstarted,
@@ -1006,7 +1007,7 @@ select.subj-sel.c-gmth{background:var(--gmth-bg);border-color:var(--gmth-br);col
 .edit-cancel-btn{margin-left:auto;font-size:12px;padding:3px 10px;border:1.5px solid rgba(99,102,241,.4);border-radius:7px;background:transparent;color:var(--accent);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600}
 /* ── ATAR ENGLISH FLAG ── */
 .atar-eng-btn{font-size:9.5px;font-weight:700;padding:2px 5px;border-radius:5px;border:1.5px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;flex-shrink:0;transition:all .15s;letter-spacing:.03em;white-space:nowrap}
-.atar-eng-btn.active{background:#dcfce7;border-color:#16a34a;color:#15803d}
+.atar-eng-btn.active{background:#dcfce7;border-color:#15803d;color:#15803d}
 /* ── ATAR BREAKDOWN ── */
 .atar-breakdown{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:.75rem 1rem;margin-top:.75rem;font-size:12px;font-family:'Plus Jakarta Sans',sans-serif}
 .atar-bd-row{display:flex;align-items:center;gap:.5rem;padding:.3rem 0;border-bottom:1px solid var(--border);flex-wrap:wrap}
@@ -1282,17 +1283,7 @@ input:checked+.toggle-slider::before{transform:translateX(18px)}
   <div id="h-urgent-sac" style="margin-bottom:1.25rem;display:none"></div>
   <div id="h-tip-wrap"></div>
   <div id="h-neglect-home" style="display:none;margin-bottom:1.25rem"></div>
-  <div id="h-getstarted" style="display:none;margin-bottom:1.25rem">
-    <div class="card" style="margin-bottom:0;border:1.5px dashed var(--border)">
-      <div class="sh" style="margin-bottom:.75rem">Get started</div>
-      <div style="font-size:13px;color:var(--muted);margin-bottom:1rem">You're all set up — add your subjects, tasks and SACs to make the most of your planner.</div>
-      <div style="display:flex;flex-wrap:wrap;gap:.6rem">
-        <button class="abtn" onclick="navTo('tasks')" style="font-size:12.5px;display:flex;align-items:center;gap:6px"><i data-lucide="plus-circle" style="width:14px;height:14px"></i>Add a task</button>
-        <button class="abtn" onclick="navTo('sacs')" style="font-size:12.5px;background:transparent;border:1.5px solid var(--border);color:var(--text);display:flex;align-items:center;gap:6px"><i data-lucide="target" style="width:14px;height:14px"></i>Add a SAC</button>
-        <button class="abtn" onclick="navTo('study')" style="font-size:12.5px;background:transparent;border:1.5px solid var(--border);color:var(--text);display:flex;align-items:center;gap:6px"><i data-lucide="brain" style="width:14px;height:14px"></i>Start studying</button>
-      </div>
-    </div>
-  </div>
+  <div id="h-getstarted" style="display:none;margin-bottom:1.25rem"></div>
   <div id="h-sr-due" style="display:none"></div>
   <div class="home-grid">
     <div class="card" style="margin-bottom:0">
@@ -1303,6 +1294,11 @@ input:checked+.toggle-slider::before{transform:translateX(18px)}
       <div class="hst">Upcoming SACs &amp; Exams<a onclick="navTo('sacs')">View all →</a></div>
       <div class="h-saclist" id="h-sacs"></div>
     </div>
+  </div>
+  <div id="h-rev-today-home" style="display:none;margin-bottom:1.25rem"></div>
+  <div id="h-health-wrap" style="display:none;margin-bottom:1.25rem">
+    <div class="hst" style="margin-bottom:.6rem">Subject progress<a onclick="navTo('stats')">Stats →</a></div>
+    <div class="health-grid" id="h-health"></div>
   </div>
   <div id="vce-cd-wrap"></div>
 </div></div>
@@ -3189,7 +3185,36 @@ async function loadDailyGif(){
 function renderHome(){
   renderVCECd();renderXP();
   const gs=document.getElementById('h-getstarted');
-  if(gs)gs.style.display=(tasks.length===0&&events.length===0)?'block':'none';
+  if(gs){
+    if(userSubjects.length===0){
+      gs.style.display='block';
+      gs.innerHTML=`<div class="card" style="margin-bottom:0;border:1.5px solid var(--accent);background:rgba(99,102,241,.04)">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:.75rem">
+          <div style="width:32px;height:32px;border-radius:10px;background:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i data-lucide="book" style="width:16px;height:16px;color:#fff"></i></div>
+          <div class="sh" style="margin-bottom:0">Start here — add your subjects</div>
+        </div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:1rem;line-height:1.6">VCE Planner tracks tasks, SACs and study by subject. Add your subjects first and everything else will colour-code automatically.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:.6rem">
+          <button class="abtn" onclick="openSubjModal()" style="font-size:12.5px;display:flex;align-items:center;gap:6px"><i data-lucide="plus-circle" style="width:14px;height:14px"></i>Add subjects</button>
+        </div>
+      </div>`;
+      if(typeof lucide!=='undefined')lucide.createIcons({scope:gs});
+    } else if(tasks.length===0&&events.length===0){
+      gs.style.display='block';
+      gs.innerHTML=`<div class="card" style="margin-bottom:0;border:1.5px dashed var(--border)">
+        <div class="sh" style="margin-bottom:.75rem">Get started</div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:1rem">Add your SACs and tasks to start tracking your VCE.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:.6rem">
+          <button class="abtn" onclick="navTo('tasks')" style="font-size:12.5px;display:flex;align-items:center;gap:6px"><i data-lucide="plus-circle" style="width:14px;height:14px"></i>Add a task</button>
+          <button class="abtn" onclick="navTo('sacs')" style="font-size:12.5px;background:transparent;border:1.5px solid var(--border);color:var(--text);display:flex;align-items:center;gap:6px"><i data-lucide="target" style="width:14px;height:14px"></i>Add a SAC</button>
+          <button class="abtn" onclick="navTo('study')" style="font-size:12.5px;background:transparent;border:1.5px solid var(--border);color:var(--text);display:flex;align-items:center;gap:6px"><i data-lucide="brain" style="width:14px;height:14px"></i>Start studying</button>
+        </div>
+      </div>`;
+      if(typeof lucide!=='undefined')lucide.createIcons({scope:gs});
+    } else {
+      gs.style.display='none';
+    }
+  }
   const h=new Date().getHours();
   document.getElementById('h-tod').textContent=h<12?'morning':h<17?'afternoon':'evening';
   document.getElementById('h-date').textContent=TODAY.toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
@@ -3208,21 +3233,53 @@ function renderHome(){
   document.getElementById('hs-streak').textContent=streak;
   // subject countdown chips
   renderSubjChips();
-  // health check
-  const rem=tasks.filter(t=>!t.done&&!t.missed);
-  document.getElementById('h-health').innerHTML=userSubjects.map(s=>{
-    const total=tasks.filter(t=>t.subject===s.id).length;
-    const done=tasks.filter(t=>t.subject===s.id&&t.done&&!t.missed).length;
-    const overdue=rem.filter(t=>t.subject===s.id&&t.due&&t.due<todayStr()).length;
-    const remaining=rem.filter(t=>t.subject===s.id).length;
-    const pct=total?Math.round(done/total*100):0;
-    const flag=overdue>0?`<div class="hc-flag" style="background:var(--high-bg);color:var(--high)">${overdue} overdue</div>`:pct===100&&total>0?`<div class="hc-flag" style="background:var(--green-bg);color:var(--green)">All done!</div>`:'';
-    return`<div class="hc" style="background:${BG[s.id]};border-color:${BR[s.id]}">
-      ${flag}<div class="hc-name" style="color:${NC[s.id]}">${s.label}</div>
-      <div class="hc-bar"><div class="hc-fill" style="width:${pct}%;background:${NC[s.id]}"></div></div>
-      <div class="hc-stat">${remaining} remaining · ${pct}% done</div>
-    </div>`;
-  }).join('');
+  // health check — subject progress cards
+  const hHealthEl=document.getElementById('h-health');
+  const hHealthWrap=document.getElementById('h-health-wrap');
+  if(hHealthEl&&userSubjects.length){
+    const rem=tasks.filter(t=>!t.done&&!t.missed);
+    hHealthEl.innerHTML=userSubjects.map(s=>{
+      const total=tasks.filter(t=>t.subject===s.id).length;
+      const done=tasks.filter(t=>t.subject===s.id&&t.done&&!t.missed).length;
+      const overdue=rem.filter(t=>t.subject===s.id&&t.due&&t.due<todayStr()).length;
+      const remaining=rem.filter(t=>t.subject===s.id).length;
+      const pct=total?Math.round(done/total*100):0;
+      const flag=overdue>0?`<div class="hc-flag" style="background:var(--high-bg);color:var(--high)">${overdue} overdue</div>`:pct===100&&total>0?`<div class="hc-flag" style="background:var(--green-bg);color:var(--green)">All done!</div>`:'';
+      return`<div class="hc" style="background:${BG[s.id]};border-color:${BR[s.id]}">
+        ${flag}<div class="hc-name" style="color:${NC[s.id]}">${s.label}</div>
+        <div class="hc-bar"><div class="hc-fill" style="width:${pct}%;background:${NC[s.id]}"></div></div>
+        <div class="hc-stat">${remaining} remaining · ${pct}% done</div>
+      </div>`;
+    }).join('');
+    if(hHealthWrap)hHealthWrap.style.display='block';
+  } else if(hHealthWrap){hHealthWrap.style.display='none';}
+  // today's revision across all SACs
+  const hRevHome=document.getElementById('h-rev-today-home');
+  if(hRevHome){
+    const todayRevItems=[];
+    events.forEach(ev=>{
+      if(ev.done)return;
+      const data=rsLoad(ev.id);if(!data)return;
+      data.items.forEach(item=>{
+        if(item.scheduledDate===todayStr()&&!item.done&&!item.missed)
+          todayRevItems.push({evId:ev.id,itemId:item.id,name:item.name,subject:ev.subject,evName:ev.name,dur:item.dur});
+      });
+    });
+    if(todayRevItems.length){
+      hRevHome.style.display='block';
+      hRevHome.innerHTML=`<div class="card" style="margin-bottom:0">
+        <div class="hst">Today's revision <span style="background:var(--accent);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:4px">${todayRevItems.length}</span><a onclick="navTo('revision')">Full plan →</a></div>
+        ${todayRevItems.slice(0,4).map(i=>`<div style="display:flex;align-items:center;gap:10px;padding:.45rem 0;border-bottom:1px solid var(--border)">
+          <span class="badge" style="background:${BG[i.subject]};color:${NC[i.subject]};flex-shrink:0">${(SUBJ[i.subject]?.label||'?').split(' ')[0]}</span>
+          <span style="flex:1;font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${i.name}</span>
+          <span style="font-size:11px;color:var(--muted);flex-shrink:0">${formatDur(i.dur)}</span>
+        </div>`).join('')}
+        ${todayRevItems.length>4?`<div style="font-size:12px;color:var(--muted);padding:.4rem 0 0">+${todayRevItems.length-4} more</div>`:''}
+      </div>`;
+    } else {
+      hRevHome.style.display='none';hRevHome.innerHTML='';
+    }
+  }
   // today tasks
   const tomorrowStr=()=>{const d=new Date(TODAY);d.setDate(d.getDate()+1);return localStr(d)};
   const todayTasks=tasks.filter(t=>!t.done&&!t.missed&&t.due&&t.due<=tomorrowStr()).sort((a,b)=>{if(a.urgent&&!b.urgent)return -1;if(!a.urgent&&b.urgent)return 1;return a.due.localeCompare(b.due)});
@@ -4030,7 +4087,7 @@ function deleteScore(id){
 
 function gradeLabel(pct){
   if(pct>=90)return{text:'A+',bg:'#dcfce7',col:'#15803d'};
-  if(pct>=80)return{text:'A', bg:'#dcfce7',col:'#16a34a'};
+  if(pct>=80)return{text:'A', bg:'#dcfce7',col:'#15803d'};
   if(pct>=75)return{text:'B+',bg:'#dbeafe',col:'#1d4ed8'};
   if(pct>=70)return{text:'B', bg:'#dbeafe',col:'#2563eb'};
   if(pct>=65)return{text:'C+',bg:'#fef9c3',col:'#a16207'};
@@ -5209,7 +5266,7 @@ function renderATARRows(){
   // render static grade scale chips
   const ref=document.getElementById('atar-grade-ref-static');
   if(ref&&!ref.children.length){
-    const GRADES=[['A+','≥90%','#dcfce7','#15803d'],['A','≥80%','#dcfce7','#16a34a'],['B+','≥75%','#dbeafe','#1d4ed8'],['B','≥70%','#dbeafe','#2563eb'],['C+','≥65%','#fef9c3','#a16207'],['C','≥60%','#fef9c3','#b45309'],['D+','≥55%','#ffedd5','#c2410c'],['D','≥50%','#ffedd5','#ea580c'],['E','<50%','#fee2e2','#dc2626']];
+    const GRADES=[['A+','≥90%','#dcfce7','#15803d'],['A','≥80%','#dcfce7','#15803d'],['B+','≥75%','#dbeafe','#1d4ed8'],['B','≥70%','#dbeafe','#2563eb'],['C+','≥65%','#fef9c3','#a16207'],['C','≥60%','#fef9c3','#b45309'],['D+','≥55%','#ffedd5','#c2410c'],['D','≥50%','#ffedd5','#ea580c'],['E','<50%','#fee2e2','#dc2626']];
     ref.innerHTML=GRADES.map(([g,r,bg,col])=>`<span class="atar-grade-chip" style="background:${bg};color:${col}">${g} ${r}</span>`).join('');
   }
   calcATAR();
