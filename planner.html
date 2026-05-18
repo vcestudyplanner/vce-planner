@@ -85,8 +85,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .sidebar-link{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:9px;font-size:12.5px;font-weight:500;color:var(--slink);text-decoration:none;transition:all .15s;background:transparent;border:none;cursor:pointer;width:100%;text-align:left}
 .sidebar-link svg{width:13px;height:13px}
 .sidebar-link:hover{background:var(--shover);color:var(--stxt)}
-.sbr-menu{display:none;flex-direction:column;gap:2px;background:var(--shover);border:1px solid var(--ssep);border-radius:12px;padding:.3rem;margin-bottom:.4rem}
-.sbr-menu.open{display:flex}
 .sbr-actions{display:flex;align-items:center;gap:2px;padding-top:.3rem}
 .sbr-actions .sync-dot{margin:0 4px 0 2px}
 .sba-btn{width:30px;height:30px;border-radius:8px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--smuted);transition:all .15s;padding:0;flex-shrink:0}
@@ -98,7 +96,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .tbtn{width:30px;height:30px;border-radius:8px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;padding:0;flex-shrink:0}
 .tbtn svg{width:14px;height:14px;color:var(--smuted)}
 .tbtn:hover{background:var(--shover)}
-.sbr-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--smuted);padding:.5rem .6rem .2rem;}
 .sidebar-collapse-btn{margin-left:auto;width:24px;height:24px;border-radius:7px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--smuted);transition:all .15s;flex-shrink:0;padding:0}
 .sidebar-collapse-btn svg{width:14px;height:14px}
 .sidebar-collapse-btn:hover{background:var(--shover);color:var(--stxt)}
@@ -1187,18 +1184,15 @@ input:checked+.toggle-slider::before{transform:translateX(18px)}
     <button class="nav-item" onclick="openSubjModal()"><i data-lucide="layers"></i>Subjects</button>
   </nav>
   <div class="sidebar-bottom">
-    <div class="sbr-menu" id="sbr-menu">
-      <div class="sbr-label">More</div>
-      <button class="sidebar-link" onclick="openNotifModal();closeSbrMenu()"><i data-lucide="bell"></i>Notifications</button>
-      <a class="sidebar-link" href="suggestions.html"><i data-lucide="message-circle"></i>Suggestions</a>
-      <button class="sidebar-link" onclick="replayTour();closeSbrMenu()"><i data-lucide="play-circle"></i>Tutorial</button>
-      <button id="pwa-install-btn" onclick="pwaInstall();closeSbrMenu()" class="sidebar-link"><i data-lucide="smartphone"></i>Get the App</button>
-    </div>
+    <div class="sidebar-sep"></div>
+    <button class="sidebar-link" onclick="openNotifModal()"><i data-lucide="bell"></i>Notifications</button>
+    <button id="pwa-install-btn" onclick="pwaInstall()" class="sidebar-link"><i data-lucide="smartphone"></i>Get the App</button>
+    <button class="sidebar-link" onclick="replayTour()"><i data-lucide="play-circle"></i>Tutorial</button>
+    <a class="sidebar-link" href="suggestions.html"><i data-lucide="message-circle"></i>Suggestions</a>
     <div class="sbr-actions">
       <div id="sync-dot" class="sync-dot" title=""></div>
       <button class="cmd-hint-btn" onclick="openCmdPalette()" title="Open command palette (⌘K)">⌘K</button>
       <button class="tbtn" id="dark-toggle" onclick="toggleDark()" title="Toggle dark mode"><i data-lucide="moon"></i></button>
-      <button class="sba-btn" id="sbr-settings-btn" onclick="toggleSbrMenu()" title="More options"><i data-lucide="settings"></i></button>
       <button class="sba-btn" onclick="logout()" title="Sign out"><i data-lucide="log-out"></i></button>
     </div>
   </div>
@@ -1955,18 +1949,6 @@ function applyPalette(dark){
     r.setProperty('--accent','#4f46e5');
     r.setProperty('--accent-light',`hsl(${h},${Math.min(s,72)}%,${Math.min(l+28,90)}%)`);
   }
-}
-function toggleSbrMenu(){
-  const m=document.getElementById('sbr-menu');if(!m)return;
-  m.classList.toggle('open');
-  const btn=document.getElementById('sbr-settings-btn');
-  if(btn){const open=m.classList.contains('open');btn.innerHTML=`<i data-lucide="${open?'x':'settings'}"></i>`;btn.classList.toggle('active',open);if(typeof lucide!=='undefined')lucide.createIcons();}
-}
-function closeSbrMenu(){
-  const m=document.getElementById('sbr-menu');if(!m)return;
-  m.classList.remove('open');
-  const btn=document.getElementById('sbr-settings-btn');
-  if(btn){btn.innerHTML='<i data-lucide="settings"></i>';btn.classList.remove('active');if(typeof lucide!=='undefined')lucide.createIcons();}
 }
 
 // ── SUBJECT MANAGEMENT ────────────────────────────────────────────────────────
